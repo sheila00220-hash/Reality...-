@@ -22,15 +22,15 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: black;
+    background: #000;
     touch-action: none;
-    font-family: Arial, sans-serif;
+    font-family: Arial, "Noto Sans TC", sans-serif;
 }
 
 #game {
-    position: relative;
     width: 100vw;
     height: 100vh;
+    position: relative;
 }
 
 .screen {
@@ -49,12 +49,11 @@ html, body {
 ========================= */
 
 #title {
-    background: black;
+    background: #000;
     color: white;
 
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
 
@@ -70,24 +69,17 @@ html, body {
 .warning {
     width: 90%;
     max-width: 600px;
-
     color: #ddd;
-
     line-height: 1.8;
-
     font-size: 14px;
 }
 
 .startButton {
-
     margin-top: 20px;
-
     padding: 14px 28px;
 
     border: 1px solid white;
-
     background: transparent;
-
     color: white;
 
     font-size: 17px;
@@ -113,11 +105,9 @@ html, body {
 ========================= */
 
 #hint {
-
     position: absolute;
 
     top: 18px;
-
     left: 50%;
 
     transform: translateX(-50%);
@@ -127,7 +117,6 @@ html, body {
     background: rgba(0,0,0,.35);
 
     padding: 7px 12px;
-
     border-radius: 5px;
 
     font-size: 13px;
@@ -137,11 +126,10 @@ html, body {
 
 
 /* =========================
-   手機按鈕
+   移動按鈕
 ========================= */
 
 #controls {
-
     position: absolute;
 
     left: 15px;
@@ -154,14 +142,12 @@ html, body {
 }
 
 .control {
-
     position: absolute;
 
     width: 52px;
     height: 52px;
 
     display: flex;
-
     justify-content: center;
     align-items: center;
 
@@ -172,7 +158,6 @@ html, body {
     border-radius: 8px;
 
     color: white;
-
     font-size: 24px;
 
     user-select: none;
@@ -204,12 +189,11 @@ html, body {
 
 <body>
 
-
 <div id="game">
 
 
 <!-- =========================
-     開始
+     開始畫面
 ========================= -->
 
 <section id="title" class="screen active">
@@ -240,7 +224,6 @@ html, body {
 
     </div>
 
-
     <button
         class="startButton"
         onclick="startGame()">
@@ -261,56 +244,39 @@ html, body {
     id="chapter1"
     class="screen">
 
-
     <div id="threeContainer"></div>
 
-
     <div id="hint">
-
-        👆 滑動畫面轉動視角
-
+        左右滑動畫面轉動視角
     </div>
-
 
     <div id="controls">
 
         <div
             class="control forward"
             data-move="forward">
-
             ↑
-
         </div>
-
 
         <div
             class="control left"
             data-move="left">
-
             ←
-
         </div>
-
 
         <div
             class="control back"
             data-move="back">
-
             ↓
-
         </div>
-
 
         <div
             class="control right"
             data-move="right">
-
             →
-
         </div>
 
     </div>
-
 
 </section>
 
@@ -318,155 +284,113 @@ html, body {
 </div>
 
 
-
 <!-- =========================
      Three.js
 ========================= -->
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 
 <script>
 
+/* ========================================
+   全域變數
+======================================== */
 
 let scene;
-
 let camera;
-
 let renderer;
 
+let eyeFrame;
+let pupil;
 
 let player = {
-
     x: 0,
-
     y: 2,
-
     z: 5
-
 };
-
 
 let yaw = 0;
-
 let pitch = 0;
 
-
 let movement = {
-
     forward: false,
-
     back: false,
-
     left: false,
-
     right: false
-
 };
 
 
-
-/* =================================
+/* ========================================
    開始遊戲
-================================= */
+======================================== */
 
 function startGame() {
-
 
     document
         .getElementById("title")
         .classList.remove("active");
 
-
     document
         .getElementById("chapter1")
         .classList.add("active");
 
-
     create3D();
-
 }
 
 
-
-/* =================================
-   建立 3D
-================================= */
+/* ========================================
+   建立 3D 世界
+======================================== */
 
 function create3D() {
 
-
     scene = new THREE.Scene();
-
 
     scene.background =
         new THREE.Color(0x777777);
 
 
-
-    /* -------------------------------
+    /* -------------------------
        相機
-    -------------------------------- */
+    ------------------------- */
 
     camera =
         new THREE.PerspectiveCamera(
-
             75,
-
             window.innerWidth /
             window.innerHeight,
-
             0.1,
-
             100
-
         );
 
-
     camera.position.set(
-
         player.x,
-
         player.y,
-
         player.z
-
     );
 
 
-
-    /* -------------------------------
+    /* -------------------------
        Renderer
-    -------------------------------- */
+    ------------------------- */
 
     renderer =
         new THREE.WebGLRenderer({
-
             antialias: true
-
         });
 
-
     renderer.setSize(
-
         window.innerWidth,
-
         window.innerHeight
-
     );
 
-
     renderer.setPixelRatio(
-
         Math.min(
             window.devicePixelRatio,
             2
         )
-
     );
-
 
     document
         .getElementById("threeContainer")
@@ -475,417 +399,409 @@ function create3D() {
         );
 
 
-
-    /* =================================
+    /* -------------------------
        光
-    ================================= */
+    ------------------------- */
 
     const ambient =
         new THREE.AmbientLight(
-
             0xffffff,
-
             1.5
-
         );
-
 
     scene.add(ambient);
 
 
-
     const light =
         new THREE.PointLight(
-
             0xffffff,
-
             10,
-
             40
-
         );
 
-
     light.position.set(
-
         0,
-
         8,
-
         0
-
     );
-
 
     scene.add(light);
 
 
-
-    /* =================================
+    /* -------------------------
        房間
-    ================================= */
+    ------------------------- */
 
     createRoom();
 
 
+    /* -------------------------
+       一隻測試眼睛
+    ------------------------- */
 
-    /* =================================
-       開始
-    ================================= */
+    createTestEye();
+
+
+    /* -------------------------
+       手機控制
+    ------------------------- */
+
+    setupTouch();
+    setupButtons();
+
 
     animate();
-
 }
 
 
-
-/* =================================
-   建立房間
-================================= */
+/* ========================================
+   房間
+======================================== */
 
 function createRoom() {
 
-
-    /*
-       房間尺寸
-
-       寬 20
-       高 10
-       深 20
-    */
-
-
     const W = 20;
-
     const H = 10;
-
     const D = 20;
 
 
-
-    /* =================================
-       地板
-    ================================= */
-
-    const floorMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x686868
-
-        });
-
+    /* 地板 */
 
     const floor =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-                D
-
-            ),
-
-            floorMaterial
-
+            new THREE.PlaneGeometry(W, D),
+            new THREE.MeshBasicMaterial({
+                color: 0x686868,
+                side: THREE.DoubleSide
+            })
         );
-
 
     floor.rotation.x =
         -Math.PI / 2;
 
-
     floor.position.y = 0;
-
 
     scene.add(floor);
 
 
-
-    /* =================================
-       天花板
-    ================================= */
-
-    const ceilingMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0xdadada
-
-        });
-
+    /* 天花板 */
 
     const ceiling =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-                D
-
-            ),
-
-            ceilingMaterial
-
+            new THREE.PlaneGeometry(W, D),
+            new THREE.MeshBasicMaterial({
+                color: 0xdadada,
+                side: THREE.DoubleSide
+            })
         );
-
 
     ceiling.rotation.x =
         Math.PI / 2;
 
-
     ceiling.position.y = H;
-
 
     scene.add(ceiling);
 
 
-
-    /* =================================
-       牆壁材質
-    ================================= */
-
-    const frontMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0xbcbcbc,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const backMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0xa5a5a5,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const leftMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x999999,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const rightMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x8b8b8b,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-
-    /* =================================
-       前牆
-    ================================= */
+    /* 前牆 */
 
     const front =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-                H
-
-            ),
-
-            frontMaterial
-
+            new THREE.PlaneGeometry(W, H),
+            new THREE.MeshBasicMaterial({
+                color: 0xbcbcbc,
+                side: THREE.DoubleSide
+            })
         );
 
-
     front.position.set(
-
         0,
-
         H / 2,
-
         -D / 2
-
     );
-
 
     scene.add(front);
 
 
-
-    /* =================================
-       後牆
-    ================================= */
+    /* 後牆 */
 
     const back =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-                H
-
-            ),
-
-            backMaterial
-
+            new THREE.PlaneGeometry(W, H),
+            new THREE.MeshBasicMaterial({
+                color: 0xa5a5a5,
+                side: THREE.DoubleSide
+            })
         );
 
-
     back.position.set(
-
         0,
-
         H / 2,
-
         D / 2
-
     );
-
 
     scene.add(back);
 
 
-
-    /* =================================
-       左牆
-    ================================= */
+    /* 左牆 */
 
     const left =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                D,
-                H
-
-            ),
-
-            leftMaterial
-
+            new THREE.PlaneGeometry(D, H),
+            new THREE.MeshBasicMaterial({
+                color: 0x999999,
+                side: THREE.DoubleSide
+            })
         );
-
 
     left.rotation.y =
         Math.PI / 2;
 
-
     left.position.set(
-
         -W / 2,
-
         H / 2,
-
         0
-
     );
-
 
     scene.add(left);
 
 
-
-    /* =================================
-       右牆
-    ================================= */
+    /* 右牆 */
 
     const right =
         new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                D,
-                H
-
-            ),
-
-            rightMaterial
-
+            new THREE.PlaneGeometry(D, H),
+            new THREE.MeshBasicMaterial({
+                color: 0x8b8b8b,
+                side: THREE.DoubleSide
+            })
         );
-
 
     right.rotation.y =
         Math.PI / 2;
 
-
     right.position.set(
-
         W / 2,
-
         H / 2,
-
         0
-
     );
 
-
     scene.add(right);
-
-
-
-    /* =================================
-       房間邊框
-    ================================= */
-
-    const edgeMaterial =
-        new THREE.LineBasicMaterial({
-
-            color: 0x555555
-
-        });
-
-
-    /*
-       用線把房間的
-       八個角連起來
-    */
-
-    const edges =
-        new THREE.LineSegments(
-
-            new THREE.EdgesGeometry(
-
-                new THREE.BoxGeometry(
-
-                    W,
-                    H,
-                    D
-
-                )
-
-            ),
-
-            edgeMaterial
-
-        );
-
-
-    edges.position.y =
-        H / 2;
-
-
-    scene.add(edges);
-
 
 }
 
 
+/* ========================================
+   建立一隻測試眼睛
+======================================== */
 
-/* =================================
-   玩家
-================================= */
+function createTestEye() {
+
+    const loader =
+        new THREE.TextureLoader();
+
+
+    const frameTexture =
+        loader.load(
+            "Screenshot_20260819_221148_Google-removebg-preview.png"
+        );
+
+
+    const pupilTexture =
+        loader.load(
+            "Screenshot_20260819_221235_Google-removebg-preview.png"
+        );
+
+
+    /* ==================================
+       眼眶＋眼白
+       固定
+    ================================== */
+
+    const frameMaterial =
+        new THREE.SpriteMaterial({
+
+            map: frameTexture,
+
+            transparent: true,
+
+            depthTest: false
+
+        });
+
+
+    eyeFrame =
+        new THREE.Sprite(
+            frameMaterial
+        );
+
+
+    eyeFrame.position.set(
+        0,
+        5,
+        -9.75
+    );
+
+
+    eyeFrame.scale.set(
+        5,
+        5,
+        1
+    );
+
+
+    eyeFrame.renderOrder = 10;
+
+
+    scene.add(
+        eyeFrame
+    );
+
+
+    /* ==================================
+       眼球
+       可以移動
+    ================================== */
+
+    const pupilMaterial =
+        new THREE.SpriteMaterial({
+
+            map: pupilTexture,
+
+            transparent: true,
+
+            depthTest: false
+
+        });
+
+
+    pupil =
+        new THREE.Sprite(
+            pupilMaterial
+        );
+
+
+    pupil.position.set(
+        0,
+        5,
+        -9.70
+    );
+
+
+    pupil.scale.set(
+        1.6,
+        1.6,
+        1
+    );
+
+
+    /*
+       數字越大越在上面
+    */
+
+    pupil.renderOrder = 5;
+
+
+    scene.add(
+        pupil
+    );
+
+}
+
+
+/* ========================================
+   讓眼球看玩家
+======================================== */
+
+function updatePupil() {
+
+    if(!pupil || !eyeFrame)
+        return;
+
+
+    /*
+       測試眼睛的位置
+    */
+
+    const eyeX =
+        eyeFrame.position.x;
+
+    const eyeY =
+        eyeFrame.position.y;
+
+
+    /*
+       玩家相對於眼睛的位置
+    */
+
+    const dx =
+        player.x - eyeX;
+
+    const dy =
+        player.y - eyeY;
+
+
+    /*
+       限制眼球活動範圍
+
+       不允許跑出眼眶
+    */
+
+    const maxMove = 1.15;
+
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    let moveX = 0;
+    let moveY = 0;
+
+
+    if(distance > 0.01) {
+
+        moveX =
+            dx / distance *
+            Math.min(
+                Math.abs(dx),
+                maxMove
+            );
+
+        moveY =
+            dy / distance *
+            Math.min(
+                Math.abs(dy),
+                maxMove
+            );
+
+    }
+
+
+    /*
+       讓眼球的位置
+       跟著玩家變化
+    */
+
+    pupil.position.x =
+        eyeX + moveX;
+
+    pupil.position.y =
+        eyeY + moveY;
+
+    pupil.position.z =
+        eyeFrame.position.z + 0.05;
+
+}
+
+
+/* ========================================
+   玩家移動
+======================================== */
 
 function updatePlayer() {
-
 
     const speed = 0.08;
 
@@ -893,14 +809,11 @@ function updatePlayer() {
     const forwardX =
         Math.sin(yaw);
 
-
     const forwardZ =
         -Math.cos(yaw);
 
 
-    if(
-        movement.forward
-    ) {
+    if(movement.forward) {
 
         player.x +=
             forwardX * speed;
@@ -911,9 +824,7 @@ function updatePlayer() {
     }
 
 
-    if(
-        movement.back
-    ) {
+    if(movement.back) {
 
         player.x -=
             forwardX * speed;
@@ -924,9 +835,7 @@ function updatePlayer() {
     }
 
 
-    if(
-        movement.left
-    ) {
+    if(movement.left) {
 
         player.x -=
             Math.cos(yaw) * speed;
@@ -937,9 +846,7 @@ function updatePlayer() {
     }
 
 
-    if(
-        movement.right
-    ) {
+    if(movement.right) {
 
         player.x +=
             Math.cos(yaw) * speed;
@@ -950,54 +857,40 @@ function updatePlayer() {
     }
 
 
-    /*
-       不准穿牆
-    */
+    /* 不穿牆 */
 
     player.x =
         Math.max(
-
             -8,
-
             Math.min(
                 8,
                 player.x
             )
-
         );
 
 
     player.z =
         Math.max(
-
             -8,
-
             Math.min(
                 8,
                 player.z
             )
-
         );
 
 
     camera.position.set(
-
         player.x,
-
         player.y,
-
         player.z
-
     );
 
 
     camera.rotation.order =
         "YXZ";
 
-
     camera.rotation.y =
         yaw;
-
 
     camera.rotation.x =
         pitch;
@@ -1005,66 +898,49 @@ function updatePlayer() {
 }
 
 
-
-/* =================================
+/* ========================================
    手機滑動
-================================= */
+======================================== */
 
 let touching = false;
 
 let lastX = 0;
-
 let lastY = 0;
 
 
-
 function setupTouch() {
-
 
     const canvas =
         renderer.domElement;
 
 
     canvas.addEventListener(
-
         "touchstart",
-
         function(event) {
 
-
             touching = true;
-
 
             lastX =
                 event.touches[0]
                 .clientX;
 
-
             lastY =
                 event.touches[0]
                 .clientY;
 
-
         },
-
         {
             passive: false
         }
-
     );
 
 
-
     canvas.addEventListener(
-
         "touchmove",
-
         function(event) {
-
 
             if(!touching)
                 return;
-
 
             event.preventDefault();
 
@@ -1072,7 +948,6 @@ function setupTouch() {
             const x =
                 event.touches[0]
                 .clientX;
-
 
             const y =
                 event.touches[0]
@@ -1082,7 +957,6 @@ function setupTouch() {
             const dx =
                 x - lastX;
 
-
             const dy =
                 y - lastY;
 
@@ -1090,76 +964,59 @@ function setupTouch() {
             yaw -=
                 dx * 0.004;
 
-
             pitch -=
                 dy * 0.004;
 
 
             pitch =
                 Math.max(
-
                     -1.4,
-
                     Math.min(
                         1.4,
                         pitch
                     )
-
                 );
 
 
             lastX = x;
-
             lastY = y;
 
-
         },
-
         {
             passive: false
         }
-
     );
 
 
     canvas.addEventListener(
-
         "touchend",
-
         function() {
 
             touching = false;
 
         }
-
     );
 
 }
 
 
-
-/* =================================
-   按鈕
-================================= */
+/* ========================================
+   移動按鈕
+======================================== */
 
 function setupButtons() {
-
 
     document
         .querySelectorAll(".control")
         .forEach(
-
             function(button) {
-
 
                 const direction =
                     button.dataset.move;
 
 
                 button.addEventListener(
-
                     "touchstart",
-
                     function(event) {
 
                         event.preventDefault();
@@ -1169,14 +1026,11 @@ function setupButtons() {
                         ] = true;
 
                     }
-
                 );
 
 
                 button.addEventListener(
-
                     "touchend",
-
                     function(event) {
 
                         event.preventDefault();
@@ -1186,24 +1040,19 @@ function setupButtons() {
                         ] = false;
 
                     }
-
                 );
 
-
             }
-
         );
 
 }
 
 
-
-/* =================================
+/* ========================================
    遊戲循環
-================================= */
+======================================== */
 
 function animate() {
-
 
     requestAnimationFrame(
         animate
@@ -1212,34 +1061,26 @@ function animate() {
 
     updatePlayer();
 
+    updatePupil();
+
 
     renderer.render(
-
         scene,
-
         camera
-
     );
 
 }
 
 
-
-/* =================================
-   螢幕尺寸
-================================= */
+/* ========================================
+   螢幕大小
+======================================== */
 
 window.addEventListener(
-
     "resize",
-
     function() {
 
-
-        if(
-            !camera ||
-            !renderer
-        )
+        if(!camera || !renderer)
             return;
 
 
@@ -1252,16 +1093,11 @@ window.addEventListener(
 
 
         renderer.setSize(
-
             window.innerWidth,
-
             window.innerHeight
-
         );
 
-
     }
-
 );
 
 </script>
