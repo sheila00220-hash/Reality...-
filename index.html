@@ -2,7 +2,10 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0,user-scalable=no">
+
 <title>Reality...?</title>
 
 <style>
@@ -16,25 +19,1109 @@ html, body {
     height: 100%;
     overflow: hidden;
     background: #000;
-    color: #fff;
     font-family: Arial, "Noto Sans TC", sans-serif;
+    touch-action: none;
+}
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* =========================
+   開始畫面
+========================= */
+
+#title {
+    background: #000;
+    color: white;
+    animation: flicker 3s infinite;
+}
+
+#title h1 {
+    font-size: clamp(45px, 13vw, 100px);
+    font-weight: 300;
+    letter-spacing: 8px;
+}
+
+.warning {
+    max-width: 650px;
+    padding: 25px;
+    line-height: 1.8;
+    font-size: 14px;
+    color: #ddd;
 }
 
 button {
-    border: 1px solid rgba(255,255,255,.5);
+    border: 1px solid rgba(255,255,255,.7);
     background: transparent;
     color: white;
-    padding: 14px 28px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: .3s;
+    padding: 13px 25px;
+    font-size: 17px;
 }
 
-button:hover {
+@keyframes flicker {
+    0%,18%,20%,22%,60%,100% {
+        opacity: 1;
+    }
+
+    19%,21%,59% {
+        opacity: .15;
+    }
+}
+
+/* =========================
+   第一章 3D
+========================= */
+
+#chapter1 {
+    background: #b9b6ae;
+}
+
+#threeContainer {
+    position: absolute;
+    inset: 0;
+}
+
+/* 手機控制 */
+
+#controls {
+    position: absolute;
+    left: 20px;
+    bottom: 25px;
+
+    display: grid;
+    grid-template-columns: 55px 55px 55px;
+    grid-template-rows: 55px 55px;
+
+    gap: 5px;
+
+    z-index: 20;
+}
+
+.control {
+    width: 55px;
+    height: 55px;
+
+    border: 1px solid rgba(255,255,255,.4);
+
+    background: rgba(0,0,0,.25);
+
+    color: white;
+
+    font-size: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+.forward {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.back {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+#hint {
+    position: absolute;
+
+    top: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: rgba(0,0,0,.45);
+
+    font-size: 13px;
+
+    z-index: 20;
+
+    pointer-events: none;
+}
+
+/* =========================
+   其他章節先保留
+========================= */
+
+.simple {
+    color: white;
+}
+
+#chapter2 {
+    background: white;
+    color: #222;
+}
+
+#chapter3 {
+    background: #000;
+}
+
+#chapter4 {
     background: white;
     color: black;
 }
 
+#chapter5 {
+    background: #180000;
+}
+
+#chapter6 {
+    background: #173d2a;
+}
+
+#chapter7 {
+    background: #050505;
+}
+
+#chapter8 {
+    background: #111;
+}
+
+#ending {
+    background: #000;
+    color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<!-- =========================
+     開始
+========================= -->
+
+<section id="title" class="screen active">
+
+    <h1>Reality...?</h1>
+
+    <div class="warning">
+
+        <p>內容提示</p>
+
+        <p>
+        本作品包含心理恐怖、令人不安的聲音與視覺表現，
+        以及可能引起部分玩家不適的成人向主題。
+        </p>
+
+        <p>
+        部分內容可能涉及敏感議題。
+        </p>
+
+        <p>
+        若你容易受到心理壓迫、強烈聲音或失真畫面的影響，
+        請自行斟酌是否遊玩。
+        </p>
+
+        <p>
+        你可以隨時離開遊戲。
+        </p>
+
+    </div>
+
+    <button onclick="startGame()">
+        開始你的旅程
+    </button>
+
+</section>
+
+
+<!-- =========================
+     第一章
+========================= -->
+
+<section id="chapter1" class="screen">
+
+    <div id="threeContainer"></div>
+
+    <div id="hint">
+        滑動畫面轉動視角
+    </div>
+
+    <div id="controls">
+
+        <div
+            class="control forward"
+            data-move="forward">
+            ↑
+        </div>
+
+        <div
+            class="control left"
+            data-move="left">
+            ←
+        </div>
+
+        <div
+            class="control back"
+            data-move="back">
+            ↓
+        </div>
+
+        <div
+            class="control right"
+            data-move="right">
+            →
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     第二章
+========================= -->
+
+<section id="chapter2" class="screen simple">
+
+    <h1>第二章</h1>
+
+    <p>這裡之後加入正式場景。</p>
+
+</section>
+
+
+<!-- =========================
+     第三章
+========================= -->
+
+<section id="chapter3" class="screen simple">
+
+    <p>
+        ……<br>
+        你又來了。<br>
+        真麻煩。<br>
+        ……
+    </p>
+
+</section>
+
+
+<!-- =========================
+     第四章
+========================= -->
+
+<section id="chapter4" class="screen simple">
+
+    <h1>你想解脫嗎？</h1>
+
+</section>
+
+
+<!-- =========================
+     第五章
+========================= -->
+
+<section id="chapter5" class="screen simple">
+
+    <h1>第五章</h1>
+
+</section>
+
+
+<!-- =========================
+     第六章
+========================= -->
+
+<section id="chapter6" class="screen simple">
+
+    <h1>第六章</h1>
+
+</section>
+
+
+<!-- =========================
+     第七章
+========================= -->
+
+<section id="chapter7" class="screen simple">
+
+    <h1>你覺得你逃得到嗎？</h1>
+
+</section>
+
+
+<!-- =========================
+     第八章
+========================= -->
+
+<section id="chapter8" class="screen simple">
+
+    <h1>看著自己。</h1>
+
+</section>
+
+
+<!-- =========================
+     結局
+========================= -->
+
+<section id="ending" class="screen">
+
+    <h1>Reality...?</h1>
+
+    <p>你終於看見了自己。</p>
+
+</section>
+
+
+</div>
+
+
+<!-- Three.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+
+<script>
+
+/* =========================================
+   基本設定
+========================================= */
+
+let scene;
+let camera;
+let renderer;
+
+let eyes = [];
+
+let player = {
+    x: 0,
+    y: 1.6,
+    z: 0
+};
+
+let move = {
+    forward: false,
+    back: false,
+    left: false,
+    right: false
+};
+
+let yaw = 0;
+let pitch = 0;
+
+
+/* =========================================
+   開始遊戲
+========================================= */
+
+function startGame() {
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(s => {
+            s.classList.remove("active");
+        });
+
+    document
+        .getElementById("chapter1")
+        .classList.add("active");
+
+    init3D();
+}
+
+
+/* =========================================
+   建立 3D 世界
+========================================= */
+
+function init3D() {
+
+    scene = new THREE.Scene();
+
+    scene.background =
+        new THREE.Color(0xb9b6ae);
+
+
+    /* -------------------------
+       相機
+    ------------------------- */
+
+    camera =
+        new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth /
+            window.innerHeight,
+            0.1,
+            100
+        );
+
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
+
+
+    /* -------------------------
+       渲染器
+    ------------------------- */
+
+    renderer =
+        new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+    document
+        .getElementById("threeContainer")
+        .appendChild(renderer.domElement);
+
+
+    /* -------------------------
+       光
+    ------------------------- */
+
+    const ambient =
+        new THREE.AmbientLight(
+            0xffffff,
+            1.2
+        );
+
+    scene.add(ambient);
+
+
+    /* -------------------------
+       房間
+    ------------------------- */
+
+    createRoom();
+
+
+    /* -------------------------
+       眼睛
+    ------------------------- */
+
+    createEyes();
+
+
+    /* -------------------------
+       控制
+    ------------------------- */
+
+    setupTouch();
+
+    setupButtons();
+
+
+    /* -------------------------
+       開始渲染
+    ------------------------- */
+
+    animate();
+
+}
+
+
+/* =========================================
+   六面房間
+========================================= */
+
+function createRoom() {
+
+    const size = 20;
+
+    const material =
+        new THREE.MeshBasicMaterial({
+            color: 0xb9b6ae,
+            side: THREE.BackSide
+        });
+
+    const geometry =
+        new THREE.BoxGeometry(
+            size,
+            size,
+            size
+        );
+
+    const room =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    room.position.set(
+        0,
+        5,
+        0
+    );
+
+    scene.add(room);
+
+}
+
+
+/* =========================================
+   載入眼睛素材
+========================================= */
+
+function createEyes() {
+
+    const loader =
+        new THREE.TextureLoader();
+
+    loader.load(
+
+        "1787057220627-removebg-preview.png",
+
+        function(texture) {
+
+            /*
+             * 六面全部放眼睛
+             */
+
+            createWallEyes(
+                "front",
+                texture
+            );
+
+            createWallEyes(
+                "back",
+                texture
+            );
+
+            createWallEyes(
+                "left",
+                texture
+            );
+
+            createWallEyes(
+                "right",
+                texture
+            );
+
+            createWallEyes(
+                "floor",
+                texture
+            );
+
+            createWallEyes(
+                "ceiling",
+                texture
+            );
+
+        },
+
+        undefined,
+
+        function(error) {
+
+            console.log(
+                "眼睛素材載入失敗",
+                error
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================
+   在六面放眼睛
+========================================= */
+
+function createWallEyes(
+    side,
+    texture
+) {
+
+    const count = 18;
+
+    for(let i = 0; i < count; i++) {
+
+        const material =
+            new THREE.SpriteMaterial({
+                map: texture,
+                transparent: true
+            });
+
+        const sprite =
+            new THREE.Sprite(material);
+
+
+        const roomSize = 18;
+
+        let x;
+        let y;
+        let z;
+
+
+        /* -------------------------
+           前牆
+        ------------------------- */
+
+        if(side === "front") {
+
+            x =
+                (Math.random() - .5)
+                * roomSize;
+
+            y =
+                Math.random() * 8 + .5;
+
+            z = -9;
+
+        }
+
+
+        /* -------------------------
+           後牆
+        ------------------------- */
+
+        if(side === "back") {
+
+            x =
+                (Math.random() - .5)
+                * roomSize;
+
+            y =
+                Math.random() * 8 + .5;
+
+            z = 9;
+
+        }
+
+
+        /* -------------------------
+           左牆
+        ------------------------- */
+
+        if(side === "left") {
+
+            x = -9;
+
+            y =
+                Math.random() * 8 + .5;
+
+            z =
+                (Math.random() - .5)
+                * roomSize;
+
+        }
+
+
+        /* -------------------------
+           右牆
+        ------------------------- */
+
+        if(side === "right") {
+
+            x = 9;
+
+            y =
+                Math.random() * 8 + .5;
+
+            z =
+                (Math.random() - .5)
+                * roomSize;
+
+        }
+
+
+        /* -------------------------
+           地板
+        ------------------------- */
+
+        if(side === "floor") {
+
+            x =
+                (Math.random() - .5)
+                * roomSize;
+
+            y = 0;
+
+            z =
+                (Math.random() - .5)
+                * roomSize;
+
+        }
+
+
+        /* -------------------------
+           天花板
+        ------------------------- */
+
+        if(side === "ceiling") {
+
+            x =
+                (Math.random() - .5)
+                * roomSize;
+
+            y = 10;
+
+            z =
+                (Math.random() - .5)
+                * roomSize;
+
+        }
+
+
+        sprite.position.set(
+            x,
+            y,
+            z
+        );
+
+
+        /*
+         * 每隻眼睛大小稍微不同
+         */
+
+        const scale =
+            0.7 +
+            Math.random() * 1.2;
+
+        sprite.scale.set(
+            scale,
+            scale * .65,
+            1
+        );
+
+
+        scene.add(sprite);
+
+        eyes.push(sprite);
+
+    }
+
+}
+
+
+/* =========================================
+   眼睛永遠看著玩家
+========================================= */
+
+function updateEyes() {
+
+    eyes.forEach(eye => {
+
+        eye.lookAt(
+            camera.position
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   手機滑動轉視角
+========================================= */
+
+let touching = false;
+
+let lastX = 0;
+let lastY = 0;
+
+
+function setupTouch() {
+
+    const element =
+        renderer.domElement;
+
+
+    element.addEventListener(
+        "touchstart",
+        function(event) {
+
+            touching = true;
+
+            lastX =
+                event.touches[0].clientX;
+
+            lastY =
+                event.touches[0].clientY;
+
+        },
+        { passive: false }
+    );
+
+
+    element.addEventListener(
+        "touchmove",
+        function(event) {
+
+            if(!touching) return;
+
+            event.preventDefault();
+
+            const x =
+                event.touches[0].clientX;
+
+            const y =
+                event.touches[0].clientY;
+
+
+            const dx =
+                x - lastX;
+
+            const dy =
+                y - lastY;
+
+
+            yaw -= dx * 0.004;
+
+            pitch -= dy * 0.004;
+
+
+            pitch =
+                Math.max(
+                    -1.4,
+                    Math.min(1.4, pitch)
+                );
+
+
+            lastX = x;
+            lastY = y;
+
+        },
+        { passive: false }
+    );
+
+
+    element.addEventListener(
+        "touchend",
+        function() {
+
+            touching = false;
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   手機移動按鈕
+========================================= */
+
+function setupButtons() {
+
+    document
+        .querySelectorAll(".control")
+        .forEach(button => {
+
+            const direction =
+                button.dataset.move;
+
+
+            button.addEventListener(
+                "touchstart",
+                function(event) {
+
+                    event.preventDefault();
+
+                    move[direction] = true;
+
+                }
+            );
+
+
+            button.addEventListener(
+                "touchend",
+                function(event) {
+
+                    event.preventDefault();
+
+                    move[direction] = false;
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================
+   玩家移動
+========================================= */
+
+function updatePlayer() {
+
+    const speed = 0.06;
+
+    const forwardX =
+        Math.sin(yaw);
+
+    const forwardZ =
+        Math.cos(yaw);
+
+
+    if(move.forward) {
+
+        player.x +=
+            forwardX * speed;
+
+        player.z +=
+            forwardZ * speed;
+
+    }
+
+
+    if(move.back) {
+
+        player.x -=
+            forwardX * speed;
+
+        player.z -=
+            forwardZ * speed;
+
+    }
+
+
+    if(move.left) {
+
+        player.x +=
+            forwardZ * speed;
+
+        player.z -=
+            forwardX * speed;
+
+    }
+
+
+    if(move.right) {
+
+        player.x -=
+            forwardZ * speed;
+
+        player.z +=
+            forwardX * speed;
+
+    }
+
+
+    /*
+     * 不讓玩家穿牆
+     */
+
+    player.x =
+        Math.max(
+            -8,
+            Math.min(8, player.x)
+        );
+
+    player.z =
+        Math.max(
+            -8,
+            Math.min(8, player.z)
+        );
+
+
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
+
+
+    camera.rotation.order = "YXZ";
+
+    camera.rotation.y = yaw;
+
+    camera.rotation.x = pitch;
+
+}
+
+
+/* =========================================
+   主循環
+========================================= */
+
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+    updatePlayer();
+
+    updateEyes();
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+/* =========================================
+   螢幕大小改變
+========================================= */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        if(!camera || !renderer)
+            return;
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
 #game {
     width: 100vw;
     height: 100vh;
