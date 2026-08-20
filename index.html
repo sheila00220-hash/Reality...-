@@ -13,17 +13,11 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
-
 <style>
-
-/* ==================================================
-   基本設定
-================================================== */
 
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -43,9 +37,7 @@ body {
         Arial,
         "Noto Sans TC",
         sans-serif;
-
 }
-
 
 #game {
 
@@ -54,7 +46,6 @@ body {
     width: 100vw;
 
     height: 100vh;
-
 }
 
 
@@ -85,7 +76,6 @@ body {
     z-index: 100;
 
     overflow: hidden;
-
 }
 
 
@@ -106,19 +96,10 @@ body {
         Helvetica,
         sans-serif;
 
-    /*
-       手機比例較小，
-       維持稍大的標題
-    */
-
     font-size:
         clamp(50px, 13vw, 104px);
 
     font-weight: 300;
-
-    /*
-       不額外增加字距
-    */
 
     letter-spacing: 0;
 
@@ -127,13 +108,8 @@ body {
     white-space: nowrap;
 
     color: #f5f5f5;
-
 }
 
-
-/*
-   每個字獨立控制透明度
-*/
 
 .titleLetter {
 
@@ -144,14 +120,11 @@ body {
     margin: 0;
 
     padding: 0;
-
 }
 
 
 /* ==================================================
-   內容提示
-
-   一開始就存在
+   警告
 ================================================== */
 
 .warning {
@@ -167,14 +140,11 @@ body {
     font-size: 14px;
 
     line-height: 1.8;
-
 }
 
 
 /* ==================================================
    開始按鈕
-
-   一開始就存在
 ================================================== */
 
 .startButton {
@@ -196,7 +166,6 @@ body {
     cursor: pointer;
 
     touch-action: manipulation;
-
 }
 
 
@@ -205,7 +174,6 @@ body {
     background: white;
 
     color: black;
-
 }
 
 
@@ -218,7 +186,6 @@ body {
     position: absolute;
 
     inset: 0;
-
 }
 
 
@@ -249,7 +216,6 @@ body {
     border-radius: 5px;
 
     font-size: 13px;
-
 }
 
 
@@ -270,7 +236,6 @@ body {
     height: 120px;
 
     z-index: 20;
-
 }
 
 
@@ -304,7 +269,6 @@ body {
     user-select: none;
 
     touch-action: none;
-
 }
 
 
@@ -313,7 +277,6 @@ body {
     left: 64px;
 
     top: 0;
-
 }
 
 
@@ -322,7 +285,6 @@ body {
     left: 8px;
 
     top: 58px;
-
 }
 
 
@@ -331,7 +293,6 @@ body {
     left: 64px;
 
     top: 58px;
-
 }
 
 
@@ -340,7 +301,6 @@ body {
     left: 120px;
 
     top: 58px;
-
 }
 
 </style>
@@ -349,7 +309,6 @@ body {
 
 
 <body>
-
 
 <div id="game">
 
@@ -360,20 +319,8 @@ body {
 
 <div id="title">
 
-
-    <!--
-       標題動畫只改這裡
-       警告和按鈕不會跟著消失
-    -->
-
     <h1 id="titleText"></h1>
 
-
-    <!-- ==================================================
-         警告
-
-         一開始就存在
-    ================================================== -->
 
     <div class="warning">
 
@@ -381,25 +328,21 @@ body {
             內容提示
         </p>
 
-
         <p>
             本作品包含心理恐怖、
             令人不安的聲音與視覺表現，
             以及可能引起部分玩家不適的成人向主題。
         </p>
 
-
         <p>
             部分內容可能涉及敏感議題。
         </p>
-
 
         <p>
             若你容易受到心理壓迫、
             強烈聲音或失真畫面的影響，
             請自行斟酌是否遊玩。
         </p>
-
 
         <p>
             你可以隨時離開遊戲。
@@ -408,12 +351,6 @@ body {
     </div>
 
 
-    <!-- ==================================================
-         開始按鈕
-
-         一開始就存在
-    ================================================== -->
-
     <button
         id="startButton"
         class="startButton">
@@ -421,7 +358,6 @@ body {
         開始你的旅程
 
     </button>
-
 
 </div>
 
@@ -454,7 +390,6 @@ body {
     id="controls"
     style="display:none;">
 
-
     <div
         class="control forward"
         data-direction="forward">
@@ -462,7 +397,6 @@ body {
         ↑
 
     </div>
-
 
     <div
         class="control left"
@@ -472,7 +406,6 @@ body {
 
     </div>
 
-
     <div
         class="control back"
         data-direction="back">
@@ -481,7 +414,6 @@ body {
 
     </div>
 
-
     <div
         class="control right"
         data-direction="right">
@@ -489,7 +421,6 @@ body {
         →
 
     </div>
-
 
 </div>
 
@@ -518,21 +449,6 @@ const titleText =
     );
 
 
-/*
-   每一個字分開處理
-
-   R
-   e
-   a
-   l
-   i
-   t
-   y
-   .
-   .
-   ?
-*/
-
 const titleWord =
     "Reality...?";
 
@@ -549,7 +465,6 @@ function wait(ms) {
     return new Promise(
 
         resolve =>
-
             setTimeout(
                 resolve,
                 ms
@@ -561,25 +476,22 @@ function wait(ms) {
 
 
 /* ==================================================
-   單字母漸入
+   正在出現的字
 
    1% → 100%
 
-   完全連續
+   只做漸變
    不閃爍
 ================================================== */
 
-function fadeInLetter(
-    letter
-) {
+function fadeInLetter(letter) {
 
     return new Promise(
 
         resolve => {
 
-
             const duration =
-                950;
+                700;
 
 
             const start =
@@ -587,7 +499,6 @@ function fadeInLetter(
 
 
             function animate(now) {
-
 
                 if (!titleRunning) {
 
@@ -613,18 +524,21 @@ function fadeInLetter(
 
 
                 /*
-                   平滑 easing
-
-                   不會像招牌燈一樣閃
+                   smoothstep
                 */
 
                 const eased =
-                    1 -
-                    Math.pow(
-                        1 - progress,
-                        3
+                    progress *
+                    progress *
+                    (
+                        3 -
+                        2 * progress
                     );
 
+
+                /*
+                   1% → 100%
+                */
 
                 letter.style.opacity =
                     0.01 +
@@ -669,17 +583,22 @@ function fadeInLetter(
 
 
 /* ==================================================
-   前面已出現的字
+   已完成的字
 
-   在下一個字出現時
-   才開始緩慢忽隱忽現
-
-   不是快速閃爍
+   下一個字開始出現後
+   才開始忽隱忽現
 ================================================== */
 
-function subtlePulse(
-    letter
-) {
+function startPulse(letter) {
+
+    if (
+        letter.dataset.pulsing
+    )
+        return;
+
+
+    letter.dataset.pulsing =
+        "true";
 
 
     let phase =
@@ -689,45 +608,23 @@ function subtlePulse(
 
 
     /*
-       每個字自己的節奏
+       很慢的變化
     */
 
     const speed =
-        0.008 +
+        0.006 +
         Math.random() *
-        0.004;
-
-
-    /*
-       讓忽隱忽現更明顯
-    */
-
-    const minimum =
-        0.28;
-
-
-    const maximum =
-        1;
+        0.002;
 
 
     function animate() {
 
-
-        if (!titleRunning) {
-
+        if (!titleRunning)
             return;
-
-        }
 
 
         phase += speed;
 
-
-        /*
-           sine 連續變化
-
-           不會突然跳
-        */
 
         const wave =
             (
@@ -749,13 +646,19 @@ function subtlePulse(
             );
 
 
+        /*
+           25% → 100%
+
+           比之前明顯
+           但不會突然閃
+        */
+
         const opacity =
-            minimum +
+            0.25 +
             (
-                maximum -
-                minimum
-            ) *
-            eased;
+                eased *
+                0.75
+            );
 
 
         letter.style.opacity =
@@ -777,11 +680,10 @@ function subtlePulse(
 
 
 /* ==================================================
-   標題動畫
+   主標題流程
 ================================================== */
 
 async function playTitleAnimation() {
-
 
     if (!titleRunning)
         return;
@@ -791,15 +693,12 @@ async function playTitleAnimation() {
         "";
 
 
-    /*
-       逐字建立
-    */
+    const letters = [];
+
 
     for (
         let i = 0;
-
         i < titleWord.length;
-
         i++
     ) {
 
@@ -807,6 +706,10 @@ async function playTitleAnimation() {
         if (!titleRunning)
             return;
 
+
+        /*
+           建立字母
+        */
 
         const letter =
             document.createElement(
@@ -831,10 +734,15 @@ async function playTitleAnimation() {
         );
 
 
-        /*
-           新字自己慢慢出現
+        letters.push(
+            letter
+        );
 
-           1% → 100%
+
+        /*
+           目前字母：
+
+           1 → 100%
         */
 
         await fadeInLetter(
@@ -847,64 +755,34 @@ async function playTitleAnimation() {
 
 
         /*
-           下一個字出現之前
-           留一點停頓
+           字母完成後
+           停頓
         */
 
         await wait(
-            650
+            450
         );
 
 
-        /*
-           下一個字開始出現時
+        if (!titleRunning)
+            return;
 
-           前面的字才開始
-           緩慢忽隱忽現
+
+        /*
+           下一個字開始前：
+
+           前面所有字
+           開始進入忽隱忽現
         */
 
-        if (
-            i >= 0 &&
-            i <
-            titleWord.length - 1
+        for (
+            let j = 0;
+            j < letters.length;
+            j++
         ) {
 
-            const previousLetters =
-                titleText.querySelectorAll(
-                    ".titleLetter"
-                );
-
-
-            previousLetters.forEach(
-
-                function(
-                    previousLetter,
-                    index
-                ) {
-
-
-                    if (
-                        index <= i &&
-                        !previousLetter
-                            .dataset
-                            .pulsing
-                    ) {
-
-
-                        previousLetter
-                            .dataset
-                            .pulsing =
-                            "true";
-
-
-                        subtlePulse(
-                            previousLetter
-                        );
-
-                    }
-
-                }
-
+            startPulse(
+                letters[j]
             );
 
         }
@@ -913,8 +791,7 @@ async function playTitleAnimation() {
 
 
     /*
-       Reality...?
-       完整出現後停留
+       完整標題停留
     */
 
     await wait(
@@ -927,26 +804,16 @@ async function playTitleAnimation() {
 
 
     /*
-       整個標題直接消失
+       只讓標題消失
 
-       注意：
-
-       這裡只清空 titleText
-
-       warning 和 button
-       完全不會消失
+       警告與按鈕仍然存在
     */
 
     titleText.innerHTML =
         "";
 
-
 }
 
-
-/*
-   開始動畫
-*/
 
 playTitleAnimation();
 
@@ -968,10 +835,6 @@ let started = false;
 
 /* ==================================================
    房間尺寸
-
-   寬 14
-   深 14
-   高 10
 ================================================== */
 
 const ROOM_WIDTH = 14;
@@ -1026,18 +889,16 @@ const movement = {
 ================================================== */
 
 document
-    .getElementById("startButton")
+    .getElementById(
+        "startButton"
+    )
     .addEventListener(
-
         "click",
-
         startGame
-
     );
 
 
 function startGame() {
-
 
     if (started)
         return;
@@ -1046,39 +907,29 @@ function startGame() {
     started = true;
 
 
-    /*
-       停止標題動畫
-    */
-
     titleRunning = false;
 
 
-    /*
-       這裡才整個關掉開始頁
-
-       所以在玩家按下開始之前：
-
-       警告 ✓
-       按鈕 ✓
-       標題 ✓
-
-       全部都在
-    */
-
     document
-        .getElementById("title")
+        .getElementById(
+            "title"
+        )
         .style.display =
         "none";
 
 
     document
-        .getElementById("hint")
+        .getElementById(
+            "hint"
+        )
         .style.display =
         "block";
 
 
     document
-        .getElementById("controls")
+        .getElementById(
+            "controls"
+        )
         .style.display =
         "block";
 
@@ -1094,7 +945,6 @@ function startGame() {
 ================================================== */
 
 function createWorld() {
-
 
     scene =
         new THREE.Scene();
@@ -1193,7 +1043,9 @@ function createWorld() {
         );
 
 
-    scene.add(ambient);
+    scene.add(
+        ambient
+    );
 
 
     /* =========================
@@ -1224,14 +1076,11 @@ function createWorld() {
 
 function createRoom() {
 
-
     const W =
         ROOM_WIDTH;
 
-
     const H =
         ROOM_HEIGHT;
-
 
     const D =
         ROOM_DEPTH;
@@ -1248,7 +1097,6 @@ function createRoom() {
             new THREE.PlaneGeometry(
 
                 W,
-
                 D
 
             ),
@@ -1274,7 +1122,9 @@ function createRoom() {
         0;
 
 
-    scene.add(floor);
+    scene.add(
+        floor
+    );
 
 
 
@@ -1288,7 +1138,6 @@ function createRoom() {
             new THREE.PlaneGeometry(
 
                 W,
-
                 D
 
             ),
@@ -1314,7 +1163,9 @@ function createRoom() {
         H;
 
 
-    scene.add(ceiling);
+    scene.add(
+        ceiling
+    );
 
 
 
@@ -1326,9 +1177,7 @@ function createRoom() {
         createWall(
 
             W,
-
             H,
-
             0xc2c2c2
 
         );
@@ -1337,15 +1186,15 @@ function createRoom() {
     front.position.set(
 
         0,
-
         H / 2,
-
         -D / 2
 
     );
 
 
-    scene.add(front);
+    scene.add(
+        front
+    );
 
 
 
@@ -1357,9 +1206,7 @@ function createRoom() {
         createWall(
 
             W,
-
             H,
-
             0xb7b7b7
 
         );
@@ -1368,15 +1215,15 @@ function createRoom() {
     back.position.set(
 
         0,
-
         H / 2,
-
         D / 2
 
     );
 
 
-    scene.add(back);
+    scene.add(
+        back
+    );
 
 
 
@@ -1388,9 +1235,7 @@ function createRoom() {
         createWall(
 
             D,
-
             H,
-
             0xaeaeae
 
         );
@@ -1403,15 +1248,15 @@ function createRoom() {
     left.position.set(
 
         -W / 2,
-
         H / 2,
-
         0
 
     );
 
 
-    scene.add(left);
+    scene.add(
+        left
+    );
 
 
 
@@ -1423,9 +1268,7 @@ function createRoom() {
         createWall(
 
             D,
-
             H,
-
             0xa6a6a6
 
         );
@@ -1438,15 +1281,15 @@ function createRoom() {
     right.position.set(
 
         W / 2,
-
         H / 2,
-
         0
 
     );
 
 
-    scene.add(right);
+    scene.add(
+        right
+    );
 
 
 
@@ -1457,9 +1300,7 @@ function createRoom() {
     createRoomEdges(
 
         W,
-
         H,
-
         D
 
     );
@@ -1475,20 +1316,16 @@ function createRoom() {
 function createWall(
 
     width,
-
     height,
-
     color
 
 ) {
-
 
     return new THREE.Mesh(
 
         new THREE.PlaneGeometry(
 
             width,
-
             height
 
         ),
@@ -1510,27 +1347,22 @@ function createWall(
 
 
 /* ==================================================
-   建立房間邊界線
+   房間邊界線
 ================================================== */
 
 function createRoomEdges(
 
     W,
-
     H,
-
     D
 
 ) {
-
 
     const geometry =
         new THREE.BoxGeometry(
 
             W,
-
             H,
-
             D
 
         );
@@ -1573,7 +1405,9 @@ function createRoomEdges(
         H / 2;
 
 
-    scene.add(lines);
+    scene.add(
+        lines
+    );
 
 }
 
@@ -1584,7 +1418,6 @@ function createRoomEdges(
 ================================================== */
 
 function updatePlayer() {
-
 
     if (!camera)
         return;
@@ -1608,19 +1441,13 @@ function updatePlayer() {
 
 
 
-    /* =========================
-       前
-    ========================= */
-
     if (
         movement.forward
     ) {
 
-
         dx +=
             forwardX *
             speed;
-
 
         dz +=
             forwardZ *
@@ -1629,20 +1456,14 @@ function updatePlayer() {
     }
 
 
-
-    /* =========================
-       後
-    ========================= */
 
     if (
         movement.back
     ) {
 
-
         dx -=
             forwardX *
             speed;
-
 
         dz -=
             forwardZ *
@@ -1652,19 +1473,13 @@ function updatePlayer() {
 
 
 
-    /* =========================
-       左
-    ========================= */
-
     if (
         movement.left
     ) {
 
-
         dx -=
             Math.cos(yaw) *
             speed;
-
 
         dz -=
             Math.sin(yaw) *
@@ -1674,19 +1489,13 @@ function updatePlayer() {
 
 
 
-    /* =========================
-       右
-    ========================= */
-
     if (
         movement.right
     ) {
 
-
         dx +=
             Math.cos(yaw) *
             speed;
-
 
         dz +=
             Math.sin(yaw) *
@@ -1695,12 +1504,6 @@ function updatePlayer() {
     }
 
 
-
-    /* =========================
-       房間邊界
-
-       牆在 ±7
-    ========================= */
 
     const limitX =
         ROOM_WIDTH / 2 -
@@ -1731,7 +1534,6 @@ function updatePlayer() {
         limitX
     ) {
 
-
         player.x =
             nextX;
 
@@ -1747,17 +1549,12 @@ function updatePlayer() {
         limitZ
     ) {
 
-
         player.z =
             nextZ;
 
     }
 
 
-
-    /* =========================
-       相機
-    ========================= */
 
     camera.position.set(
 
@@ -1798,10 +1595,8 @@ let lastY = 0;
 
 function setupTouch() {
 
-
     const canvas =
         renderer.domElement;
-
 
 
     canvas.addEventListener(
@@ -1810,29 +1605,23 @@ function setupTouch() {
 
         function(event) {
 
-
             touching = true;
-
 
             lastX =
                 event.touches[0]
                 .clientX;
 
-
             lastY =
                 event.touches[0]
                 .clientY;
 
-
         },
 
         {
-            passive:
-                false
+            passive: false
         }
 
     );
-
 
 
     canvas.addEventListener(
@@ -1840,7 +1629,6 @@ function setupTouch() {
         "touchmove",
 
         function(event) {
-
 
             if (!touching)
                 return;
@@ -1859,7 +1647,6 @@ function setupTouch() {
                 .clientY;
 
 
-
             const dx =
                 x -
                 lastX;
@@ -1870,7 +1657,6 @@ function setupTouch() {
                 lastY;
 
 
-
             yaw -=
                 dx *
                 0.004;
@@ -1879,7 +1665,6 @@ function setupTouch() {
             pitch -=
                 dy *
                 0.004;
-
 
 
             pitch =
@@ -1898,7 +1683,6 @@ function setupTouch() {
                 );
 
 
-
             lastX =
                 x;
 
@@ -1909,12 +1693,10 @@ function setupTouch() {
         },
 
         {
-            passive:
-                false
+            passive: false
         }
 
     );
-
 
 
     canvas.addEventListener(
@@ -1940,26 +1722,21 @@ function setupTouch() {
 
 function setupButtons() {
 
-
     const buttons =
         document.querySelectorAll(
             ".control"
         );
 
 
-
     buttons.forEach(
 
         function(button) {
-
 
             const direction =
                 button.dataset.direction;
 
 
-
             function press(event) {
-
 
                 event.preventDefault();
 
@@ -1973,7 +1750,6 @@ function setupButtons() {
                     button.setPointerCapture
                 ) {
 
-
                     button.setPointerCapture(
 
                         event.pointerId
@@ -1985,9 +1761,7 @@ function setupButtons() {
             }
 
 
-
             function release(event) {
-
 
                 event.preventDefault();
 
@@ -1999,35 +1773,22 @@ function setupButtons() {
             }
 
 
-
             button.addEventListener(
-
                 "pointerdown",
-
                 press
-
             );
 
 
-
             button.addEventListener(
-
                 "pointerup",
-
                 release
-
             );
-
 
 
             button.addEventListener(
-
                 "pointercancel",
-
                 release
-
             );
-
 
 
             button.addEventListener(
@@ -2036,11 +1797,9 @@ function setupButtons() {
 
                 function(event) {
 
-
                     if (
                         event.buttons === 0
                     ) {
-
 
                         movement[
                             direction
@@ -2066,16 +1825,12 @@ function setupButtons() {
 
 function animate() {
 
-
     requestAnimationFrame(
-
         animate
-
     );
 
 
     if (started) {
-
 
         updatePlayer();
 
@@ -2084,11 +1839,9 @@ function animate() {
 
     if (renderer) {
 
-
         renderer.render(
 
             scene,
-
             camera
 
         );
@@ -2109,7 +1862,6 @@ window.addEventListener(
 
     function() {
 
-
         if (
             !camera ||
             !renderer
@@ -2117,15 +1869,12 @@ window.addEventListener(
             return;
 
 
-
         camera.aspect =
             window.innerWidth /
             window.innerHeight;
 
 
-
         camera.updateProjectionMatrix();
-
 
 
         renderer.setSize(
@@ -2141,7 +1890,6 @@ window.addEventListener(
 );
 
 </script>
-
 
 </body>
 
