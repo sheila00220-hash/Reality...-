@@ -47,12 +47,21 @@ body {
         Helvetica,
         sans-serif;
 
+    /*
+       比上一版小一點
+       避免手機畫面超出
+    */
+
     font-size:
-        clamp(60px, 15vw, 130px);
+        clamp(42px, 11vw, 90px);
 
     font-weight: 300;
 
-    letter-spacing: 10px;
+    /*
+       字距收窄
+    */
+
+    letter-spacing: 5px;
 
     white-space: nowrap;
 
@@ -112,11 +121,11 @@ function wait(ms) {
 
 
 /* ==================================================
-   新字：
+   新字顯現
 
    1% → 100%
 
-   完全不閃
+   顯現期間完全不閃
 ================================================== */
 
 function revealLetter(letter) {
@@ -149,13 +158,14 @@ function revealLetter(letter) {
 
 
                 /*
-                   新字只做：
+                   新字：
 
                    1%
                    ↓
                    100%
 
-                   不會回頭
+                   只增加
+                   不倒退
                 */
 
                 letter.style.opacity =
@@ -202,7 +212,13 @@ function revealLetter(letter) {
 /* ==================================================
    單字母獨立漸變
 
-   這次故意加大幅度
+   每個字：
+
+   不同步
+   不跳動
+   不閃爍
+
+   只是慢慢改變透明度
 ================================================== */
 
 function startLetterFade(letter) {
@@ -210,8 +226,6 @@ function startLetterFade(letter) {
 
     /*
        每個字自己的速度
-
-       比上一版快一些
     */
 
     const speed =
@@ -223,8 +237,6 @@ function startLetterFade(letter) {
        每個字自己的最低透明度
 
        15% ～ 35%
-
-       這樣會非常明顯
     */
 
     const minimum =
@@ -233,9 +245,9 @@ function startLetterFade(letter) {
 
 
     /*
-       最高透明度
+       每個字自己的最高透明度
 
-       保留一點自然感
+       95% ～ 100%
     */
 
     const maximum =
@@ -246,7 +258,7 @@ function startLetterFade(letter) {
     /*
        每個字自己的起始位置
 
-       所以不會同步
+       所以不會完全同步
     */
 
     let phase =
@@ -260,7 +272,8 @@ function startLetterFade(letter) {
 
 
         /*
-           被刪除就停止
+           如果字已經被刪除
+           就停止動畫
         */
 
         if (
@@ -273,16 +286,16 @@ function startLetterFade(letter) {
 
 
         /*
-           每一幀前進
+           每個字自己前進
 
-           每個字自己的速度
+           速度不同
         */
 
         phase += speed;
 
 
         /*
-           連續波形
+           平滑曲線
 
            不會突然跳
         */
@@ -295,8 +308,13 @@ function startLetterFade(letter) {
 
 
         /*
-           在自己的範圍內
-           慢慢變化
+           透明度
+
+           最低：
+           約 15% ～ 35%
+
+           最高：
+           約 95% ～ 100%
         */
 
         const opacity =
@@ -334,7 +352,7 @@ async function start() {
 
 
     /*
-       黑屏
+       開始黑屏
     */
 
     await wait(
@@ -382,7 +400,7 @@ async function start() {
 
 
         /*
-           新字從 1%
+           新字從 1% 開始
         */
 
         letter.style.opacity =
@@ -417,6 +435,10 @@ async function start() {
         ) {
 
 
+            /*
+               每個舊字只啟動一次
+            */
+
             if (
                 !letters[j]
                     .dataset
@@ -442,7 +464,7 @@ async function start() {
 
         /*
            ==========================================
-           新字：
+           新字顯現
 
            1% → 100%
            ==========================================
@@ -456,7 +478,7 @@ async function start() {
 
         /*
            ==========================================
-           停頓
+           字與字之間停頓
            ==========================================
         */
 
@@ -469,8 +491,9 @@ async function start() {
 
 
     /*
-       最後一個字也加入
-       自己的漸變
+       ==========================================
+       最後一個字也開始獨立漸變
+       ==========================================
     */
 
     const finalLetters =
@@ -500,7 +523,7 @@ async function start() {
 
     /*
        ==========================================
-       完整停留
+       Reality...? 完整停留
        ==========================================
     */
 
@@ -512,7 +535,7 @@ async function start() {
 
     /*
        ==========================================
-       整體瞬間消失
+       整個標題瞬間消失
        ==========================================
     */
 
@@ -532,7 +555,9 @@ async function start() {
 
 
     /*
+       ==========================================
        重新開始
+       ==========================================
     */
 
     start();
