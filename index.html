@@ -17,8 +17,13 @@ user-scalable=no">
 <style>
 
 /* ==================================================
-   基本
+   基本設定
 ================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
 
 html,
 body {
@@ -30,29 +35,54 @@ body {
 
     overflow: hidden;
 
-    background: black;
+    background: #777;
 
     touch-action: none;
 
-    user-select: none;
+    font-family:
+        Arial,
+        "Noto Sans TC",
+        sans-serif;
+
+}
+
+
+#game {
+
+    position: relative;
+
+    width: 100vw;
+
+    height: 100vh;
 
 }
 
 
 /* ==================================================
-   所有頁面
+   開始畫面
 ================================================== */
 
-.page {
+#title {
 
     position: absolute;
 
     inset: 0;
 
-    width: 100%;
-    height: 100%;
+    background: #000;
 
-    display: none;
+    color: #fff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    z-index: 100;
 
     overflow: hidden;
 
@@ -60,33 +90,16 @@ body {
 
 
 /* ==================================================
-   開場頁
+   標題
 ================================================== */
 
-#intro {
+#title h1 {
 
-    display: flex;
+    margin: 0;
 
-    align-items: center;
+    width: 95%;
 
-    justify-content: center;
-
-    background: black;
-
-}
-
-
-#introText {
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    color: white;
+    text-align: center;
 
     font-family:
         Arial,
@@ -94,7 +107,8 @@ body {
         sans-serif;
 
     /*
-       稍微放大
+       手機比例較小，
+       維持稍大的標題
     */
 
     font-size:
@@ -108,348 +122,224 @@ body {
 
     letter-spacing: 0;
 
+    line-height: 1;
+
     white-space: nowrap;
 
-}
-
-
-.introLetter {
-
-    display: inline-block;
-
-    opacity: 0;
-
-}
-
-
-/* ==================================================
-   主頁
-================================================== */
-
-#menu {
-
-    background: black;
-
-    color: white;
-
-    align-items: center;
-
-    justify-content: center;
-
-    flex-direction: column;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-}
-
-
-#menuTitle {
-
-    font-size:
-        clamp(36px, 10vw, 72px);
-
-    font-weight: 300;
-
-    margin-bottom:
-        55px;
-
-}
-
-
-#startButton {
-
-    background: transparent;
-
-    border: 1px solid rgba(
-        255,
-        255,
-        255,
-        0.65
-    );
-
-    color: white;
-
-    padding:
-        15px 48px;
-
-    font-size:
-        18px;
-
-    font-weight: 300;
-
-    letter-spacing:
-        3px;
-
-    border-radius:
-        2px;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-}
-
-
-/* ==================================================
-   房間
-================================================== */
-
-#room {
-
-    background:
-        rgb(112, 112, 112);
+    color: #f5f5f5;
 
 }
 
 
 /*
-   房間本體
-
-   偏長方形比例
+   每個字獨立控制透明度
 */
 
-#roomSpace {
+.titleLetter {
 
-    position: absolute;
+    display: inline-block;
 
-    left: 50%;
-    top: 50%;
+    opacity: 0;
 
-    width: 720px;
+    margin: 0;
 
-    height: 520px;
-
-    transform:
-        translate(-50%, -50%);
-
-    border:
-        3px solid
-        rgba(
-            20,
-            20,
-            20,
-            0.85
-        );
-
-    background:
-        rgb(128, 128, 128);
-
-    box-sizing:
-        border-box;
+    padding: 0;
 
 }
 
 
 /* ==================================================
-   房間四條邊
+   內容提示
+
+   一開始就存在
 ================================================== */
 
-.wall {
+.warning {
 
-    position: absolute;
+    width: 88%;
 
-    background:
-        rgba(
-            25,
-            25,
-            25,
-            0.8
-        );
+    max-width: 600px;
 
-}
+    margin-top: 55px;
 
+    color: #cfcfcf;
 
-.wall.top {
+    font-size: 14px;
 
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 3px;
-
-}
-
-
-.wall.bottom {
-
-    left: 0;
-    bottom: 0;
-
-    width: 100%;
-    height: 3px;
-
-}
-
-
-.wall.left {
-
-    left: 0;
-    top: 0;
-
-    width: 3px;
-    height: 100%;
-
-}
-
-
-.wall.right {
-
-    right: 0;
-    top: 0;
-
-    width: 3px;
-    height: 100%;
+    line-height: 1.8;
 
 }
 
 
 /* ==================================================
-   玩家
+   開始按鈕
+
+   一開始就存在
 ================================================== */
 
-#player {
+.startButton {
 
-    position: absolute;
+    margin-top: 25px;
 
-    width: 22px;
-    height: 22px;
+    padding: 14px 30px;
 
-    border-radius: 50%;
+    background: transparent;
 
-    background:
-        white;
+    border: 1px solid #aaa;
 
-    box-shadow:
-        0 0 12px
-        rgba(
-            255,
-            255,
-            255,
-            0.55
-        );
+    color: white;
 
-    left: 50%;
-    top: 50%;
+    font-size: 17px;
 
-    transform:
-        translate(
-            -50%,
-            -50%
-        );
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+}
+
+
+.startButton:active {
+
+    background: white;
+
+    color: black;
 
 }
 
 
 /* ==================================================
-   虛擬搖桿
+   3D 房間
 ================================================== */
 
-#joystick {
+#threeContainer {
 
     position: absolute;
 
-    left: 25px;
-    bottom: 25px;
-
-    width: 130px;
-    height: 130px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            0,
-            0,
-            0,
-            0.20
-        );
-
-    border:
-        2px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.30
-        );
-
-}
-
-
-#stick {
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 58px;
-    height: 58px;
-
-    transform:
-        translate(
-            -50%,
-            -50%
-        );
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.35
-        );
-
-    border:
-        2px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.45
-        );
+    inset: 0;
 
 }
 
 
 /* ==================================================
-   房間提示
+   提示
 ================================================== */
 
-#roomHint {
+#hint {
 
     position: absolute;
 
-    top: 20px;
+    top: 15px;
+
     left: 50%;
 
     transform:
         translateX(-50%);
 
-    color:
-        rgba(
-            255,
-            255,
-            255,
-            0.45
-        );
+    z-index: 20;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    color: white;
 
-    font-size:
-        13px;
+    background:
+        rgba(0,0,0,.35);
 
-    pointer-events:
-        none;
+    padding: 7px 12px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+}
+
+
+/* ==================================================
+   手機控制
+================================================== */
+
+#controls {
+
+    position: absolute;
+
+    left: 15px;
+
+    bottom: 20px;
+
+    width: 180px;
+
+    height: 120px;
+
+    z-index: 20;
+
+}
+
+
+.control {
+
+    position: absolute;
+
+    width: 52px;
+
+    height: 52px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: white;
+
+    background:
+        rgba(0,0,0,.35);
+
+    border:
+        1px solid
+        rgba(255,255,255,.5);
+
+    border-radius: 8px;
+
+    font-size: 24px;
+
+    user-select: none;
+
+    touch-action: none;
+
+}
+
+
+.forward {
+
+    left: 64px;
+
+    top: 0;
+
+}
+
+
+.left {
+
+    left: 8px;
+
+    top: 58px;
+
+}
+
+
+.back {
+
+    left: 64px;
+
+    top: 58px;
+
+}
+
+
+.right {
+
+    left: 120px;
+
+    top: 58px;
 
 }
 
@@ -461,137 +351,193 @@ body {
 <body>
 
 
-<!-- ==================================================
-     Reality...? 開場
-================================================== -->
-
-<div
-    id="intro"
-    class="page"
->
-
-    <div id="introText"></div>
-
-</div>
-
+<div id="game">
 
 
 <!-- ==================================================
-     主頁
+     開始畫面
 ================================================== -->
 
-<div
-    id="menu"
-    class="page"
->
+<div id="title">
 
-    <div id="menuTitle">
-        Reality...?
+
+    <!--
+       標題動畫只改這裡
+       警告和按鈕不會跟著消失
+    -->
+
+    <h1 id="titleText"></h1>
+
+
+    <!-- ==================================================
+         警告
+
+         一開始就存在
+    ================================================== -->
+
+    <div class="warning">
+
+        <p>
+            內容提示
+        </p>
+
+
+        <p>
+            本作品包含心理恐怖、
+            令人不安的聲音與視覺表現，
+            以及可能引起部分玩家不適的成人向主題。
+        </p>
+
+
+        <p>
+            部分內容可能涉及敏感議題。
+        </p>
+
+
+        <p>
+            若你容易受到心理壓迫、
+            強烈聲音或失真畫面的影響，
+            請自行斟酌是否遊玩。
+        </p>
+
+
+        <p>
+            你可以隨時離開遊戲。
+        </p>
+
     </div>
 
+
+    <!-- ==================================================
+         開始按鈕
+
+         一開始就存在
+    ================================================== -->
 
     <button
         id="startButton"
-    >
-        START
+        class="startButton">
+
+        開始你的旅程
+
     </button>
 
-</div>
 
+</div>
 
 
 <!-- ==================================================
-     房間
+     3D 房間
+================================================== -->
+
+<div id="threeContainer"></div>
+
+
+<!-- ==================================================
+     提示
 ================================================== -->
 
 <div
-    id="room"
-    class="page"
->
+    id="hint"
+    style="display:none;">
+
+    滑動畫面轉動視角
+
+</div>
 
 
-    <div id="roomSpace">
+<!-- ==================================================
+     移動控制
+================================================== -->
+
+<div
+    id="controls"
+    style="display:none;">
 
 
-        <div
-            class="wall top"
-        ></div>
+    <div
+        class="control forward"
+        data-direction="forward">
 
-
-        <div
-            class="wall bottom"
-        ></div>
-
-
-        <div
-            class="wall left"
-        ></div>
-
-
-        <div
-            class="wall right"
-        ></div>
-
-
-        <div id="player"></div>
-
+        ↑
 
     </div>
 
 
-    <div id="roomHint">
-        Chapter 1
+    <div
+        class="control left"
+        data-direction="left">
+
+        ←
+
     </div>
 
 
-    <div id="joystick">
+    <div
+        class="control back"
+        data-direction="back">
 
-        <div id="stick"></div>
+        ↓
+
+    </div>
+
+
+    <div
+        class="control right"
+        data-direction="right">
+
+        →
 
     </div>
 
 
 </div>
 
+
+</div>
+
+
+<!-- ==================================================
+     Three.js
+================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
+</script>
 
 
 <script>
 
 
 /* ==================================================
-   頁面
+   Reality...? 標題動畫
 ================================================== */
 
-const intro =
+const titleText =
     document.getElementById(
-        "intro"
+        "titleText"
     );
 
 
-const menu =
-    document.getElementById(
-        "menu"
-    );
+/*
+   每一個字分開處理
 
+   R
+   e
+   a
+   l
+   i
+   t
+   y
+   .
+   .
+   ?
+*/
 
-const room =
-    document.getElementById(
-        "room"
-    );
-
-
-/* ==================================================
-   開場文字
-================================================== */
-
-const introText =
-    document.getElementById(
-        "introText"
-    );
-
-
-const introWord =
+const titleWord =
     "Reality...?";
+
+
+let titleRunning = true;
 
 
 /* ==================================================
@@ -601,41 +547,55 @@ const introWord =
 function wait(ms) {
 
     return new Promise(
+
         resolve =>
+
             setTimeout(
                 resolve,
                 ms
             )
+
     );
 
 }
 
 
 /* ==================================================
-   新字顯現
+   單字母漸入
 
    1% → 100%
+
+   完全連續
+   不閃爍
 ================================================== */
 
-function revealIntroLetter(
+function fadeInLetter(
     letter
 ) {
 
     return new Promise(
+
         resolve => {
 
 
             const duration =
-                1200;
+                950;
 
 
             const start =
                 performance.now();
 
 
-            function animate(
-                now
-            ) {
+            function animate(now) {
+
+
+                if (!titleRunning) {
+
+                    resolve();
+
+                    return;
+
+                }
 
 
                 const progress =
@@ -652,11 +612,25 @@ function revealIntroLetter(
                     );
 
 
+                /*
+                   平滑 easing
+
+                   不會像招牌燈一樣閃
+                */
+
+                const eased =
+                    1 -
+                    Math.pow(
+                        1 - progress,
+                        3
+                    );
+
+
                 letter.style.opacity =
                     0.01 +
                     (
                         0.99 *
-                        progress
+                        eased
                     );
 
 
@@ -675,6 +649,7 @@ function revealIntroLetter(
                     letter.style.opacity =
                         "1";
 
+
                     resolve();
 
                 }
@@ -687,36 +662,24 @@ function revealIntroLetter(
             );
 
         }
+
     );
 
 }
 
 
 /* ==================================================
-   舊字獨立漸變
+   前面已出現的字
+
+   在下一個字出現時
+   才開始緩慢忽隱忽現
+
+   不是快速閃爍
 ================================================== */
 
-function startLetterFade(
+function subtlePulse(
     letter
 ) {
-
-
-    const speed =
-        0.0015 +
-        Math.random() *
-        0.002;
-
-
-    const minimum =
-        0.15 +
-        Math.random() *
-        0.20;
-
-
-    const maximum =
-        0.95 +
-        Math.random() *
-        0.05;
 
 
     let phase =
@@ -725,12 +688,32 @@ function startLetterFade(
         2;
 
 
+    /*
+       每個字自己的節奏
+    */
+
+    const speed =
+        0.008 +
+        Math.random() *
+        0.004;
+
+
+    /*
+       讓忽隱忽現更明顯
+    */
+
+    const minimum =
+        0.28;
+
+
+    const maximum =
+        1;
+
+
     function animate() {
 
 
-        if (
-            !letter.isConnected
-        ) {
+        if (!titleRunning) {
 
             return;
 
@@ -740,13 +723,30 @@ function startLetterFade(
         phase += speed;
 
 
+        /*
+           sine 連續變化
+
+           不會突然跳
+        */
+
         const wave =
             (
-                Math.sin(
-                    phase
-                ) +
-                1
+                Math.sin(phase)
+                + 1
             ) / 2;
+
+
+        /*
+           平滑曲線
+        */
+
+        const eased =
+            wave *
+            wave *
+            (
+                3 -
+                2 * wave
+            );
 
 
         const opacity =
@@ -755,7 +755,7 @@ function startLetterFade(
                 maximum -
                 minimum
             ) *
-            wave;
+            eased;
 
 
         letter.style.opacity =
@@ -777,36 +777,35 @@ function startLetterFade(
 
 
 /* ==================================================
-   開場動畫
+   標題動畫
 ================================================== */
 
-async function playIntro() {
+async function playTitleAnimation() {
 
 
-    intro.style.display =
-        "flex";
+    if (!titleRunning)
+        return;
 
 
-    menu.style.display =
-        "none";
-
-
-    room.style.display =
-        "none";
-
-
-    introText.innerHTML =
+    titleText.innerHTML =
         "";
 
+
+    /*
+       逐字建立
+    */
 
     for (
         let i = 0;
 
-        i <
-        introWord.length;
+        i < titleWord.length;
 
         i++
     ) {
+
+
+        if (!titleRunning)
+            return;
 
 
         const letter =
@@ -816,579 +815,1333 @@ async function playIntro() {
 
 
         letter.className =
-            "introLetter";
+            "titleLetter";
 
 
         letter.textContent =
-            introWord[i];
+            titleWord[i];
 
 
         letter.style.opacity =
             "0.01";
 
 
-        introText.appendChild(
+        titleText.appendChild(
             letter
         );
 
 
         /*
-           舊字開始漸變
-        */
-
-        const oldLetters =
-            introText.querySelectorAll(
-                ".introLetter"
-            );
-
-
-        for (
-            let j = 0;
-
-            j <
-            oldLetters.length - 1;
-
-            j++
-        ) {
-
-
-            if (
-                !oldLetters[j]
-                    .dataset
-                    .fading
-            ) {
-
-
-                oldLetters[j]
-                    .dataset
-                    .fading =
-                    "true";
-
-
-                startLetterFade(
-                    oldLetters[j]
-                );
-
-            }
-
-        }
-
-
-        /*
-           新字：
+           新字自己慢慢出現
 
            1% → 100%
         */
 
-        await revealIntroLetter(
+        await fadeInLetter(
             letter
         );
 
 
+        if (!titleRunning)
+            return;
+
+
         /*
-           字與字之間停頓
+           下一個字出現之前
+           留一點停頓
         */
 
         await wait(
-            1200
+            650
         );
+
+
+        /*
+           下一個字開始出現時
+
+           前面的字才開始
+           緩慢忽隱忽現
+        */
+
+        if (
+            i >= 0 &&
+            i <
+            titleWord.length - 1
+        ) {
+
+            const previousLetters =
+                titleText.querySelectorAll(
+                    ".titleLetter"
+                );
+
+
+            previousLetters.forEach(
+
+                function(
+                    previousLetter,
+                    index
+                ) {
+
+
+                    if (
+                        index <= i &&
+                        !previousLetter
+                            .dataset
+                            .pulsing
+                    ) {
+
+
+                        previousLetter
+                            .dataset
+                            .pulsing =
+                            "true";
+
+
+                        subtlePulse(
+                            previousLetter
+                        );
+
+                    }
+
+                }
+
+            );
+
+        }
 
     }
 
 
     /*
-       完整標題停留
+       Reality...?
+       完整出現後停留
     */
 
     await wait(
-        4000
+        3500
     );
 
 
+    if (!titleRunning)
+        return;
+
+
     /*
-       整個標題消失
+       整個標題直接消失
+
+       注意：
+
+       這裡只清空 titleText
+
+       warning 和 button
+       完全不會消失
     */
 
-    introText.innerHTML =
+    titleText.innerHTML =
         "";
 
 
-    await wait(
-        1200
-    );
-
-
-    /*
-       進入主頁
-    */
-
-    showMenu();
-
 }
 
 
-/* ==================================================
-   主頁
-================================================== */
+/*
+   開始動畫
+*/
 
-function showMenu() {
+playTitleAnimation();
 
-    intro.style.display =
-        "none";
-
-
-    room.style.display =
-        "none";
-
-
-    menu.style.display =
-        "flex";
-
-}
 
 
 /* ==================================================
-   房間
+   Three.js 變數
 ================================================== */
 
-function showRoom() {
+let scene = null;
 
-    intro.style.display =
-        "none";
+let camera = null;
 
+let renderer = null;
 
-    menu.style.display =
-        "none";
+let started = false;
 
-
-    room.style.display =
-        "block";
-
-
-    resetPlayer();
-
-}
 
 
 /* ==================================================
-   開始按鈕
+   房間尺寸
+
+   寬 14
+   深 14
+   高 10
 ================================================== */
 
-document
-    .getElementById(
-        "startButton"
-    )
-    .addEventListener(
-        "click",
-        showRoom
-    );
+const ROOM_WIDTH = 14;
+
+const ROOM_DEPTH = 14;
+
+const ROOM_HEIGHT = 10;
+
 
 
 /* ==================================================
    玩家
 ================================================== */
 
-const player =
-    document.getElementById(
-        "player"
+const player = {
+
+    x: 0,
+
+    y: 2,
+
+    z: 4
+
+};
+
+
+let yaw = 0;
+
+let pitch = 0;
+
+
+
+/* ==================================================
+   移動狀態
+================================================== */
+
+const movement = {
+
+    forward: false,
+
+    back: false,
+
+    left: false,
+
+    right: false
+
+};
+
+
+
+/* ==================================================
+   開始遊戲
+================================================== */
+
+document
+    .getElementById("startButton")
+    .addEventListener(
+
+        "click",
+
+        startGame
+
     );
 
 
-const roomSpace =
-    document.getElementById(
-        "roomSpace"
-    );
+function startGame() {
 
 
-let playerX =
-    360;
+    if (started)
+        return;
 
 
-let playerY =
-    260;
+    started = true;
 
 
-function resetPlayer() {
+    /*
+       停止標題動畫
+    */
 
-    playerX =
-        roomSpace.clientWidth / 2;
-
-
-    playerY =
-        roomSpace.clientHeight / 2;
+    titleRunning = false;
 
 
-    updatePlayer();
+    /*
+       這裡才整個關掉開始頁
+
+       所以在玩家按下開始之前：
+
+       警告 ✓
+       按鈕 ✓
+       標題 ✓
+
+       全部都在
+    */
+
+    document
+        .getElementById("title")
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById("hint")
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById("controls")
+        .style.display =
+        "block";
+
+
+    createWorld();
 
 }
 
 
-function updatePlayer() {
 
-    player.style.left =
-        playerX + "px";
+/* ==================================================
+   建立 3D 世界
+================================================== */
+
+function createWorld() {
 
 
-    player.style.top =
-        playerY + "px";
+    scene =
+        new THREE.Scene();
+
+
+    scene.background =
+        new THREE.Color(
+            0xb0b0b0
+        );
+
+
+    /* =========================
+       相機
+    ========================= */
+
+    camera =
+        new THREE.PerspectiveCamera(
+
+            75,
+
+            window.innerWidth /
+            window.innerHeight,
+
+            0.1,
+
+            100
+
+        );
+
+
+    camera.position.set(
+
+        player.x,
+
+        player.y,
+
+        player.z
+
+    );
+
+
+    /* =========================
+       Renderer
+    ========================= */
+
+    renderer =
+        new THREE.WebGLRenderer({
+
+            antialias: true
+
+        });
+
+
+    renderer.setPixelRatio(
+
+        Math.min(
+
+            window.devicePixelRatio,
+
+            2
+
+        )
+
+    );
+
+
+    renderer.setSize(
+
+        window.innerWidth,
+
+        window.innerHeight
+
+    );
+
+
+    document
+        .getElementById(
+            "threeContainer"
+        )
+        .appendChild(
+            renderer.domElement
+        );
+
+
+    /* =========================
+       光
+    ========================= */
+
+    const ambient =
+        new THREE.AmbientLight(
+
+            0xffffff,
+
+            2
+
+        );
+
+
+    scene.add(ambient);
+
+
+    /* =========================
+       房間
+    ========================= */
+
+    createRoom();
+
+
+    /* =========================
+       控制
+    ========================= */
+
+    setupTouch();
+
+    setupButtons();
+
+
+    animate();
 
 }
+
+
+
+/* ==================================================
+   建立房間
+================================================== */
+
+function createRoom() {
+
+
+    const W =
+        ROOM_WIDTH;
+
+
+    const H =
+        ROOM_HEIGHT;
+
+
+    const D =
+        ROOM_DEPTH;
+
+
+
+    /* =========================
+       地板
+    ========================= */
+
+    const floor =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+
+                W,
+
+                D
+
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color:
+                    0x707070,
+
+                side:
+                    THREE.DoubleSide
+
+            })
+
+        );
+
+
+    floor.rotation.x =
+        -Math.PI / 2;
+
+
+    floor.position.y =
+        0;
+
+
+    scene.add(floor);
+
+
+
+    /* =========================
+       天花板
+    ========================= */
+
+    const ceiling =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+
+                W,
+
+                D
+
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color:
+                    0xd8d8d8,
+
+                side:
+                    THREE.DoubleSide
+
+            })
+
+        );
+
+
+    ceiling.rotation.x =
+        Math.PI / 2;
+
+
+    ceiling.position.y =
+        H;
+
+
+    scene.add(ceiling);
+
+
+
+    /* =========================
+       前牆
+    ========================= */
+
+    const front =
+        createWall(
+
+            W,
+
+            H,
+
+            0xc2c2c2
+
+        );
+
+
+    front.position.set(
+
+        0,
+
+        H / 2,
+
+        -D / 2
+
+    );
+
+
+    scene.add(front);
+
+
+
+    /* =========================
+       後牆
+    ========================= */
+
+    const back =
+        createWall(
+
+            W,
+
+            H,
+
+            0xb7b7b7
+
+        );
+
+
+    back.position.set(
+
+        0,
+
+        H / 2,
+
+        D / 2
+
+    );
+
+
+    scene.add(back);
+
+
+
+    /* =========================
+       左牆
+    ========================= */
+
+    const left =
+        createWall(
+
+            D,
+
+            H,
+
+            0xaeaeae
+
+        );
+
+
+    left.rotation.y =
+        Math.PI / 2;
+
+
+    left.position.set(
+
+        -W / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    scene.add(left);
+
+
+
+    /* =========================
+       右牆
+    ========================= */
+
+    const right =
+        createWall(
+
+            D,
+
+            H,
+
+            0xa6a6a6
+
+        );
+
+
+    right.rotation.y =
+        Math.PI / 2;
+
+
+    right.position.set(
+
+        W / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    scene.add(right);
+
+
+
+    /* =========================
+       房間邊界線
+    ========================= */
+
+    createRoomEdges(
+
+        W,
+
+        H,
+
+        D
+
+    );
+
+}
+
+
+
+/* ==================================================
+   建立牆
+================================================== */
+
+function createWall(
+
+    width,
+
+    height,
+
+    color
+
+) {
+
+
+    return new THREE.Mesh(
+
+        new THREE.PlaneGeometry(
+
+            width,
+
+            height
+
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color:
+                color,
+
+            side:
+                THREE.DoubleSide
+
+        })
+
+    );
+
+}
+
+
+
+/* ==================================================
+   建立房間邊界線
+================================================== */
+
+function createRoomEdges(
+
+    W,
+
+    H,
+
+    D
+
+) {
+
+
+    const geometry =
+        new THREE.BoxGeometry(
+
+            W,
+
+            H,
+
+            D
+
+        );
+
+
+    const edges =
+        new THREE.EdgesGeometry(
+
+            geometry
+
+        );
+
+
+    const material =
+        new THREE.LineBasicMaterial({
+
+            color:
+                0x666666,
+
+            transparent:
+                true,
+
+            opacity:
+                0.45
+
+        });
+
+
+    const lines =
+        new THREE.LineSegments(
+
+            edges,
+
+            material
+
+        );
+
+
+    lines.position.y =
+        H / 2;
+
+
+    scene.add(lines);
+
+}
+
 
 
 /* ==================================================
    玩家移動
 ================================================== */
 
-let moveX =
-    0;
+function updatePlayer() {
 
 
-let moveY =
-    0;
+    if (!camera)
+        return;
 
 
-const moveSpeed =
-    2.8;
+    const speed =
+        0.08;
 
 
-function movePlayer() {
+    const forwardX =
+        Math.sin(yaw);
 
 
-    const radius =
-        11;
+    const forwardZ =
+        -Math.cos(yaw);
 
 
-    const minX =
-        radius;
+    let dx = 0;
+
+    let dz = 0;
 
 
-    const maxX =
-        roomSpace.clientWidth -
-        radius;
+
+    /* =========================
+       前
+    ========================= */
+
+    if (
+        movement.forward
+    ) {
 
 
-    const minY =
-        radius;
+        dx +=
+            forwardX *
+            speed;
 
 
-    const maxY =
-        roomSpace.clientHeight -
-        radius;
+        dz +=
+            forwardZ *
+            speed;
+
+    }
 
 
-    playerX +=
-        moveX *
-        moveSpeed;
+
+    /* =========================
+       後
+    ========================= */
+
+    if (
+        movement.back
+    ) {
 
 
-    playerY +=
-        moveY *
-        moveSpeed;
+        dx -=
+            forwardX *
+            speed;
 
 
-    /*
-       房間正常邊界
-    */
+        dz -=
+            forwardZ *
+            speed;
 
-    playerX =
-        Math.max(
-            minX,
-            Math.min(
-                maxX,
-                playerX
-            )
+    }
+
+
+
+    /* =========================
+       左
+    ========================= */
+
+    if (
+        movement.left
+    ) {
+
+
+        dx -=
+            Math.cos(yaw) *
+            speed;
+
+
+        dz -=
+            Math.sin(yaw) *
+            speed;
+
+    }
+
+
+
+    /* =========================
+       右
+    ========================= */
+
+    if (
+        movement.right
+    ) {
+
+
+        dx +=
+            Math.cos(yaw) *
+            speed;
+
+
+        dz +=
+            Math.sin(yaw) *
+            speed;
+
+    }
+
+
+
+    /* =========================
+       房間邊界
+
+       牆在 ±7
+    ========================= */
+
+    const limitX =
+        ROOM_WIDTH / 2 -
+        0.05;
+
+
+    const limitZ =
+        ROOM_DEPTH / 2 -
+        0.05;
+
+
+    const nextX =
+        player.x +
+        dx;
+
+
+    const nextZ =
+        player.z +
+        dz;
+
+
+
+    if (
+        nextX >
+        -limitX &&
+
+        nextX <
+        limitX
+    ) {
+
+
+        player.x =
+            nextX;
+
+    }
+
+
+
+    if (
+        nextZ >
+        -limitZ &&
+
+        nextZ <
+        limitZ
+    ) {
+
+
+        player.z =
+            nextZ;
+
+    }
+
+
+
+    /* =========================
+       相機
+    ========================= */
+
+    camera.position.set(
+
+        player.x,
+
+        player.y,
+
+        player.z
+
+    );
+
+
+    camera.rotation.order =
+        "YXZ";
+
+
+    camera.rotation.y =
+        yaw;
+
+
+    camera.rotation.x =
+        pitch;
+
+}
+
+
+
+/* ==================================================
+   手機滑動
+================================================== */
+
+let touching = false;
+
+let lastX = 0;
+
+let lastY = 0;
+
+
+function setupTouch() {
+
+
+    const canvas =
+        renderer.domElement;
+
+
+
+    canvas.addEventListener(
+
+        "touchstart",
+
+        function(event) {
+
+
+            touching = true;
+
+
+            lastX =
+                event.touches[0]
+                .clientX;
+
+
+            lastY =
+                event.touches[0]
+                .clientY;
+
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+
+    canvas.addEventListener(
+
+        "touchmove",
+
+        function(event) {
+
+
+            if (!touching)
+                return;
+
+
+            event.preventDefault();
+
+
+            const x =
+                event.touches[0]
+                .clientX;
+
+
+            const y =
+                event.touches[0]
+                .clientY;
+
+
+
+            const dx =
+                x -
+                lastX;
+
+
+            const dy =
+                y -
+                lastY;
+
+
+
+            yaw -=
+                dx *
+                0.004;
+
+
+            pitch -=
+                dy *
+                0.004;
+
+
+
+            pitch =
+                Math.max(
+
+                    -1.4,
+
+                    Math.min(
+
+                        1.4,
+
+                        pitch
+
+                    )
+
+                );
+
+
+
+            lastX =
+                x;
+
+
+            lastY =
+                y;
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+
+    canvas.addEventListener(
+
+        "touchend",
+
+        function() {
+
+            touching =
+                false;
+
+        }
+
+    );
+
+}
+
+
+
+/* ==================================================
+   移動按鈕
+================================================== */
+
+function setupButtons() {
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".control"
         );
 
 
-    playerY =
-        Math.max(
-            minY,
-            Math.min(
-                maxY,
-                playerY
-            )
-        );
+
+    buttons.forEach(
+
+        function(button) {
 
 
-    updatePlayer();
+            const direction =
+                button.dataset.direction;
+
+
+
+            function press(event) {
+
+
+                event.preventDefault();
+
+
+                movement[
+                    direction
+                ] = true;
+
+
+                if (
+                    button.setPointerCapture
+                ) {
+
+
+                    button.setPointerCapture(
+
+                        event.pointerId
+
+                    );
+
+                }
+
+            }
+
+
+
+            function release(event) {
+
+
+                event.preventDefault();
+
+
+                movement[
+                    direction
+                ] = false;
+
+            }
+
+
+
+            button.addEventListener(
+
+                "pointerdown",
+
+                press
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointerup",
+
+                release
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointercancel",
+
+                release
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointerleave",
+
+                function(event) {
+
+
+                    if (
+                        event.buttons === 0
+                    ) {
+
+
+                        movement[
+                            direction
+                        ] = false;
+
+                    }
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+
+
+/* ==================================================
+   遊戲循環
+================================================== */
+
+function animate() {
 
 
     requestAnimationFrame(
-        movePlayer
+
+        animate
+
     );
+
+
+    if (started) {
+
+
+        updatePlayer();
+
+    }
+
+
+    if (renderer) {
+
+
+        renderer.render(
+
+            scene,
+
+            camera
+
+        );
+
+    }
 
 }
 
-
-movePlayer();
 
 
 /* ==================================================
-   虛擬搖桿
+   螢幕尺寸
 ================================================== */
 
-const joystick =
-    document.getElementById(
-        "joystick"
-    );
+window.addEventListener(
+
+    "resize",
+
+    function() {
 
 
-const stick =
-    document.getElementById(
-        "stick"
-    );
-
-
-let joystickActive =
-    false;
-
-
-let joystickCenterX =
-    0;
-
-
-let joystickCenterY =
-    0;
-
-
-const joystickRadius =
-    55;
-
-
-function getPointerPosition(
-    event
-) {
-
-    const point =
-        event.touches
-        ? event.touches[0]
-        : event;
-
-
-    return {
-
-        x:
-            point.clientX,
-
-        y:
-            point.clientY
-
-    };
-
-}
-
-
-function startJoystick(
-    event
-) {
-
-    event.preventDefault();
-
-
-    joystickActive =
-        true;
-
-
-    const rect =
-        joystick.getBoundingClientRect();
-
-
-    joystickCenterX =
-        rect.left +
-        rect.width / 2;
-
-
-    joystickCenterY =
-        rect.top +
-        rect.height / 2;
-
-
-    updateJoystick(
-        event
-    );
-
-}
-
-
-function updateJoystick(
-    event
-) {
-
-    if (
-        !joystickActive
-    ) {
-
-        return;
-
-    }
-
-
-    event.preventDefault();
-
-
-    const point =
-        getPointerPosition(
-            event
-        );
-
-
-    let dx =
-        point.x -
-        joystickCenterX;
-
-
-    let dy =
-        point.y -
-        joystickCenterY;
-
-
-    const distance =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
-        );
-
-
-    if (
-        distance >
-        joystickRadius
-    ) {
-
-        dx =
-            dx /
-            distance *
-            joystickRadius;
-
-
-        dy =
-            dy /
-            distance *
-            joystickRadius;
-
-    }
-
-
-    stick.style.transform =
-        `
-        translate(
-            calc(-50% + ${dx}px),
-            calc(-50% + ${dy}px)
+        if (
+            !camera ||
+            !renderer
         )
-        `;
+            return;
 
 
-    moveX =
-        dx /
-        joystickRadius;
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
 
 
-    moveY =
-        dy /
-        joystickRadius;
 
-}
+        camera.updateProjectionMatrix();
 
 
-function stopJoystick(
-    event
-) {
 
-    if (
-        event
-    ) {
+        renderer.setSize(
 
-        event.preventDefault();
+            window.innerWidth,
+
+            window.innerHeight
+
+        );
 
     }
 
-
-    joystickActive =
-        false;
-
-
-    moveX =
-        0;
-
-
-    moveY =
-        0;
-
-
-    stick.style.transform =
-        "translate(-50%, -50%)";
-
-}
-
-
-/* ==================================================
-   Touch
-================================================== */
-
-joystick.addEventListener(
-    "touchstart",
-    startJoystick,
-    {
-        passive: false
-    }
 );
-
-
-joystick.addEventListener(
-    "touchmove",
-    updateJoystick,
-    {
-        passive: false
-    }
-);
-
-
-joystick.addEventListener(
-    "touchend",
-    stopJoystick,
-    {
-        passive: false
-    }
-);
-
-
-joystick.addEventListener(
-    "touchcancel",
-    stopJoystick,
-    {
-        passive: false
-    }
-);
-
-
-/* ==================================================
-   滑鼠測試
-================================================== */
-
-joystick.addEventListener(
-    "mousedown",
-    startJoystick
-);
-
-
-window.addEventListener(
-    "mousemove",
-    updateJoystick
-);
-
-
-window.addEventListener(
-    "mouseup",
-    stopJoystick
-);
-
-
-/* ==================================================
-   啟動
-================================================== */
-
-playIntro();
 
 </script>
+
 
 </body>
 
