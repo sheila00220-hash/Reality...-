@@ -16,10 +16,15 @@ user-scalable=no">
 
 <style>
 
+/* ==================================================
+   基本
+================================================== */
+
 html,
 body {
 
     margin: 0;
+
     width: 100%;
     height: 100%;
 
@@ -27,10 +32,51 @@ body {
 
     background: black;
 
+    touch-action: none;
+
+    user-select: none;
+
 }
 
 
-#text {
+/* ==================================================
+   所有頁面
+================================================== */
+
+.page {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    overflow: hidden;
+
+}
+
+
+/* ==================================================
+   開場頁
+================================================== */
+
+#intro {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: black;
+
+}
+
+
+#introText {
 
     position: absolute;
 
@@ -47,50 +93,355 @@ body {
         Helvetica,
         sans-serif;
 
-
-    /*
-       字體大小
-    */
-
     font-size:
         clamp(46px, 12vw, 96px);
 
+    font-weight: 300;
 
-    font-weight:
-        300;
+    letter-spacing: 0;
 
-
-    /*
-       字距：
-
-       完全不額外增加間距
-    */
-
-    letter-spacing:
-        0px;
-
-
-    /*
-       左右安全距離
-    */
-
-    max-width:
-        calc(100vw - 24px);
-
-
-    white-space:
-        nowrap;
+    white-space: nowrap;
 
 }
 
 
-.letter {
+.introLetter {
 
-    display:
-        inline-block;
+    display: inline-block;
 
-    opacity:
-        0;
+    opacity: 0;
+
+}
+
+
+/* ==================================================
+   主頁
+================================================== */
+
+#menu {
+
+    background: black;
+
+    color: white;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+#menuTitle {
+
+    font-size:
+        clamp(36px, 10vw, 72px);
+
+    font-weight: 300;
+
+    margin-bottom:
+        55px;
+
+}
+
+
+#startButton {
+
+    background: transparent;
+
+    border: 1px solid rgba(
+        255,
+        255,
+        255,
+        0.65
+    );
+
+    color: white;
+
+    padding:
+        15px 48px;
+
+    font-size:
+        18px;
+
+    font-weight: 300;
+
+    letter-spacing:
+        3px;
+
+    border-radius:
+        2px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* ==================================================
+   房間
+================================================== */
+
+#room {
+
+    background:
+        rgb(112, 112, 112);
+
+}
+
+
+/*
+   房間本體
+
+   使用偏長方形比例
+*/
+
+#roomSpace {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 720px;
+
+    height: 520px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border:
+        3px solid
+        rgba(
+            20,
+            20,
+            20,
+            0.85
+        );
+
+    background:
+        rgb(128, 128, 128);
+
+    box-sizing:
+        border-box;
+
+}
+
+
+/* ==================================================
+   房間四條邊
+================================================== */
+
+.wall {
+
+    position: absolute;
+
+    background:
+        rgba(
+            25,
+            25,
+            25,
+            0.8
+        );
+
+}
+
+
+.wall.top {
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 3px;
+
+}
+
+
+.wall.bottom {
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 3px;
+
+}
+
+
+.wall.left {
+
+    left: 0;
+    top: 0;
+
+    width: 3px;
+    height: 100%;
+
+}
+
+
+.wall.right {
+
+    right: 0;
+    top: 0;
+
+    width: 3px;
+    height: 100%;
+
+}
+
+
+/* ==================================================
+   玩家
+================================================== */
+
+#player {
+
+    position: absolute;
+
+    width: 22px;
+    height: 22px;
+
+    border-radius: 50%;
+
+    background:
+        white;
+
+    box-shadow:
+        0 0 12px
+        rgba(
+            255,
+            255,
+            255,
+            0.55
+        );
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
+}
+
+
+/* ==================================================
+   虛擬搖桿
+================================================== */
+
+#joystick {
+
+    position: absolute;
+
+    left: 25px;
+    bottom: 25px;
+
+    width: 130px;
+    height: 130px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            0.20
+        );
+
+    border:
+        2px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.30
+        );
+
+}
+
+
+#stick {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 58px;
+    height: 58px;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.35
+        );
+
+    border:
+        2px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.45
+        );
+
+}
+
+
+/* ==================================================
+   房間提示
+================================================== */
+
+#roomHint {
+
+    position: absolute;
+
+    top: 20px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.45
+        );
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        13px;
+
+    pointer-events:
+        none;
 
 }
 
@@ -102,17 +453,136 @@ body {
 <body>
 
 
-<div id="text"></div>
+<!-- ==================================================
+     Reality...? 開場
+================================================== -->
+
+<div
+    id="intro"
+    class="page"
+>
+
+    <div id="introText"></div>
+
+</div>
+
+
+
+<!-- ==================================================
+     主頁
+================================================== -->
+
+<div
+    id="menu"
+    class="page"
+>
+
+    <div id="menuTitle">
+        Reality...?
+    </div>
+
+
+    <button
+        id="startButton"
+    >
+        START
+    </button>
+
+</div>
+
+
+
+<!-- ==================================================
+     房間
+================================================== -->
+
+<div
+    id="room"
+    class="page"
+>
+
+
+    <div id="roomSpace">
+
+
+        <div
+            class="wall top"
+        ></div>
+
+
+        <div
+            class="wall bottom"
+        ></div>
+
+
+        <div
+            class="wall left"
+        ></div>
+
+
+        <div
+            class="wall right"
+        ></div>
+
+
+        <div id="player"></div>
+
+
+    </div>
+
+
+    <div id="roomHint">
+        Chapter 1
+    </div>
+
+
+    <div id="joystick">
+
+        <div id="stick"></div>
+
+    </div>
+
+
+</div>
+
 
 
 <script>
 
 
-const text =
-    document.getElementById("text");
+/* ==================================================
+   頁面
+================================================== */
+
+const intro =
+    document.getElementById(
+        "intro"
+    );
 
 
-const word =
+const menu =
+    document.getElementById(
+        "menu"
+    );
+
+
+const room =
+    document.getElementById(
+        "room"
+    );
+
+
+/* ==================================================
+   開場文字
+================================================== */
+
+const introText =
+    document.getElementById(
+        "introText"
+    );
+
+
+const introWord =
     "Reality...?";
 
 
@@ -123,34 +593,26 @@ const word =
 function wait(ms) {
 
     return new Promise(
-
-        function(resolve) {
-
+        resolve =>
             setTimeout(
                 resolve,
                 ms
-            );
-
-        }
-
+            )
     );
 
 }
 
 
 /* ==================================================
-   新字顯現
-
-   1% → 100%
-
-   不閃
+   開場文字顯現
 ================================================== */
 
-function revealLetter(letter) {
+function revealIntroLetter(
+    letter
+) {
 
     return new Promise(
-
-        function(resolve) {
+        resolve => {
 
 
             const duration =
@@ -161,25 +623,24 @@ function revealLetter(letter) {
                 performance.now();
 
 
-            function animate(now) {
+            function animate(
+                now
+            ) {
 
 
                 const progress =
                     Math.min(
 
-                        (now - start) /
+                        (
+                            now -
+                            start
+                        ) /
                         duration,
 
                         1
 
                     );
 
-
-                /*
-                   1%
-                   ↓
-                   100%
-                */
 
                 letter.style.opacity =
                     0.01 +
@@ -216,53 +677,37 @@ function revealLetter(letter) {
             );
 
         }
-
     );
 
 }
 
 
 /* ==================================================
-   單字母獨立漸變
+   舊字獨立漸變
 ================================================== */
 
-function startLetterFade(letter) {
+function startLetterFade(
+    letter
+) {
 
-
-    /*
-       每個字自己的速度
-    */
 
     const speed =
         0.0015 +
-        Math.random() * 0.002;
+        Math.random() *
+        0.002;
 
-
-    /*
-       最低透明度：
-
-       15% ～ 35%
-    */
 
     const minimum =
         0.15 +
-        Math.random() * 0.20;
+        Math.random() *
+        0.20;
 
-
-    /*
-       最高透明度：
-
-       95% ～ 100%
-    */
 
     const maximum =
         0.95 +
-        Math.random() * 0.05;
+        Math.random() *
+        0.05;
 
-
-    /*
-       每個字自己的起始位置
-    */
 
     let phase =
         Math.random() *
@@ -270,13 +715,8 @@ function startLetterFade(letter) {
         2;
 
 
-
     function animate() {
 
-
-        /*
-           字不存在時停止
-        */
 
         if (
             !letter.isConnected
@@ -287,27 +727,17 @@ function startLetterFade(letter) {
         }
 
 
-        /*
-           自己獨立移動
-        */
-
         phase += speed;
 
 
-        /*
-           平滑曲線
-        */
-
         const wave =
             (
-                Math.sin(phase)
-                + 1
+                Math.sin(
+                    phase
+                ) +
+                1
             ) / 2;
 
-
-        /*
-           透明度
-        */
 
         const opacity =
             minimum +
@@ -337,45 +767,37 @@ function startLetterFade(letter) {
 
 
 /* ==================================================
-   主動畫
+   開場動畫
 ================================================== */
 
-async function start() {
+async function playIntro() {
 
 
-    /*
-       黑屏
-    */
-
-    await wait(
-        1500
-    );
+    intro.style.display =
+        "flex";
 
 
-    /*
-       清空
-    */
+    menu.style.display =
+        "none";
 
-    text.innerHTML =
+
+    room.style.display =
+        "none";
+
+
+    introText.innerHTML =
         "";
 
-
-    /*
-       一個字一個字出現
-    */
 
     for (
         let i = 0;
 
-        i < word.length;
+        i <
+        introWord.length;
 
         i++
     ) {
 
-
-        /*
-           建立新字
-        */
 
         const letter =
             document.createElement(
@@ -384,34 +806,25 @@ async function start() {
 
 
         letter.className =
-            "letter";
+            "introLetter";
 
 
         letter.textContent =
-            word[i];
+            introWord[i];
 
-
-        /*
-           新字從 1%
-        */
 
         letter.style.opacity =
             "0.01";
 
 
-        text.appendChild(
+        introText.appendChild(
             letter
         );
 
 
-
-        /*
-           舊字開始各自漸變
-        */
-
-        const letters =
-            text.querySelectorAll(
-                ".letter"
+        const oldLetters =
+            introText.querySelectorAll(
+                ".introLetter"
             );
 
 
@@ -419,27 +832,27 @@ async function start() {
             let j = 0;
 
             j <
-            letters.length - 1;
+            oldLetters.length - 1;
 
             j++
         ) {
 
 
             if (
-                !letters[j]
+                !oldLetters[j]
                     .dataset
                     .fading
             ) {
 
 
-                letters[j]
+                oldLetters[j]
                     .dataset
                     .fading =
                     "true";
 
 
                 startLetterFade(
-                    letters[j]
+                    oldLetters[j]
                 );
 
             }
@@ -447,22 +860,10 @@ async function start() {
         }
 
 
-
-        /*
-           新字：
-
-           1% → 100%
-        */
-
-        await revealLetter(
+        await revealIntroLetter(
             letter
         );
 
-
-
-        /*
-           字與字之間停頓
-        */
 
         await wait(
             1200
@@ -471,39 +872,8 @@ async function start() {
     }
 
 
-
     /*
-       最後一個字也開始
-       獨立漸變
-    */
-
-    const finalLetters =
-        text.querySelectorAll(
-            ".letter"
-        );
-
-
-    if (
-        finalLetters.length > 0
-    ) {
-
-
-        const last =
-            finalLetters[
-                finalLetters.length - 1
-            ];
-
-
-        startLetterFade(
-            last
-        );
-
-    }
-
-
-
-    /*
-       Reality...? 完整停留
+       完整標題停留
     */
 
     await wait(
@@ -511,40 +881,496 @@ async function start() {
     );
 
 
-
     /*
-       整個標題瞬間消失
+       整個消失
     */
 
-    text.innerHTML =
+    introText.innerHTML =
         "";
 
 
-
-    /*
-       黑屏
-    */
-
     await wait(
-        4500
+        1200
     );
 
 
-
     /*
-       重新開始
+       進入主頁
     */
 
-    start();
+    showMenu();
 
 }
+
+
+/* ==================================================
+   主頁
+================================================== */
+
+function showMenu() {
+
+    intro.style.display =
+        "none";
+
+
+    room.style.display =
+        "none";
+
+
+    menu.style.display =
+        "flex";
+
+}
+
+
+/* ==================================================
+   房間
+================================================== */
+
+function showRoom() {
+
+    intro.style.display =
+        "none";
+
+
+    menu.style.display =
+        "none";
+
+
+    room.style.display =
+        "block";
+
+
+    resetPlayer();
+
+}
+
+
+/* ==================================================
+   開始按鈕
+================================================== */
+
+document
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+        "click",
+        showRoom
+    );
+
+
+/* ==================================================
+   玩家
+================================================== */
+
+const player =
+    document.getElementById(
+        "player"
+    );
+
+
+const roomSpace =
+    document.getElementById(
+        "roomSpace"
+    );
+
+
+let playerX =
+    360;
+
+
+let playerY =
+    260;
+
+
+function resetPlayer() {
+
+    playerX =
+        roomSpace.clientWidth / 2;
+
+
+    playerY =
+        roomSpace.clientHeight / 2;
+
+
+    updatePlayer();
+
+}
+
+
+function updatePlayer() {
+
+    player.style.left =
+        playerX + "px";
+
+
+    player.style.top =
+        playerY + "px";
+
+}
+
+
+/* ==================================================
+   玩家移動
+================================================== */
+
+let moveX =
+    0;
+
+
+let moveY =
+    0;
+
+
+const moveSpeed =
+    2.8;
+
+
+function movePlayer() {
+
+
+    /*
+       玩家半徑
+
+       避免穿過牆
+    */
+
+    const radius =
+        11;
+
+
+    const minX =
+        radius;
+
+
+    const maxX =
+        roomSpace.clientWidth -
+        radius;
+
+
+    const minY =
+        radius;
+
+
+    const maxY =
+        roomSpace.clientHeight -
+        radius;
+
+
+    playerX +=
+        moveX *
+        moveSpeed;
+
+
+    playerY +=
+        moveY *
+        moveSpeed;
+
+
+    /*
+       正常房間邊界
+
+       不會提前出現奇怪空氣牆
+    */
+
+    playerX =
+        Math.max(
+            minX,
+            Math.min(
+                maxX,
+                playerX
+            )
+        );
+
+
+    playerY =
+        Math.max(
+            minY,
+            Math.min(
+                maxY,
+                playerY
+            )
+        );
+
+
+    updatePlayer();
+
+
+    requestAnimationFrame(
+        movePlayer
+    );
+
+}
+
+
+movePlayer();
+
+
+/* ==================================================
+   虛擬搖桿
+================================================== */
+
+const joystick =
+    document.getElementById(
+        "joystick"
+    );
+
+
+const stick =
+    document.getElementById(
+        "stick"
+    );
+
+
+let joystickActive =
+    false;
+
+
+let joystickCenterX =
+    0;
+
+
+let joystickCenterY =
+    0;
+
+
+const joystickRadius =
+    55;
+
+
+function getPointerPosition(
+    event
+) {
+
+    const point =
+        event.touches
+        ? event.touches[0]
+        : event;
+
+
+    return {
+
+        x:
+            point.clientX,
+
+        y:
+            point.clientY
+
+    };
+
+}
+
+
+function startJoystick(
+    event
+) {
+
+    event.preventDefault();
+
+
+    joystickActive =
+        true;
+
+
+    const rect =
+        joystick.getBoundingClientRect();
+
+
+    joystickCenterX =
+        rect.left +
+        rect.width / 2;
+
+
+    joystickCenterY =
+        rect.top +
+        rect.height / 2;
+
+
+    updateJoystick(
+        event
+    );
+
+}
+
+
+function updateJoystick(
+    event
+) {
+
+    if (
+        !joystickActive
+    ) {
+
+        return;
+
+    }
+
+
+    event.preventDefault();
+
+
+    const point =
+        getPointerPosition(
+            event
+        );
+
+
+    let dx =
+        point.x -
+        joystickCenterX;
+
+
+    let dy =
+        point.y -
+        joystickCenterY;
+
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    if (
+        distance >
+        joystickRadius
+    ) {
+
+        dx =
+            dx /
+            distance *
+            joystickRadius;
+
+
+        dy =
+            dy /
+            distance *
+            joystickRadius;
+
+    }
+
+
+    stick.style.transform =
+        `
+        translate(
+            calc(-50% + ${dx}px),
+            calc(-50% + ${dy}px)
+        )
+        `;
+
+
+    moveX =
+        dx /
+        joystickRadius;
+
+
+    moveY =
+        dy /
+        joystickRadius;
+
+}
+
+
+function stopJoystick(
+    event
+) {
+
+    if (
+        event
+    ) {
+
+        event.preventDefault();
+
+    }
+
+
+    joystickActive =
+        false;
+
+
+    moveX =
+        0;
+
+
+    moveY =
+        0;
+
+
+    stick.style.transform =
+        "translate(-50%, -50%)";
+
+}
+
+
+/* ==================================================
+   Touch
+================================================== */
+
+joystick.addEventListener(
+    "touchstart",
+    startJoystick,
+    {
+        passive: false
+    }
+);
+
+
+joystick.addEventListener(
+    "touchmove",
+    updateJoystick,
+    {
+        passive: false
+    }
+);
+
+
+joystick.addEventListener(
+    "touchend",
+    stopJoystick,
+    {
+        passive: false
+    }
+);
+
+
+joystick.addEventListener(
+    "touchcancel",
+    stopJoystick,
+    {
+        passive: false
+    }
+);
+
+
+/* ==================================================
+   滑鼠測試
+================================================== */
+
+joystick.addEventListener(
+    "mousedown",
+    startJoystick
+);
+
+
+window.addEventListener(
+    "mousemove",
+    updateJoystick
+);
+
+
+window.addEventListener(
+    "mouseup",
+    stopJoystick
+);
 
 
 /* ==================================================
    啟動
 ================================================== */
 
-start();
+playIntro();
 
 </script>
 
