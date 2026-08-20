@@ -80,16 +80,24 @@ body {
 
 
 /* ==================================================
-   標題
+   標題固定容器
+
+   整個文字的寬度一開始就固定，
+   不會因為新增字母而重新排版
 ================================================== */
 
-#title h1 {
+#titleText {
+
+    position: relative;
+
+    width: min(
+        95vw,
+        850px
+    );
+
+    height: 1.2em;
 
     margin: 0;
-
-    width: 95%;
-
-    text-align: center;
 
     font-family:
         Arial,
@@ -101,8 +109,6 @@ body {
 
     font-weight: 300;
 
-    letter-spacing: 0;
-
     line-height: 1;
 
     white-space: nowrap;
@@ -111,15 +117,35 @@ body {
 }
 
 
+/* ==================================================
+   每個字母
+
+   使用 absolute：
+   每個字的位置完全固定
+================================================== */
+
 .titleLetter {
 
-    display: inline-block;
+    position: absolute;
+
+    top: 0;
+
+    display: block;
+
+    width: 1em;
+
+    height: 1em;
+
+    text-align: center;
 
     opacity: 0;
 
     margin: 0;
 
     padding: 0;
+
+    transform:
+        translateX(-50%);
 }
 
 
@@ -476,6 +502,103 @@ function wait(ms) {
 
 
 /* ==================================================
+   計算固定字位
+
+   所有字母一開始就知道自己的位置
+================================================== */
+
+function getLetterPosition(index) {
+
+    const total =
+        titleWord.length;
+
+
+    /*
+       用百分比把整個單字
+       平均分布在容器中央
+    */
+
+    const spacing =
+        100 / total;
+
+
+    return (
+        spacing * index
+        +
+        spacing / 2
+    );
+
+}
+
+
+/* ==================================================
+   建立固定字母
+================================================== */
+
+function createLetters() {
+
+    titleText.innerHTML =
+        "";
+
+
+    const letters = [];
+
+
+    for (
+        let i = 0;
+        i < titleWord.length;
+        i++
+    ) {
+
+        const letter =
+            document.createElement(
+                "span"
+            );
+
+
+        letter.className =
+            "titleLetter";
+
+
+        letter.textContent =
+            titleWord[i];
+
+
+        /*
+           固定位置
+        */
+
+        letter.style.left =
+            getLetterPosition(i)
+            + "%";
+
+
+        /*
+           一開始完全透明
+        */
+
+        letter.style.opacity =
+            "0";
+
+
+        titleText.appendChild(
+            letter
+        );
+
+
+        letters.push(
+            letter
+        );
+
+    }
+
+
+    return letters;
+
+}
+
+
+/* ==================================================
    單字母慢速浮現
 
    1% → 100%
@@ -521,6 +644,13 @@ function fadeInLetter(letter) {
 
                     );
 
+
+                /*
+                   smoothstep
+
+                   讓開始與結束
+                   都比較柔和
+                */
 
                 const eased =
                     progress *
@@ -579,6 +709,8 @@ function fadeInLetter(letter) {
 
 /* ==================================================
    已出現字母的平滑忽隱忽現
+
+   不閃爍
 ================================================== */
 
 function startPulse(letter) {
@@ -633,7 +765,8 @@ function startPulse(letter) {
         /*
            25% → 100%
 
-           平滑漸變
+           非同步、
+           平滑呼吸
         */
 
         const opacity =
@@ -665,7 +798,7 @@ function startPulse(letter) {
 /* ==================================================
    主標題流程
 
-   完成後重新開始
+   固定字位版本
 ================================================== */
 
 async function playTitleAnimation() {
@@ -673,54 +806,30 @@ async function playTitleAnimation() {
     while (titleRunning) {
 
 
-        titleText.innerHTML =
-            "";
+        /*
+           一次建立全部字母
 
+           所以後面的字加入時
+           前面的字完全不會移動
+        */
 
-        const letters = [];
+        const letters =
+            createLetters();
 
 
         /* ==========================================
-           逐字出現
+           逐字浮現
         ========================================== */
 
         for (
             let i = 0;
-            i < titleWord.length;
+            i < letters.length;
             i++
         ) {
 
 
             if (!titleRunning)
                 return;
-
-
-            const letter =
-                document.createElement(
-                    "span"
-                );
-
-
-            letter.className =
-                "titleLetter";
-
-
-            letter.textContent =
-                titleWord[i];
-
-
-            letter.style.opacity =
-                "0.01";
-
-
-            titleText.appendChild(
-                letter
-            );
-
-
-            letters.push(
-                letter
-            );
 
 
             /*
@@ -731,7 +840,7 @@ async function playTitleAnimation() {
             */
 
             await fadeInLetter(
-                letter
+                letters[i]
             );
 
 
@@ -740,7 +849,8 @@ async function playTitleAnimation() {
 
 
             /*
-               字與字之間停頓
+               字與字之間
+               停頓 650ms
             */
 
             await wait(
@@ -753,13 +863,13 @@ async function playTitleAnimation() {
 
 
             /*
-               下一個字開始時，
-               前面的字才開始呼吸
+               下一個字準備出現時，
+               前面的字開始呼吸
             */
 
             for (
                 let j = 0;
-                j < letters.length;
+                j <= i;
                 j++
             ) {
 
@@ -793,11 +903,10 @@ async function playTitleAnimation() {
             "";
 
 
-        /* ==========================================
-           消失後等待
-
+        /*
+           重新出現前等待
            2.5 ～ 5 秒
-        ========================================== */
+        */
 
         const restartDelay =
             2500 +
@@ -807,15 +916,6 @@ async function playTitleAnimation() {
         await wait(
             restartDelay
         );
-
-
-        if (!titleRunning)
-            return;
-
-
-        /*
-           while 重新開始
-        */
 
     }
 
@@ -1064,6 +1164,10 @@ function createRoom() {
         ROOM_DEPTH;
 
 
+    /* =========================
+       地板
+    ========================= */
+
     const floor =
         new THREE.Mesh(
 
@@ -1099,6 +1203,10 @@ function createRoom() {
         floor
     );
 
+
+    /* =========================
+       天花板
+    ========================= */
 
     const ceiling =
         new THREE.Mesh(
@@ -1136,6 +1244,10 @@ function createRoom() {
     );
 
 
+    /* =========================
+       前牆
+    ========================= */
+
     const front =
         createWall(
 
@@ -1160,6 +1272,10 @@ function createRoom() {
     );
 
 
+    /* =========================
+       後牆
+    ========================= */
+
     const back =
         createWall(
 
@@ -1183,6 +1299,10 @@ function createRoom() {
         back
     );
 
+
+    /* =========================
+       左牆
+    ========================= */
 
     const left =
         createWall(
@@ -1211,6 +1331,10 @@ function createRoom() {
         left
     );
 
+
+    /* =========================
+       右牆
+    ========================= */
 
     const right =
         createWall(
@@ -1771,6 +1895,7 @@ function animate() {
         renderer.render(
 
             scene,
+
             camera
 
         );
