@@ -93,10 +93,18 @@ body {
         Helvetica,
         sans-serif;
 
+    /*
+       稍微放大
+    */
+
     font-size:
-        clamp(46px, 12vw, 96px);
+        clamp(50px, 13vw, 104px);
 
     font-weight: 300;
+
+    /*
+       不額外增加字距
+    */
 
     letter-spacing: 0;
 
@@ -201,7 +209,7 @@ body {
 /*
    房間本體
 
-   使用偏長方形比例
+   偏長方形比例
 */
 
 #roomSpace {
@@ -604,7 +612,9 @@ function wait(ms) {
 
 
 /* ==================================================
-   開場文字顯現
+   新字顯現
+
+   1% → 100%
 ================================================== */
 
 function revealIntroLetter(
@@ -822,6 +832,10 @@ async function playIntro() {
         );
 
 
+        /*
+           舊字開始漸變
+        */
+
         const oldLetters =
             introText.querySelectorAll(
                 ".introLetter"
@@ -860,10 +874,20 @@ async function playIntro() {
         }
 
 
+        /*
+           新字：
+
+           1% → 100%
+        */
+
         await revealIntroLetter(
             letter
         );
 
+
+        /*
+           字與字之間停頓
+        */
 
         await wait(
             1200
@@ -882,7 +906,7 @@ async function playIntro() {
 
 
     /*
-       整個消失
+       整個標題消失
     */
 
     introText.innerHTML =
@@ -1030,12 +1054,6 @@ const moveSpeed =
 function movePlayer() {
 
 
-    /*
-       玩家半徑
-
-       避免穿過牆
-    */
-
     const radius =
         11;
 
@@ -1069,9 +1087,7 @@ function movePlayer() {
 
 
     /*
-       正常房間邊界
-
-       不會提前出現奇怪空氣牆
+       房間正常邊界
     */
 
     playerX =
