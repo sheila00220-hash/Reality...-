@@ -20,7 +20,6 @@ html,
 body {
 
     margin: 0;
-
     width: 100%;
     height: 100%;
 
@@ -91,7 +90,6 @@ const word =
     "Reality...?";
 
 
-
 /* ==================================================
    等待
 ================================================== */
@@ -117,10 +115,6 @@ function wait(ms) {
 
 /* ==================================================
    新字顯現
-
-   1% → 100%
-
-   完全不閃
 ================================================== */
 
 function revealLetter(
@@ -132,6 +126,10 @@ function revealLetter(
 
         function(resolve) {
 
+
+            /*
+               新字顯現速度
+            */
 
             const duration =
                 1400;
@@ -157,9 +155,13 @@ function revealLetter(
 
 
                 /*
-                   新字：
+                   ==================================
+                   新字
 
-                   1 → 100
+                   1% → 100%
+
+                   永遠只增加
+                   ==================================
                 */
 
                 letter.style.opacity =
@@ -172,10 +174,11 @@ function revealLetter(
 
 
                 /*
-                   舊字：
+                   ==================================
+                   舊字
 
-                   使用連續波形
-                   做非常柔和的透明度變化
+                   明顯但連續的漸變
+                   ==================================
                 */
 
                 oldLetters.forEach(
@@ -187,22 +190,22 @@ function revealLetter(
 
 
                         /*
-                           每個字有不同相位
+                           不同字有不同相位
 
-                           所以不會全部一起動
+                           避免全部一起變
                         */
 
                         const phase =
                             index *
-                            1.7;
+                            1.4;
+
 
 
                         /*
-                           緩慢波動
+                           慢慢上下波動
 
-                           範圍：
-
-                           約 86% ～ 100%
+                           sin 範圍：
+                           -1 ～ +1
                         */
 
                         const wave =
@@ -210,19 +213,29 @@ function revealLetter(
 
                                 progress *
                                 Math.PI *
-                                2
+                                2.4
                                 +
                                 phase
 
                             );
 
 
+
+                        /*
+                           透明度範圍：
+
+                           最亮：約 100%
+
+                           最暗：約 55%
+                        */
+
                         const opacity =
-                            0.93 +
+                            0.775 +
                             (
                                 wave *
-                                0.07
+                                0.225
                             );
+
 
 
                         oldLetter.style.opacity =
@@ -238,9 +251,11 @@ function revealLetter(
                     progress < 1
                 ) {
 
+
                     requestAnimationFrame(
                         animate
                     );
+
 
                 }
 
@@ -248,17 +263,18 @@ function revealLetter(
 
 
                     /*
-                       新字固定 100%
+                       新字固定
                     */
 
                     letter.style.opacity =
                         "1";
 
 
-                    /*
-                       舊字也回到 100%
 
-                       不停頓、不跳閃
+                    /*
+                       舊字回到完整
+
+                       但不是突然跳
                     */
 
                     oldLetters.forEach(
@@ -266,6 +282,11 @@ function revealLetter(
                         function(
                             oldLetter
                         ) {
+
+
+                            oldLetter.style.transition =
+                                "opacity 500ms ease";
+
 
                             oldLetter.style.opacity =
                                 "1";
@@ -312,7 +333,7 @@ async function start() {
 
 
     /*
-       一個字一個字增加
+       一個字一個字出現
     */
 
     for (
@@ -357,7 +378,7 @@ async function start() {
 
 
         /*
-           取得前面已完成的字
+           找出舊字
         */
 
         const oldLetters =
@@ -375,8 +396,7 @@ async function start() {
         /*
            新字顯現
 
-           同時舊字做
-           非常柔和的漸變
+           舊字同時漸變
         */
 
         await revealLetter(
@@ -390,7 +410,7 @@ async function start() {
 
 
         /*
-           停頓
+           每個字之間停頓
         */
 
         await wait(
@@ -403,7 +423,7 @@ async function start() {
 
     /*
        ==========================================
-       Reality...? 完整狀態
+       完整 Reality...?
        ==========================================
     */
 
@@ -415,7 +435,7 @@ async function start() {
 
     /*
        ==========================================
-       整個瞬間消失
+       瞬間消失
        ==========================================
     */
 
@@ -435,7 +455,7 @@ async function start() {
 
 
     /*
-       再來一次
+       重播
     */
 
     start();
