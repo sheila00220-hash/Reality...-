@@ -482,6 +482,8 @@ function wait(ms) {
 
    只做漸變
    不閃爍
+
+   速度：1400ms
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -491,7 +493,7 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                700;
+                1400;
 
 
             const start =
@@ -648,9 +650,6 @@ function startPulse(letter) {
 
         /*
            25% → 100%
-
-           比之前明顯
-           但不會突然閃
         */
 
         const opacity =
@@ -743,6 +742,8 @@ async function playTitleAnimation() {
            目前字母：
 
            1 → 100%
+
+           1400ms
         */
 
         await fadeInLetter(
@@ -755,8 +756,7 @@ async function playTitleAnimation() {
 
 
         /*
-           字母完成後
-           停頓
+           字母完成後停頓
         */
 
         await wait(
@@ -769,10 +769,8 @@ async function playTitleAnimation() {
 
 
         /*
-           下一個字開始前：
-
-           前面所有字
-           開始進入忽隱忽現
+           前面已經出現的字
+           開始忽隱忽現
         */
 
         for (
@@ -832,7 +830,6 @@ let renderer = null;
 let started = false;
 
 
-
 /* ==================================================
    房間尺寸
 ================================================== */
@@ -842,7 +839,6 @@ const ROOM_WIDTH = 14;
 const ROOM_DEPTH = 14;
 
 const ROOM_HEIGHT = 10;
-
 
 
 /* ==================================================
@@ -865,7 +861,6 @@ let yaw = 0;
 let pitch = 0;
 
 
-
 /* ==================================================
    移動狀態
 ================================================== */
@@ -881,7 +876,6 @@ const movement = {
     right: false
 
 };
-
 
 
 /* ==================================================
@@ -905,7 +899,6 @@ function startGame() {
 
 
     started = true;
-
 
     titleRunning = false;
 
@@ -939,7 +932,6 @@ function startGame() {
 }
 
 
-
 /* ==================================================
    建立 3D 世界
 ================================================== */
@@ -955,10 +947,6 @@ function createWorld() {
             0xb0b0b0
         );
 
-
-    /* =========================
-       相機
-    ========================= */
 
     camera =
         new THREE.PerspectiveCamera(
@@ -985,10 +973,6 @@ function createWorld() {
 
     );
 
-
-    /* =========================
-       Renderer
-    ========================= */
 
     renderer =
         new THREE.WebGLRenderer({
@@ -1029,10 +1013,6 @@ function createWorld() {
         );
 
 
-    /* =========================
-       光
-    ========================= */
-
     const ambient =
         new THREE.AmbientLight(
 
@@ -1048,26 +1028,15 @@ function createWorld() {
     );
 
 
-    /* =========================
-       房間
-    ========================= */
-
     createRoom();
-
-
-    /* =========================
-       控制
-    ========================= */
 
     setupTouch();
 
     setupButtons();
 
-
     animate();
 
 }
-
 
 
 /* ==================================================
@@ -1084,7 +1053,6 @@ function createRoom() {
 
     const D =
         ROOM_DEPTH;
-
 
 
     /* =========================
@@ -1127,7 +1095,6 @@ function createRoom() {
     );
 
 
-
     /* =========================
        天花板
     ========================= */
@@ -1168,7 +1135,6 @@ function createRoom() {
     );
 
 
-
     /* =========================
        前牆
     ========================= */
@@ -1197,7 +1163,6 @@ function createRoom() {
     );
 
 
-
     /* =========================
        後牆
     ========================= */
@@ -1224,7 +1189,6 @@ function createRoom() {
     scene.add(
         back
     );
-
 
 
     /* =========================
@@ -1259,7 +1223,6 @@ function createRoom() {
     );
 
 
-
     /* =========================
        右牆
     ========================= */
@@ -1292,11 +1255,6 @@ function createRoom() {
     );
 
 
-
-    /* =========================
-       房間邊界線
-    ========================= */
-
     createRoomEdges(
 
         W,
@@ -1306,7 +1264,6 @@ function createRoom() {
     );
 
 }
-
 
 
 /* ==================================================
@@ -1343,7 +1300,6 @@ function createWall(
     );
 
 }
-
 
 
 /* ==================================================
@@ -1412,7 +1368,6 @@ function createRoomEdges(
 }
 
 
-
 /* ==================================================
    玩家移動
 ================================================== */
@@ -1440,7 +1395,6 @@ function updatePlayer() {
     let dz = 0;
 
 
-
     if (
         movement.forward
     ) {
@@ -1454,7 +1408,6 @@ function updatePlayer() {
             speed;
 
     }
-
 
 
     if (
@@ -1472,7 +1425,6 @@ function updatePlayer() {
     }
 
 
-
     if (
         movement.left
     ) {
@@ -1488,7 +1440,6 @@ function updatePlayer() {
     }
 
 
-
     if (
         movement.right
     ) {
@@ -1502,7 +1453,6 @@ function updatePlayer() {
             speed;
 
     }
-
 
 
     const limitX =
@@ -1525,7 +1475,6 @@ function updatePlayer() {
         dz;
 
 
-
     if (
         nextX >
         -limitX &&
@@ -1540,7 +1489,6 @@ function updatePlayer() {
     }
 
 
-
     if (
         nextZ >
         -limitZ &&
@@ -1553,7 +1501,6 @@ function updatePlayer() {
             nextZ;
 
     }
-
 
 
     camera.position.set(
@@ -1579,7 +1526,6 @@ function updatePlayer() {
         pitch;
 
 }
-
 
 
 /* ==================================================
@@ -1715,7 +1661,6 @@ function setupTouch() {
 }
 
 
-
 /* ==================================================
    移動按鈕
 ================================================== */
@@ -1818,7 +1763,6 @@ function setupButtons() {
 }
 
 
-
 /* ==================================================
    遊戲循環
 ================================================== */
@@ -1849,7 +1793,6 @@ function animate() {
     }
 
 }
-
 
 
 /* ==================================================
