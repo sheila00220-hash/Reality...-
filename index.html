@@ -16,10 +16,6 @@ user-scalable=no">
 
 <style>
 
-/* ==================================================
-   基本設定
-================================================== */
-
 * {
     box-sizing: border-box;
 }
@@ -101,7 +97,7 @@ body {
     color: #f5f5f5;
 
     /*
-       初始完全透明
+       初始透明
     */
 
     opacity: 0;
@@ -180,7 +176,7 @@ body {
 
 
 /* ==================================================
-   標題設定
+   標題
 ================================================== */
 
 const titleText =
@@ -212,393 +208,284 @@ const titleSteps = [
 
 
 /* ==================================================
-   不穩定顯影
+   每一個字串：
+   從透明 → 慢慢出現
 ================================================== */
 
-function unstableReveal(
-    text,
-    callback
+function showStep(
+    text
 ) {
 
 
+    return new Promise(
+
+        function(resolve) {
+
+
+            /*
+               先清空
+            */
+
+            titleText.textContent =
+                "";
+
+
+            titleText.style.opacity =
+                "0";
+
+
+            /*
+               先讓黑屏保持一下
+
+               避免文字瞬間替換
+            */
+
+            setTimeout(
+
+                function() {
+
+
+                    /*
+                       換成新的文字
+                    */
+
+                    titleText.textContent =
+                        text;
+
+
+                    /*
+                       強制瀏覽器
+                       重新計算樣式
+                    */
+
+                    void titleText.offsetWidth;
+
+
+                    /*
+                       從 0 慢慢增加
+                    */
+
+                    let opacity = 0;
+
+
+                    const fadeInTime =
+                        2500;
+
+
+                    const startTime =
+                        performance.now();
+
+
+
+                    function fade(
+                        currentTime
+                    ) {
+
+
+                        const elapsed =
+                            currentTime -
+                            startTime;
+
+
+                        const progress =
+                            Math.min(
+
+                                elapsed /
+                                fadeInTime,
+
+                                1
+
+                            );
+
+
+                        /*
+                           ease-in-out
+
+                           開始慢
+                           中間變快
+                           最後再慢下來
+                        */
+
+                        const eased =
+                            progress *
+                            progress *
+                            (
+                                3 -
+                                2 *
+                                progress
+                            );
+
+
+                        opacity =
+                            eased;
+
+
+                        titleText.style.opacity =
+                            opacity;
+
+
+
+                        if (
+                            progress <
+                            1
+                        ) {
+
+
+                            requestAnimationFrame(
+                                fade
+                            );
+
+
+                        }
+
+                        else {
+
+
+                            titleText.style.opacity =
+                                "1";
+
+
+                            /*
+                               完整顯現後
+                               停留 1.5 秒
+                            */
+
+                            setTimeout(
+
+                                resolve,
+
+                                1500
+
+                            );
+
+                        }
+
+                    }
+
+
+                    requestAnimationFrame(
+                        fade
+                    );
+
+
+                },
+
+                800
+
+            );
+
+        }
+
+    );
+
+}
+
+
+
+/* ==================================================
+   主動畫
+================================================== */
+
+async function startTitle() {
+
+
     /*
-       換文字
+       一個一個慢慢出現
     */
 
-    titleText.textContent =
-        text;
+    for (
+        let i = 0;
+
+        i <
+        titleSteps.length;
+
+        i++
+    ) {
+
+
+        await showStep(
+
+            titleSteps[i]
+
+        );
+
+    }
+
+
+
+    /* ==================================================
+       Reality...? 完整出現
+    ================================================== */
 
 
     /*
-       從完全看不到開始
+       再停留一段時間
+
+       2 ～ 4 秒
     */
+
+    await new Promise(
+
+        function(resolve) {
+
+            setTimeout(
+
+                resolve,
+
+                2000 +
+                Math.random() * 2000
+
+            );
+
+        }
+
+    );
+
+
+
+    /* ==================================================
+       瞬間消失
+    ================================================== */
+
 
     titleText.style.opacity =
         "0";
 
 
+    titleText.textContent =
+        "";
+
+
+
+    /* ==================================================
+       黑屏
+    ================================================== */
+
+
+    await new Promise(
+
+        function(resolve) {
+
+            setTimeout(
+
+                resolve,
+
+                4000 +
+                Math.random() * 2000
+
+            );
+
+        }
+
+    );
+
+
 
     /*
-       不規則透明度
-
-       前面比較暗
-       後面逐漸變亮
+       重新開始
     */
 
-    const opacitySteps = [
-
-        0.08,
-
-        0.22,
-
-        0.12,
-
-        0.38,
-
-        0.25,
-
-        0.55,
-
-        0.40,
-
-        0.72,
-
-        0.58,
-
-        0.86,
-
-        0.74,
-
-        1
-
-    ];
-
-
-    let step = 0;
-
-
-
-    function flicker() {
-
-
-        if (
-            step >=
-            opacitySteps.length
-        ) {
-
-
-            titleText.style.opacity =
-                "1";
-
-
-            setTimeout(
-
-                callback,
-
-                900
-
-            );
-
-
-            return;
-
-        }
-
-
-
-        /*
-           設定透明度
-        */
-
-        titleText.style.opacity =
-            opacitySteps[step];
-
-
-        step++;
-
-
-
-        /*
-           每次變化時間
-
-           故意不固定
-        */
-
-        const delay =
-            180 +
-            Math.random() * 420;
-
-
-        setTimeout(
-
-            flicker,
-
-            delay
-
-        );
-
-    }
-
-
-
-    flicker();
-
-}
-
-
-
-/* ==================================================
-   Reality...? 最後穩定顯現
-================================================== */
-
-function finalReveal(
-    callback
-) {
-
-
-    const finalSteps = [
-
-        0.18,
-
-        0.08,
-
-        0.32,
-
-        0.20,
-
-        0.48,
-
-        0.36,
-
-        0.65,
-
-        0.52,
-
-        0.78,
-
-        0.68,
-
-        0.91,
-
-        1
-
-    ];
-
-
-    let step = 0;
-
-
-
-    function flickerFinal() {
-
-
-        if (
-            step >=
-            finalSteps.length
-        ) {
-
-
-            titleText.style.opacity =
-                "1";
-
-
-            setTimeout(
-
-                callback,
-
-                1800
-
-            );
-
-
-            return;
-
-        }
-
-
-
-        titleText.style.opacity =
-            finalSteps[step];
-
-
-        step++;
-
-
-
-        const delay =
-            220 +
-            Math.random() * 450;
-
-
-        setTimeout(
-
-            flickerFinal,
-
-            delay
-
-        );
-
-    }
-
-
-
-    flickerFinal();
-
-}
-
-
-
-/* ==================================================
-   主循環
-================================================== */
-
-function startTitle() {
-
-
-    let index = 0;
-
-
-
-    function next() {
-
-
-        /*
-           還有普通階段
-        */
-
-        if (
-            index <
-            titleSteps.length - 1
-        ) {
-
-
-            unstableReveal(
-
-                titleSteps[index],
-
-                function() {
-
-
-                    index++;
-
-
-                    /*
-                       每個階段之間
-                       留一點黑暗
-                    */
-
-                    const gap =
-                        500 +
-                        Math.random() * 700;
-
-
-                    setTimeout(
-
-                        next,
-
-                        gap
-
-                    );
-
-                }
-
-            );
-
-
-            return;
-
-        }
-
-
-
-        /*
-           =========================
-           最後 Reality...?
-           =========================
-        */
-
-
-        titleText.textContent =
-            "Reality...?";
-
-
-        titleText.style.opacity =
-            "0";
-
-
-        finalReveal(
-
-            function() {
-
-
-                /*
-                   完整標題
-                   再停留一段時間
-                */
-
-                const stay =
-                    1800 +
-                    Math.random() * 1800;
-
-
-                setTimeout(
-
-                    function() {
-
-
-                        /*
-                           ==================
-                           瞬間消失
-                           ==================
-                        */
-
-                        titleText.style.opacity =
-                            "0";
-
-
-                        titleText.textContent =
-                            "";
-
-
-                        /*
-                           黑屏
-                           4 ～ 6 秒
-                        */
-
-                        const black =
-                            4000 +
-                            Math.random() * 2000;
-
-
-                        setTimeout(
-
-                            function() {
-
-
-                                startTitle();
-
-
-                            },
-
-                            black
-
-                        );
-
-                    },
-
-                    stay
-
-                );
-
-            }
-
-        );
-
-    }
-
-
-
-    next();
+    startTitle();
 
 }
 
