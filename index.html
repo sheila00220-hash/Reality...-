@@ -78,7 +78,6 @@ body {
 <div id="text"></div>
 
 
-
 <script>
 
 
@@ -88,6 +87,13 @@ const text =
 
 const word =
     "Reality...?";
+
+
+/* ==================================================
+   所有已經完成的舊字
+================================================== */
+
+const oldLetters = [];
 
 
 /* ==================================================
@@ -112,24 +118,20 @@ function wait(ms) {
 }
 
 
-
 /* ==================================================
    新字顯現
+
+   1% → 100%
+
+   只負責自己
 ================================================== */
 
-function revealLetter(
-    letter,
-    oldLetters
-) {
+function revealLetter(letter) {
 
     return new Promise(
 
         function(resolve) {
 
-
-            /*
-               新字顯現速度
-            */
 
             const duration =
                 1400;
@@ -137,7 +139,6 @@ function revealLetter(
 
             const start =
                 performance.now();
-
 
 
             function animate(now) {
@@ -155,13 +156,13 @@ function revealLetter(
 
 
                 /*
-                   ==================================
-                   新字
+                   新字：
 
-                   1% → 100%
+                   1%
+                   ↓
+                   100%
 
-                   永遠只增加
-                   ==================================
+                   絕對不倒退
                 */
 
                 letter.style.opacity =
@@ -170,81 +171,6 @@ function revealLetter(
                         0.99 *
                         progress
                     );
-
-
-
-                /*
-                   ==================================
-                   舊字
-
-                   明顯但連續的漸變
-                   ==================================
-                */
-
-                oldLetters.forEach(
-
-                    function(
-                        oldLetter,
-                        index
-                    ) {
-
-
-                        /*
-                           不同字有不同相位
-
-                           避免全部一起變
-                        */
-
-                        const phase =
-                            index *
-                            1.4;
-
-
-
-                        /*
-                           慢慢上下波動
-
-                           sin 範圍：
-                           -1 ～ +1
-                        */
-
-                        const wave =
-                            Math.sin(
-
-                                progress *
-                                Math.PI *
-                                2.4
-                                +
-                                phase
-
-                            );
-
-
-
-                        /*
-                           透明度範圍：
-
-                           最亮：約 100%
-
-                           最暗：約 55%
-                        */
-
-                        const opacity =
-                            0.775 +
-                            (
-                                wave *
-                                0.225
-                            );
-
-
-
-                        oldLetter.style.opacity =
-                            opacity;
-
-                    }
-
-                );
-
 
 
                 if (
@@ -262,38 +188,8 @@ function revealLetter(
                 else {
 
 
-                    /*
-                       新字固定
-                    */
-
                     letter.style.opacity =
                         "1";
-
-
-
-                    /*
-                       舊字回到完整
-
-                       但不是突然跳
-                    */
-
-                    oldLetters.forEach(
-
-                        function(
-                            oldLetter
-                        ) {
-
-
-                            oldLetter.style.transition =
-                                "opacity 500ms ease";
-
-
-                            oldLetter.style.opacity =
-                                "1";
-
-                        }
-
-                    );
 
 
                     resolve();
@@ -314,6 +210,112 @@ function revealLetter(
 }
 
 
+/* ==================================================
+   舊字「持續呼吸」
+
+   不是閃爍
+
+   是連續的透明度曲線
+================================================== */
+
+function startBreathing(
+    letter,
+    index
+) {
+
+
+    /*
+       每個字速度稍微不同
+
+       避免全部同步
+    */
+
+    const speed =
+        0.0018 +
+        (
+            index *
+            0.00018
+        );
+
+
+    /*
+       每個字稍微錯開
+    */
+
+    const phase =
+        index *
+        1.8;
+
+
+    function breathe(time) {
+
+
+        /*
+           如果字還存在
+           就一直呼吸
+        */
+
+        if (
+            !letter.isConnected
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+           sin：
+
+           -1 → +1
+
+           是連續曲線
+        */
+
+        const wave =
+            Math.sin(
+
+                time *
+                speed
+                +
+                phase
+
+            );
+
+
+        /*
+           透明度：
+
+           25% ～ 100%
+
+           變化幅度明顯
+        */
+
+        const opacity =
+            0.625 +
+            (
+                wave *
+                0.375
+            );
+
+
+        letter.style.opacity =
+            opacity;
+
+
+        requestAnimationFrame(
+            breathe
+        );
+
+    }
+
+
+    requestAnimationFrame(
+        breathe
+    );
+
+}
+
 
 /* ==================================================
    主動畫
@@ -323,7 +325,7 @@ async function start() {
 
 
     /*
-       開始黑屏
+       黑屏
     */
 
     await wait(
@@ -331,9 +333,23 @@ async function start() {
     );
 
 
+    /*
+       清空
+    */
+
+    text.innerHTML =
+        "";
+
+
+    oldLetters.length =
+        0;
+
+
 
     /*
+       ==========================================
        一個字一個字出現
+       ==========================================
     */
 
     for (
@@ -378,43 +394,84 @@ async function start() {
 
 
         /*
-           找出舊字
+           ========================================
+           新字開始出現之前：
+
+           先讓所有舊字開始呼吸
+           ========================================
         */
 
-        const oldLetters =
-            Array.from(
-                text.querySelectorAll(
-                    ".letter"
-                )
-            ).slice(
-                0,
-                -1
-            );
+        for (
+            let j = 0;
+
+            j <
+            oldLetters.length;
+
+            j++
+        ) {
+
+
+            /*
+               只啟動一次
+            */
+
+            if (
+                !oldLetters[j]
+                    .dataset
+                    .breathing
+            ) {
+
+
+                oldLetters[j]
+                    .dataset
+                    .breathing =
+                    "true";
+
+
+                startBreathing(
+
+                    oldLetters[j],
+
+                    j
+
+                );
+
+            }
+
+        }
 
 
 
         /*
-           新字顯現
+           ========================================
+           新字：
 
-           舊字同時漸變
+           1% → 100%
+           ========================================
         */
 
         await revealLetter(
-
-            letter,
-
-            oldLetters
-
+            letter
         );
 
 
+        /*
+           新字完成
+
+           現在它變成舊字
+        */
+
+        oldLetters.push(
+            letter
+        );
+
 
         /*
-           每個字之間停頓
+           停頓
         */
 
         await wait(
-            1300
+            1200
         );
 
     }
@@ -423,14 +480,28 @@ async function start() {
 
     /*
        ==========================================
-       完整 Reality...?
+       全部完成
        ==========================================
     */
 
+    /*
+       最後一個字也加入呼吸
+
+       但稍微延遲
+    */
+
     await wait(
-        4000
+        800
     );
 
+
+    /*
+       Reality...? 完整存在
+    */
+
+    await wait(
+        3500
+    );
 
 
     /*
@@ -443,7 +514,6 @@ async function start() {
         "";
 
 
-
     /*
        黑屏
     */
@@ -453,9 +523,8 @@ async function start() {
     );
 
 
-
     /*
-       重播
+       重來
     */
 
     start();
@@ -463,9 +532,8 @@ async function start() {
 }
 
 
-
 /* ==================================================
-   啟動
+   開始
 ================================================== */
 
 start();
