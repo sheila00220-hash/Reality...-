@@ -15,6 +15,10 @@ user-scalable=no">
 
 <style>
 
+/* ==================================================
+   基本設定
+================================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -37,6 +41,7 @@ body {
         Arial,
         "Noto Sans TC",
         sans-serif;
+
 }
 
 #game {
@@ -44,8 +49,8 @@ body {
     position: relative;
 
     width: 100vw;
-
     height: 100vh;
+
 }
 
 
@@ -76,28 +81,46 @@ body {
     z-index: 100;
 
     overflow: hidden;
+
 }
 
 
 /* ==================================================
-   標題固定容器
+   標題外層
+================================================== */
 
-   整個文字的寬度一開始就固定，
-   不會因為新增字母而重新排版
+.titleWrapper {
+
+    width: 100vw;
+
+    height: 1.2em;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: visible;
+
+}
+
+
+/* ==================================================
+   標題
+
+   整體永遠固定在畫面中央
 ================================================== */
 
 #titleText {
 
-    position: relative;
-
-    width: min(
-        95vw,
-        850px
-    );
-
-    height: 1.2em;
-
     margin: 0;
+
+    padding: 0;
+
+    display: inline-block;
+
+    width: auto;
 
     font-family:
         Arial,
@@ -105,52 +128,45 @@ body {
         sans-serif;
 
     font-size:
-        clamp(50px, 13vw, 104px);
+        clamp(48px, 11vw, 104px);
 
     font-weight: 300;
 
     line-height: 1;
 
+    color: #f5f5f5;
+
     white-space: nowrap;
 
-    color: #f5f5f5;
+    letter-spacing: 0;
+
+    text-align: center;
+
 }
 
 
 /* ==================================================
-   每個字母
+   單字母
 
-   使用 absolute：
-   每個字的位置完全固定
+   只改透明度
+   不改位置
 ================================================== */
 
 .titleLetter {
 
-    position: absolute;
-
-    top: 0;
-
-    display: block;
-
-    width: 1em;
-
-    height: 1em;
-
-    text-align: center;
-
-    opacity: 0;
+    display: inline;
 
     margin: 0;
 
     padding: 0;
 
-    transform:
-        translateX(-50%);
+    opacity: 0;
+
 }
 
 
 /* ==================================================
-   警告
+   內容提示
 ================================================== */
 
 .warning {
@@ -166,6 +182,7 @@ body {
     font-size: 14px;
 
     line-height: 1.8;
+
 }
 
 
@@ -192,6 +209,7 @@ body {
     cursor: pointer;
 
     touch-action: manipulation;
+
 }
 
 
@@ -200,6 +218,7 @@ body {
     background: white;
 
     color: black;
+
 }
 
 
@@ -212,6 +231,7 @@ body {
     position: absolute;
 
     inset: 0;
+
 }
 
 
@@ -242,6 +262,7 @@ body {
     border-radius: 5px;
 
     font-size: 13px;
+
 }
 
 
@@ -262,6 +283,7 @@ body {
     height: 120px;
 
     z-index: 20;
+
 }
 
 
@@ -295,6 +317,7 @@ body {
     user-select: none;
 
     touch-action: none;
+
 }
 
 
@@ -303,6 +326,7 @@ body {
     left: 64px;
 
     top: 0;
+
 }
 
 
@@ -311,6 +335,7 @@ body {
     left: 8px;
 
     top: 58px;
+
 }
 
 
@@ -319,6 +344,7 @@ body {
     left: 64px;
 
     top: 58px;
+
 }
 
 
@@ -327,6 +353,7 @@ body {
     left: 120px;
 
     top: 58px;
+
 }
 
 </style>
@@ -345,7 +372,12 @@ body {
 
 <div id="title">
 
-    <h1 id="titleText"></h1>
+
+    <div class="titleWrapper">
+
+        <h1 id="titleText"></h1>
+
+    </div>
 
 
     <div class="warning">
@@ -354,21 +386,25 @@ body {
             內容提示
         </p>
 
+
         <p>
             本作品包含心理恐怖、
             令人不安的聲音與視覺表現，
             以及可能引起部分玩家不適的成人向主題。
         </p>
 
+
         <p>
             部分內容可能涉及敏感議題。
         </p>
+
 
         <p>
             若你容易受到心理壓迫、
             強烈聲音或失真畫面的影響，
             請自行斟酌是否遊玩。
         </p>
+
 
         <p>
             你可以隨時離開遊戲。
@@ -384,6 +420,7 @@ body {
         開始你的旅程
 
     </button>
+
 
 </div>
 
@@ -416,6 +453,7 @@ body {
     id="controls"
     style="display:none;">
 
+
     <div
         class="control forward"
         data-direction="forward">
@@ -423,6 +461,7 @@ body {
         ↑
 
     </div>
+
 
     <div
         class="control left"
@@ -432,6 +471,7 @@ body {
 
     </div>
 
+
     <div
         class="control back"
         data-direction="back">
@@ -440,6 +480,7 @@ body {
 
     </div>
 
+
     <div
         class="control right"
         data-direction="right">
@@ -447,6 +488,7 @@ body {
         →
 
     </div>
+
 
 </div>
 
@@ -491,6 +533,7 @@ function wait(ms) {
     return new Promise(
 
         resolve =>
+
             setTimeout(
                 resolve,
                 ms
@@ -502,44 +545,12 @@ function wait(ms) {
 
 
 /* ==================================================
-   計算固定字位
-
-   所有字母一開始就知道自己的位置
+   建立完整標題
 ================================================== */
 
-function getLetterPosition(index) {
+function createTitleLetters() {
 
-    const total =
-        titleWord.length;
-
-
-    /*
-       用百分比把整個單字
-       平均分布在容器中央
-    */
-
-    const spacing =
-        100 / total;
-
-
-    return (
-        spacing * index
-        +
-        spacing / 2
-    );
-
-}
-
-
-/* ==================================================
-   建立固定字母
-================================================== */
-
-function createLetters() {
-
-    titleText.innerHTML =
-        "";
-
+    titleText.innerHTML = "";
 
     const letters = [];
 
@@ -564,19 +575,6 @@ function createLetters() {
             titleWord[i];
 
 
-        /*
-           固定位置
-        */
-
-        letter.style.left =
-            getLetterPosition(i)
-            + "%";
-
-
-        /*
-           一開始完全透明
-        */
-
         letter.style.opacity =
             "0";
 
@@ -599,11 +597,10 @@ function createLetters() {
 
 
 /* ==================================================
-   單字母慢速浮現
+   單字母漸變
 
-   1% → 100%
-
-   1800ms
+   2200ms
+   慢慢由 0 → 100
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -613,7 +610,7 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                1800;
+                2200;
 
 
             const start =
@@ -646,10 +643,7 @@ function fadeInLetter(letter) {
 
 
                 /*
-                   smoothstep
-
-                   讓開始與結束
-                   都比較柔和
+                   Smoothstep
                 */
 
                 const eased =
@@ -661,16 +655,8 @@ function fadeInLetter(letter) {
                     );
 
 
-                /*
-                   1% → 100%
-                */
-
                 letter.style.opacity =
-                    0.01 +
-                    (
-                        0.99 *
-                        eased
-                    );
+                    eased;
 
 
                 if (
@@ -708,97 +694,7 @@ function fadeInLetter(letter) {
 
 
 /* ==================================================
-   已出現字母的平滑忽隱忽現
-
-   不閃爍
-================================================== */
-
-function startPulse(letter) {
-
-    if (
-        letter.dataset.pulsing
-    )
-        return;
-
-
-    letter.dataset.pulsing =
-        "true";
-
-
-    let phase =
-        Math.random() *
-        Math.PI *
-        2;
-
-
-    const speed =
-        0.006 +
-        Math.random() *
-        0.002;
-
-
-    function animate() {
-
-        if (!titleRunning)
-            return;
-
-
-        phase += speed;
-
-
-        const wave =
-            (
-                Math.sin(phase)
-                + 1
-            ) / 2;
-
-
-        const eased =
-            wave *
-            wave *
-            (
-                3 -
-                2 * wave
-            );
-
-
-        /*
-           25% → 100%
-
-           非同步、
-           平滑呼吸
-        */
-
-        const opacity =
-            0.25 +
-            (
-                eased *
-                0.75
-            );
-
-
-        letter.style.opacity =
-            opacity;
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    }
-
-
-    requestAnimationFrame(
-        animate
-    );
-
-}
-
-
-/* ==================================================
-   主標題流程
-
-   固定字位版本
+   標題完整動畫
 ================================================== */
 
 async function playTitleAnimation() {
@@ -806,20 +702,16 @@ async function playTitleAnimation() {
     while (titleRunning) {
 
 
-        /*
-           一次建立全部字母
-
-           所以後面的字加入時
-           前面的字完全不會移動
-        */
-
         const letters =
-            createLetters();
+            createTitleLetters();
 
 
-        /* ==========================================
-           逐字浮現
-        ========================================== */
+        /*
+           一個一個出現
+
+           但是整串文字的位置
+           從頭到尾固定
+        */
 
         for (
             let i = 0;
@@ -832,13 +724,6 @@ async function playTitleAnimation() {
                 return;
 
 
-            /*
-               當前字：
-
-               1% → 100%
-               1800ms
-            */
-
             await fadeInLetter(
                 letters[i]
             );
@@ -849,42 +734,19 @@ async function playTitleAnimation() {
 
 
             /*
-               字與字之間
-               停頓 650ms
+               字與字之間稍微停頓
             */
 
             await wait(
-                650
+                500
             );
-
-
-            if (!titleRunning)
-                return;
-
-
-            /*
-               下一個字準備出現時，
-               前面的字開始呼吸
-            */
-
-            for (
-                let j = 0;
-                j <= i;
-                j++
-            ) {
-
-                startPulse(
-                    letters[j]
-                );
-
-            }
 
         }
 
 
-        /* ==========================================
+        /*
            完整標題停留
-        ========================================== */
+        */
 
         await wait(
             3500
@@ -895,26 +757,111 @@ async function playTitleAnimation() {
             return;
 
 
-        /* ==========================================
-           標題消失
-        ========================================== */
+        /*
+           整體慢慢消失
+        */
 
-        titleText.innerHTML =
-            "";
+        const fadeOutDuration =
+            1800;
+
+
+        const start =
+            performance.now();
+
+
+        await new Promise(
+
+            resolve => {
+
+                function fadeOut(now) {
+
+                    if (!titleRunning) {
+
+                        resolve();
+
+                        return;
+
+                    }
+
+
+                    const progress =
+                        Math.min(
+
+                            (
+                                now -
+                                start
+                            ) /
+                            fadeOutDuration,
+
+                            1
+
+                        );
+
+
+                    const eased =
+                        1 -
+                        (
+                            progress *
+                            progress *
+                            (
+                                3 -
+                                2 * progress
+                            )
+                        );
+
+
+                    letters.forEach(
+
+                        letter => {
+
+                            letter.style.opacity =
+                                eased;
+
+                        }
+
+                    );
+
+
+                    if (
+                        progress < 1
+                    ) {
+
+                        requestAnimationFrame(
+                            fadeOut
+                        );
+
+                    }
+
+                    else {
+
+                        titleText.innerHTML =
+                            "";
+
+                        resolve();
+
+                    }
+
+                }
+
+
+                requestAnimationFrame(
+                    fadeOut
+                );
+
+            }
+
+        );
 
 
         /*
-           重新出現前等待
-           2.5 ～ 5 秒
+           消失後等待
         */
 
-        const restartDelay =
-            2500 +
-            Math.random() * 2500;
-
-
         await wait(
-            restartDelay
+
+            3000 +
+            Math.random() * 2000
+
         );
 
     }
@@ -927,7 +874,7 @@ playTitleAnimation();
 
 
 /* ==================================================
-   Three.js 變數
+   Three.js
 ================================================== */
 
 let scene = null;
@@ -996,8 +943,11 @@ document
         "startButton"
     )
     .addEventListener(
+
         "click",
+
         startGame
+
     );
 
 
@@ -1008,6 +958,7 @@ function startGame() {
 
 
     started = true;
+
 
     titleRunning = false;
 
@@ -1172,10 +1123,8 @@ function createRoom() {
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
-
                 W,
                 D
-
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1212,10 +1161,8 @@ function createRoom() {
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
-
                 W,
                 D
-
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1364,6 +1311,10 @@ function createRoom() {
     );
 
 
+    /* =========================
+       房間邊界
+    ========================= */
+
     createRoomEdges(
 
         W,
@@ -1460,7 +1411,6 @@ function createRoomEdges(
         new THREE.LineSegments(
 
             edges,
-
             material
 
         );
@@ -1504,6 +1454,8 @@ function updatePlayer() {
     let dz = 0;
 
 
+    /* 前 */
+
     if (
         movement.forward
     ) {
@@ -1518,6 +1470,8 @@ function updatePlayer() {
 
     }
 
+
+    /* 後 */
 
     if (
         movement.back
@@ -1534,6 +1488,8 @@ function updatePlayer() {
     }
 
 
+    /* 左 */
+
     if (
         movement.left
     ) {
@@ -1548,6 +1504,8 @@ function updatePlayer() {
 
     }
 
+
+    /* 右 */
 
     if (
         movement.right
@@ -1662,9 +1620,11 @@ function setupTouch() {
 
             touching = true;
 
+
             lastX =
                 event.touches[0]
                 .clientX;
+
 
             lastY =
                 event.touches[0]
@@ -1673,7 +1633,8 @@ function setupTouch() {
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
@@ -1748,7 +1709,8 @@ function setupTouch() {
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
@@ -1828,20 +1790,29 @@ function setupButtons() {
 
 
             button.addEventListener(
+
                 "pointerdown",
+
                 press
+
             );
 
 
             button.addEventListener(
+
                 "pointerup",
+
                 release
+
             );
 
 
             button.addEventListener(
+
                 "pointercancel",
+
                 release
+
             );
 
 
