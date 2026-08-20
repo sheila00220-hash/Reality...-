@@ -12,6 +12,7 @@ maximum-scale=1.0">
 
 <title>Reality...?</title>
 
+
 <style>
 
 html,
@@ -23,9 +24,9 @@ body {
 
     height: 100%;
 
-    background: black;
-
     overflow: hidden;
+
+    background: black;
 
 }
 
@@ -79,13 +80,12 @@ body {
 <div id="text"></div>
 
 
+
 <script>
 
 
 const text =
-    document.getElementById(
-        "text"
-    );
+    document.getElementById("text");
 
 
 const word =
@@ -93,145 +93,226 @@ const word =
 
 
 
-/* ==========================================
+/* ==================================================
    等待
-========================================== */
+================================================== */
 
 function wait(ms) {
 
     return new Promise(
-        resolve =>
+
+        function(resolve) {
+
             setTimeout(
                 resolve,
                 ms
-            )
+            );
+
+        }
+
     );
 
 }
 
 
 
-/* ==========================================
-   一個字的「忽亮忽暗顯影」
-========================================== */
+/* ==================================================
+   新字：
+   1% → 100%
+================================================== */
 
-async function revealLetter(letter) {
+function revealLetter(letter) {
 
+    return new Promise(
 
-    /*
-       非常明顯的透明度變化
-
-       不是小幅度閃爍
-    */
-
-    const levels = [
-
-        0.00,
-
-        0.25,
-
-        0.07,
-
-        0.45,
-
-        0.12,
-
-        0.68,
-
-        0.30,
-
-        0.82,
-
-        0.55,
-
-        1.00
-
-    ];
+        function(resolve) {
 
 
-    /*
-       每一階停留多久
+            const duration =
+                1200;
 
-       故意慢
-    */
 
-    const times = [
-
-        900,
-
-        700,
-
-        900,
-
-        700,
-
-        850,
-
-        650,
-
-        750,
-
-        600,
-
-        650,
-
-        1000
-
-    ];
+            const start =
+                performance.now();
 
 
 
-    for (
-        let i = 0;
-
-        i <
-        levels.length;
-
-        i++
-    ) {
+            function animate(now) {
 
 
-        /*
-           設定透明度
-        */
+                const progress =
+                    Math.min(
 
-        letter.style.opacity =
-            levels[i];
+                        (now - start) /
+                        duration,
+
+                        1
+
+                    );
 
 
-        /*
-           慢慢等待
+                /*
+                   1% → 100%
 
-           所以你肉眼一定看得到
-        */
+                   不倒退
+                */
 
-        await wait(
-            times[i]
-        );
+                const opacity =
+                    0.01 +
+                    (
+                        0.99 *
+                        progress
+                    );
 
-    }
+
+                letter.style.opacity =
+                    opacity;
+
+
+
+                if (
+                    progress < 1
+                ) {
+
+                    requestAnimationFrame(
+                        animate
+                    );
+
+                }
+
+                else {
+
+                    letter.style.opacity =
+                        "1";
+
+                    resolve();
+
+                }
+
+            }
+
+
+            requestAnimationFrame(
+                animate
+            );
+
+        }
+
+    );
 
 }
 
 
 
-/* ==========================================
-   開始
-========================================== */
+/* ==================================================
+   舊字：
+   很慢、很輕微地忽隱忽現
+================================================== */
+
+function gentleFlicker(letter) {
+
+
+    /*
+       隨機等待
+
+       不會全部同時變化
+    */
+
+    const delay =
+        900 +
+        Math.random() * 1800;
+
+
+
+    setTimeout(
+
+        async function() {
+
+
+            /*
+               只降低一點
+
+               不會突然消失
+            */
+
+            const low =
+                0.88 +
+                Math.random() * 0.08;
+
+
+            /*
+               慢慢暗下去
+            */
+
+            letter.style.transition =
+                "opacity 900ms ease-in-out";
+
+
+            letter.style.opacity =
+                low;
+
+
+
+            await wait(
+                900
+            );
+
+
+
+            /*
+               慢慢回到完整
+            */
+
+            letter.style.opacity =
+                "1";
+
+
+
+            await wait(
+                900 +
+                Math.random() * 1200
+            );
+
+
+
+            /*
+               下一次
+            */
+
+            gentleFlicker(
+                letter
+            );
+
+
+        },
+
+        delay
+
+    );
+
+}
+
+
+
+/* ==================================================
+   主動畫
+================================================== */
 
 async function start() {
 
 
     /*
-       黑屏
+       開始前黑屏
     */
 
-    await wait(1500);
+    await wait(
+        1500
+    );
 
 
 
     /*
-       一個字一個字加入
+       一個字一個字增加
     */
 
     for (
@@ -245,7 +326,7 @@ async function start() {
 
 
         /*
-           建立字母
+           建立新字
         */
 
         const letter =
@@ -262,6 +343,14 @@ async function start() {
             word[i];
 
 
+        /*
+           新字從 1% 開始
+        */
+
+        letter.style.opacity =
+            "0.01";
+
+
         text.appendChild(
             letter
         );
@@ -269,8 +358,51 @@ async function start() {
 
 
         /*
-           這個字自己完成
-           「忽亮忽暗顯影」
+           新字開始顯影
+
+           如果前面已經有字，
+           它們現在才開始輕微閃動
+        */
+
+        if (
+            i > 0
+        ) {
+
+
+            const oldLetters =
+                text.querySelectorAll(
+                    ".letter"
+                );
+
+
+            /*
+               不讓最新的字參與舊字閃爍
+            */
+
+            for (
+                let j = 0;
+
+                j <
+                oldLetters.length - 1;
+
+                j++
+            ) {
+
+
+                gentleFlicker(
+                    oldLetters[j]
+                );
+
+            }
+
+        }
+
+
+
+        /*
+           新字：
+
+           1% → 100%
         */
 
         await revealLetter(
@@ -280,13 +412,13 @@ async function start() {
 
 
         /*
-           下一個字之前
+           字完成後停頓
 
-           故意停頓
+           故意慢
         */
 
         await wait(
-            1800
+            1200
         );
 
     }
@@ -294,22 +426,26 @@ async function start() {
 
 
     /*
+       ==================================================
        Reality...? 完整出現
-
-       停很久
+       ==================================================
     */
 
+
     await wait(
-        4000
+        3500
     );
 
 
 
     /*
-       瞬間消失
+       ==================================================
+       突然消失
+       ==================================================
     */
 
-    text.innerHTML = "";
+    text.innerHTML =
+        "";
 
 
 
@@ -318,13 +454,13 @@ async function start() {
     */
 
     await wait(
-        5000
+        4500
     );
 
 
 
     /*
-       重播
+       重新開始
     */
 
     start();
@@ -332,6 +468,10 @@ async function start() {
 }
 
 
+
+/* ==================================================
+   啟動
+================================================== */
 
 start();
 
