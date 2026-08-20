@@ -15,6 +15,10 @@ user-scalable=no">
 
 <style>
 
+/* =========================
+   基本設定
+========================= */
+
 * {
     box-sizing: border-box;
 }
@@ -39,6 +43,7 @@ body {
         sans-serif;
 }
 
+
 #game {
 
     position: relative;
@@ -59,9 +64,9 @@ body {
 
     inset: 0;
 
-    background: black;
+    background: #000;
 
-    color: white;
+    color: #fff;
 
     display: flex;
 
@@ -75,18 +80,48 @@ body {
 
     z-index: 100;
 
+    overflow: hidden;
+
 }
+
+
+/* =========================
+   Reality...? 標題
+========================= */
 
 #title h1 {
 
+    margin: 0;
+
+    width: 90%;
+
+    text-align: center;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     font-size:
-        clamp(45px, 13vw, 90px);
+        clamp(55px, 13vw, 120px);
 
     font-weight: 300;
 
-    letter-spacing: 8px;
+    letter-spacing:
+        clamp(4px, 1.2vw, 14px);
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    color: #f5f5f5;
 
 }
+
+
+/* =========================
+   內容提示
+========================= */
 
 .warning {
 
@@ -94,7 +129,9 @@ body {
 
     max-width: 600px;
 
-    color: #ccc;
+    margin-top: 55px;
+
+    color: #cfcfcf;
 
     font-size: 14px;
 
@@ -102,25 +139,43 @@ body {
 
 }
 
+
+/* =========================
+   開始按鈕
+========================= */
+
 .startButton {
 
-    margin-top: 30px;
+    margin-top: 25px;
 
-    padding: 15px 30px;
-
-    color: white;
+    padding: 14px 30px;
 
     background: transparent;
 
-    border: 1px solid white;
+    border: 1px solid #aaa;
+
+    color: white;
 
     font-size: 17px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+}
+
+
+.startButton:active {
+
+    background: white;
+
+    color: black;
 
 }
 
 
 /* =========================
-   3D
+   3D 房間
 ========================= */
 
 #threeContainer {
@@ -133,7 +188,7 @@ body {
 
 
 /* =========================
-   提示
+   提示文字
 ========================= */
 
 #hint {
@@ -183,6 +238,7 @@ body {
 
 }
 
+
 .control {
 
     position: absolute;
@@ -212,32 +268,42 @@ body {
 
     user-select: none;
 
+    touch-action: none;
+
 }
+
 
 .forward {
 
     left: 64px;
+
     top: 0;
 
 }
 
+
 .left {
 
     left: 8px;
+
     top: 58px;
 
 }
+
 
 .back {
 
     left: 64px;
+
     top: 58px;
 
 }
 
+
 .right {
 
     left: 120px;
+
     top: 58px;
 
 }
@@ -259,27 +325,44 @@ body {
 
 <div id="title">
 
-    <h1>Reality...?</h1>
+
+    <h1>
+        R
+    </h1>
+
 
     <div class="warning">
 
-        <p>內容提示</p>
-
         <p>
-        本作品包含心理恐怖、
-        令人不安的聲音與視覺表現，
-        以及可能引起部分玩家不適的成人向主題。
+            內容提示
         </p>
 
-        <p>
-        部分內容可能涉及敏感議題。
-        </p>
 
         <p>
-        你可以隨時離開遊戲。
+            本作品包含心理恐怖、
+            令人不安的聲音與視覺表現，
+            以及可能引起部分玩家不適的成人向主題。
+        </p>
+
+
+        <p>
+            部分內容可能涉及敏感議題。
+        </p>
+
+
+        <p>
+            若你容易受到心理壓迫、
+            強烈聲音或失真畫面的影響，
+            請自行斟酌是否遊玩。
+        </p>
+
+
+        <p>
+            你可以隨時離開遊戲。
         </p>
 
     </div>
+
 
     <button
         class="startButton"
@@ -289,11 +372,20 @@ body {
 
     </button>
 
+
 </div>
 
 
+<!-- =========================
+     3D
+========================= -->
+
 <div id="threeContainer"></div>
 
+
+<!-- =========================
+     提示
+========================= -->
 
 <div id="hint">
 
@@ -302,7 +394,12 @@ body {
 </div>
 
 
+<!-- =========================
+     移動按鈕
+========================= -->
+
 <div id="controls">
+
 
     <div
         class="control forward"
@@ -312,6 +409,7 @@ body {
 
     </div>
 
+
     <div
         class="control left"
         data-direction="left">
@@ -319,6 +417,7 @@ body {
         ←
 
     </div>
+
 
     <div
         class="control back"
@@ -328,6 +427,7 @@ body {
 
     </div>
 
+
     <div
         class="control right"
         data-direction="right">
@@ -335,6 +435,7 @@ body {
         →
 
     </div>
+
 
 </div>
 
@@ -353,6 +454,148 @@ body {
 <script>
 
 
+/* ==================================================
+   標題動畫
+================================================== */
+
+
+const titleText =
+    document.querySelector(
+        "#title h1"
+    );
+
+
+const titleSteps = [
+
+    "R",
+
+    "Re",
+
+    "Rea",
+
+    "Real",
+
+    "Reali",
+
+    "Realit",
+
+    "Reality",
+
+    "Reality...?"
+
+];
+
+
+let titleRunning = true;
+
+
+function playTitleAnimation() {
+
+
+    if (!titleRunning)
+        return;
+
+
+    let index = 0;
+
+
+    function typeNext() {
+
+
+        if (!titleRunning)
+            return;
+
+
+        titleText.textContent =
+            titleSteps[index];
+
+
+        index++;
+
+
+        if (
+            index <
+            titleSteps.length
+        ) {
+
+
+            setTimeout(
+
+                typeNext,
+
+                120
+
+            );
+
+
+        }
+
+        else {
+
+
+            /*
+               Reality...?
+               完整出現後停留
+            */
+
+            setTimeout(
+
+                function() {
+
+
+                    /*
+                       瞬間消失
+                    */
+
+                    titleText.textContent =
+                        "";
+
+
+                    /*
+                       隨機等待
+
+                       2500～5000ms
+                    */
+
+                    const wait =
+                        2500 +
+                        Math.random() * 2500;
+
+
+                    setTimeout(
+
+                        playTitleAnimation,
+
+                        wait
+
+                    );
+
+
+                },
+
+                1500
+
+            );
+
+        }
+
+    }
+
+
+    typeNext();
+
+}
+
+
+playTitleAnimation();
+
+
+
+/* ==================================================
+   Three.js
+================================================== */
+
+
 let scene;
 
 let camera;
@@ -362,15 +605,15 @@ let renderer;
 let started = false;
 
 
-/* =========================
-   房間尺寸
-========================= */
 
-/*
+/* ==================================================
+   房間尺寸
+
    寬 14
    深 14
    高 10
-*/
+================================================== */
+
 
 const ROOM_WIDTH = 14;
 
@@ -379,17 +622,11 @@ const ROOM_DEPTH = 14;
 const ROOM_HEIGHT = 10;
 
 
-/*
-   玩家距離牆壁
-   保留一點安全距離
-*/
 
-const WALL_MARGIN = 0.45;
-
-
-/* =========================
+/* ==================================================
    玩家
-========================= */
+================================================== */
+
 
 const player = {
 
@@ -407,6 +644,12 @@ let yaw = 0;
 let pitch = 0;
 
 
+
+/* ==================================================
+   移動狀態
+================================================== */
+
+
 const movement = {
 
     forward: false,
@@ -420,16 +663,19 @@ const movement = {
 };
 
 
-/* =========================
+
+/* ==================================================
    開始遊戲
-========================= */
+================================================== */
+
 
 function startGame() {
 
 
     document
         .getElementById("title")
-        .style.display = "none";
+        .style.display =
+        "none";
 
 
     started = true;
@@ -440,9 +686,11 @@ function startGame() {
 }
 
 
-/* =========================
-   建立世界
-========================= */
+
+/* ==================================================
+   建立 3D 世界
+================================================== */
+
 
 function createWorld() {
 
@@ -457,9 +705,9 @@ function createWorld() {
         );
 
 
-    /* =====================
+    /* =========================
        相機
-    ===================== */
+    ========================= */
 
     camera =
         new THREE.PerspectiveCamera(
@@ -487,9 +735,9 @@ function createWorld() {
     );
 
 
-    /* =====================
+    /* =========================
        Renderer
-    ===================== */
+    ========================= */
 
     renderer =
         new THREE.WebGLRenderer({
@@ -502,8 +750,11 @@ function createWorld() {
     renderer.setPixelRatio(
 
         Math.min(
+
             window.devicePixelRatio,
+
             2
+
         )
 
     );
@@ -527,9 +778,9 @@ function createWorld() {
         );
 
 
-    /* =====================
+    /* =========================
        光
-    ===================== */
+    ========================= */
 
     const ambient =
         new THREE.AmbientLight(
@@ -544,16 +795,16 @@ function createWorld() {
     scene.add(ambient);
 
 
-    /* =====================
+    /* =========================
        房間
-    ===================== */
+    ========================= */
 
     createRoom();
 
 
-    /* =====================
+    /* =========================
        控制
-    ===================== */
+    ========================= */
 
     setupTouch();
 
@@ -565,23 +816,31 @@ function createWorld() {
 }
 
 
-/* =========================
+
+/* ==================================================
    建立房間
-========================= */
+================================================== */
+
 
 function createRoom() {
 
 
-    const W = ROOM_WIDTH;
-
-    const H = ROOM_HEIGHT;
-
-    const D = ROOM_DEPTH;
+    const W =
+        ROOM_WIDTH;
 
 
-    /* =====================
+    const H =
+        ROOM_HEIGHT;
+
+
+    const D =
+        ROOM_DEPTH;
+
+
+
+    /* =========================
        地板
-    ===================== */
+    ========================= */
 
     const floor =
         new THREE.Mesh(
@@ -596,7 +855,8 @@ function createRoom() {
 
             new THREE.MeshBasicMaterial({
 
-                color: 0x707070,
+                color:
+                    0x707070,
 
                 side:
                     THREE.DoubleSide
@@ -610,15 +870,17 @@ function createRoom() {
         -Math.PI / 2;
 
 
-    floor.position.y = 0;
+    floor.position.y =
+        0;
 
 
     scene.add(floor);
 
 
-    /* =====================
+
+    /* =========================
        天花板
-    ===================== */
+    ========================= */
 
     const ceiling =
         new THREE.Mesh(
@@ -633,7 +895,8 @@ function createRoom() {
 
             new THREE.MeshBasicMaterial({
 
-                color: 0xd8d8d8,
+                color:
+                    0xd8d8d8,
 
                 side:
                     THREE.DoubleSide
@@ -647,15 +910,17 @@ function createRoom() {
         Math.PI / 2;
 
 
-    ceiling.position.y = H;
+    ceiling.position.y =
+        H;
 
 
     scene.add(ceiling);
 
 
-    /* =====================
+
+    /* =========================
        四面牆
-    ===================== */
+    ========================= */
 
     const front =
         createWall(
@@ -683,6 +948,7 @@ function createRoom() {
     scene.add(front);
 
 
+
     const back =
         createWall(
 
@@ -707,6 +973,7 @@ function createRoom() {
 
 
     scene.add(back);
+
 
 
     const left =
@@ -739,6 +1006,7 @@ function createRoom() {
     scene.add(left);
 
 
+
     const right =
         createWall(
 
@@ -769,14 +1037,17 @@ function createRoom() {
     scene.add(right);
 
 
-    /* =====================
-       邊界線
-    ===================== */
+
+    /* =========================
+       房間邊界線
+    ========================= */
 
     createRoomEdges(
 
         W,
+
         H,
+
         D
 
     );
@@ -784,9 +1055,11 @@ function createRoom() {
 }
 
 
-/* =========================
+
+/* ==================================================
    建立牆
-========================= */
+================================================== */
+
 
 function createWall(
 
@@ -811,7 +1084,8 @@ function createWall(
 
         new THREE.MeshBasicMaterial({
 
-            color: color,
+            color:
+                color,
 
             side:
                 THREE.DoubleSide
@@ -823,9 +1097,11 @@ function createWall(
 }
 
 
-/* =========================
+
+/* ==================================================
    房間邊界
-========================= */
+================================================== */
+
 
 function createRoomEdges(
 
@@ -861,11 +1137,14 @@ function createRoomEdges(
     const material =
         new THREE.LineBasicMaterial({
 
-            color: 0x666666,
+            color:
+                0x666666,
 
-            transparent: true,
+            transparent:
+                true,
 
-            opacity: 0.45
+            opacity:
+                0.45
 
         });
 
@@ -889,18 +1168,21 @@ function createRoomEdges(
 }
 
 
-/* =========================
+
+/* ==================================================
    玩家移動
-========================= */
+================================================== */
+
 
 function updatePlayer() {
 
 
-    if(!camera)
+    if (!camera)
         return;
 
 
-    const speed = 0.08;
+    const speed =
+        0.08;
 
 
     const forwardX =
@@ -916,99 +1198,156 @@ function updatePlayer() {
     let dz = 0;
 
 
-    /* =====================
-       計算移動方向
-    ===================== */
 
-    if(movement.forward) {
+    /* =========================
+       前
+    ========================= */
+
+    if (
+        movement.forward
+    ) {
+
 
         dx +=
-            forwardX * speed;
+            forwardX *
+            speed;
+
 
         dz +=
-            forwardZ * speed;
+            forwardZ *
+            speed;
 
     }
 
 
-    if(movement.back) {
+
+    /* =========================
+       後
+    ========================= */
+
+    if (
+        movement.back
+    ) {
+
 
         dx -=
-            forwardX * speed;
+            forwardX *
+            speed;
+
 
         dz -=
-            forwardZ * speed;
+            forwardZ *
+            speed;
 
     }
 
 
-    if(movement.left) {
+
+    /* =========================
+       左
+    ========================= */
+
+    if (
+        movement.left
+    ) {
+
 
         dx -=
-            Math.cos(yaw) * speed;
+            Math.cos(yaw) *
+            speed;
+
 
         dz -=
-            Math.sin(yaw) * speed;
+            Math.sin(yaw) *
+            speed;
 
     }
 
 
-    if(movement.right) {
+
+    /* =========================
+       右
+    ========================= */
+
+    if (
+        movement.right
+    ) {
+
 
         dx +=
-            Math.cos(yaw) * speed;
+            Math.cos(yaw) *
+            speed;
+
 
         dz +=
-            Math.sin(yaw) * speed;
+            Math.sin(yaw) *
+            speed;
 
     }
 
 
-    /* =====================
-       真正靠近牆壁才停止
-    ===================== */
+
+    /* =========================
+       房間邊界
+    ========================= */
 
     const limitX =
         ROOM_WIDTH / 2 -
-        WALL_MARGIN;
+        0.05;
 
 
     const limitZ =
         ROOM_DEPTH / 2 -
-        WALL_MARGIN;
+        0.05;
+
 
 
     const nextX =
-        player.x + dx;
+        player.x +
+        dx;
 
 
     const nextZ =
-        player.z + dz;
+        player.z +
+        dz;
 
 
-    if(
-        nextX > -limitX &&
-        nextX < limitX
+
+    if (
+        nextX >
+        -limitX &&
+
+        nextX <
+        limitX
     ) {
 
-        player.x = nextX;
+
+        player.x =
+            nextX;
 
     }
 
 
-    if(
-        nextZ > -limitZ &&
-        nextZ < limitZ
+
+    if (
+        nextZ >
+        -limitZ &&
+
+        nextZ <
+        limitZ
     ) {
 
-        player.z = nextZ;
+
+        player.z =
+            nextZ;
 
     }
 
 
-    /* =====================
-       更新相機
-    ===================== */
+
+    /* =========================
+       相機
+    ========================= */
 
     camera.position.set(
 
@@ -1035,9 +1374,11 @@ function updatePlayer() {
 }
 
 
-/* =========================
-   手機滑動
-========================= */
+
+/* ==================================================
+   手機滑動視角
+================================================== */
+
 
 let touching = false;
 
@@ -1046,11 +1387,13 @@ let lastX = 0;
 let lastY = 0;
 
 
+
 function setupTouch() {
 
 
     const canvas =
         renderer.domElement;
+
 
 
     canvas.addEventListener(
@@ -1076,10 +1419,12 @@ function setupTouch() {
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
+
 
 
     canvas.addEventListener(
@@ -1089,7 +1434,7 @@ function setupTouch() {
         function(event) {
 
 
-            if(!touching)
+            if (!touching)
                 return;
 
 
@@ -1106,20 +1451,27 @@ function setupTouch() {
                 .clientY;
 
 
+
             const dx =
-                x - lastX;
+                x -
+                lastX;
 
 
             const dy =
-                y - lastY;
+                y -
+                lastY;
+
 
 
             yaw -=
-                dx * 0.004;
+                dx *
+                0.004;
 
 
             pitch -=
-                dy * 0.004;
+                dy *
+                0.004;
+
 
 
             pitch =
@@ -1128,25 +1480,33 @@ function setupTouch() {
                     -1.4,
 
                     Math.min(
+
                         1.4,
+
                         pitch
+
                     )
 
                 );
 
 
-            lastX = x;
 
-            lastY = y;
+            lastX =
+                x;
 
+
+            lastY =
+                y;
 
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
+
 
 
     canvas.addEventListener(
@@ -1155,7 +1515,8 @@ function setupTouch() {
 
         function() {
 
-            touching = false;
+            touching =
+                false;
 
         }
 
@@ -1164,48 +1525,116 @@ function setupTouch() {
 }
 
 
-/* =========================
+
+/* ==================================================
    移動按鈕
-========================= */
+================================================== */
+
 
 function setupButtons() {
 
 
-    document
-        .querySelectorAll(".control")
-        .forEach(
-
-            function(button) {
-
-
-                const direction =
-                    button.dataset.direction;
+    const buttons =
+        document.querySelectorAll(
+            ".control"
+        );
 
 
-                button.addEventListener(
 
-                    "touchstart",
+    buttons.forEach(
 
-                    function(event) {
-
-                        event.preventDefault();
-
-                        movement[
-                            direction
-                        ] = true;
-
-                    }
-
-                );
+        function(button) {
 
 
-                button.addEventListener(
+            const direction =
+                button.dataset.direction;
 
-                    "touchend",
 
-                    function(event) {
 
-                        event.preventDefault();
+            function press(event) {
+
+
+                event.preventDefault();
+
+
+                movement[
+                    direction
+                ] = true;
+
+
+
+                if (
+                    button.setPointerCapture
+                ) {
+
+
+                    button.setPointerCapture(
+
+                        event.pointerId
+
+                    );
+
+                }
+
+            }
+
+
+
+            function release(event) {
+
+
+                event.preventDefault();
+
+
+                movement[
+                    direction
+                ] = false;
+
+            }
+
+
+
+            button.addEventListener(
+
+                "pointerdown",
+
+                press
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointerup",
+
+                release
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointercancel",
+
+                release
+
+            );
+
+
+
+            button.addEventListener(
+
+                "pointerleave",
+
+                function(event) {
+
+
+                    if (
+                        event.buttons === 0
+                    ) {
+
 
                         movement[
                             direction
@@ -1213,19 +1642,22 @@ function setupButtons() {
 
                     }
 
-                );
+                }
 
+            );
 
-            }
+        }
 
-        );
+    );
 
 }
 
 
-/* =========================
+
+/* ==================================================
    遊戲循環
-========================= */
+================================================== */
+
 
 function animate() {
 
@@ -1237,14 +1669,18 @@ function animate() {
     );
 
 
-    if(started) {
+
+    if (started) {
+
 
         updatePlayer();
 
     }
 
 
-    if(renderer) {
+
+    if (renderer) {
+
 
         renderer.render(
 
@@ -1259,9 +1695,11 @@ function animate() {
 }
 
 
-/* =========================
+
+/* ==================================================
    螢幕尺寸
-========================= */
+================================================== */
+
 
 window.addEventListener(
 
@@ -1270,11 +1708,12 @@ window.addEventListener(
     function() {
 
 
-        if(
+        if (
             !camera ||
             !renderer
         )
             return;
+
 
 
         camera.aspect =
@@ -1282,7 +1721,9 @@ window.addEventListener(
             window.innerHeight;
 
 
+
         camera.updateProjectionMatrix();
+
 
 
         renderer.setSize(
