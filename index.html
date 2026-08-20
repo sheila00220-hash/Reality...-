@@ -16,13 +16,10 @@ user-scalable=no">
 
 <style>
 
-/* ==================================================
-   基本設定
-================================================== */
-
 * {
     box-sizing: border-box;
 }
+
 
 html,
 body {
@@ -44,6 +41,7 @@ body {
         sans-serif;
 
 }
+
 
 #game {
 
@@ -87,9 +85,7 @@ body {
 
 
 /* ==================================================
-   標題外層
-
-   永遠真正置中
+   標題容器
 ================================================== */
 
 .titleWrapper {
@@ -111,8 +107,6 @@ body {
 
 /* ==================================================
    標題
-
-   整串文字的位置永遠固定
 ================================================== */
 
 #titleText {
@@ -149,10 +143,10 @@ body {
 
 
 /* ==================================================
-   單一字母
+   單字母
 
-   只改 opacity
-   不改位置
+   位置完全固定
+   只改透明度
 ================================================== */
 
 .titleLetter {
@@ -549,7 +543,7 @@ function wait(ms) {
 
 
 /* ==================================================
-   建立完整標題
+   建立標題字母
 ================================================== */
 
 function createTitleLetters() {
@@ -601,9 +595,9 @@ function createTitleLetters() {
 
 
 /* ==================================================
-   單字母第一次浮現
+   字母浮現
 
-   慢慢 0 → 100
+   0 → 100%
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -613,7 +607,7 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                2400;
+                2600;
 
 
             const start =
@@ -645,6 +639,14 @@ function fadeInLetter(letter) {
                     );
 
 
+                /*
+                   Smoothstep
+
+                   開始慢
+                   中間自然
+                   結尾慢
+                */
+
                 const eased =
                     progress *
                     progress *
@@ -670,6 +672,10 @@ function fadeInLetter(letter) {
 
                 else {
 
+                    /*
+                       確保最後一定是 100%
+                    */
+
                     letter.style.opacity =
                         "1";
 
@@ -693,18 +699,13 @@ function fadeInLetter(letter) {
 
 
 /* ==================================================
-   單字母若隱若現
+   呼吸動畫
 
-   每個字不同步
+   ★ 重要：
 
-   最亮：
-   100%
+   每個字從 100% 開始。
 
-   最暗：
-   18%
-
-   讓效果更明顯
-   但不是快速閃爍
+   不會浮現完馬上掉下去。
 ================================================== */
 
 function startBreathing(
@@ -724,84 +725,120 @@ function startBreathing(
 
 
     /*
-       每個字不同起點
+       第一階段：
+
+       浮現完成後
+       先保持 100%
+
+       不讓它立刻變暗
     */
 
-    let phase =
-        index *
-        0.95;
+    setTimeout(
+
+        function() {
+
+            if (!titleRunning)
+                return;
 
 
-    /*
-       非常慢
-
-       每個字速度略有不同
-    */
-
-    const speed =
-        0.0017 +
-        (
-            index % 4
-        ) *
-        0.00022;
+            let phase = 0;
 
 
-    function breathe() {
+            /*
+               每個字速度略微不同
+            */
 
-        if (!titleRunning)
-            return;
-
-
-        phase += speed;
-
-
-        const wave =
-            (
-                Math.sin(phase)
-                + 1
-            ) / 2;
+            const speed =
+                0.00135 +
+                (
+                    index % 4
+                ) *
+                0.00018;
 
 
-        /*
-           Smoothstep
-        */
+            function breathe() {
 
-        const eased =
-            wave *
-            wave *
-            (
-                3 -
-                2 * wave
+                if (!titleRunning)
+                    return;
+
+
+                phase += speed;
+
+
+                /*
+                   sin：
+
+                   0 → 1 → 0 → -1 → 0
+
+                   我們把它轉成
+                   0 → 1 → 0
+                   的呼吸週期
+                */
+
+                const wave =
+                    (
+                        Math.sin(phase)
+                        + 1
+                    ) / 2;
+
+
+                /*
+                   Smoothstep
+
+                   讓明暗轉換
+                   不會突然變化
+                */
+
+                const eased =
+                    wave *
+                    wave *
+                    (
+                        3 -
+                        2 * wave
+                    );
+
+
+                /*
+                   35% → 100%
+
+                   不會完全消失。
+
+                   這次從 100%
+                   平滑開始往下走。
+                */
+
+                const opacity =
+                    0.35 +
+                    (
+                        eased *
+                        0.65
+                    );
+
+
+                letter.style.opacity =
+                    opacity;
+
+
+                requestAnimationFrame(
+                    breathe
+                );
+
+            }
+
+
+            requestAnimationFrame(
+                breathe
             );
 
 
-        /*
-           18% → 100%
+        },
 
-           比之前明顯很多
+        /*
+           100% 後先停 1.2 秒
         */
 
-        const opacity =
-            0.18 +
-            (
-                eased *
-                0.82
-            );
+        1200
 
-
-        letter.style.opacity =
-            opacity;
-
-
-        requestAnimationFrame(
-            breathe
-        );
-
-    }
-
-
-    requestAnimationFrame(
-        breathe
     );
 
 }
@@ -821,7 +858,7 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           一個一個浮現
+           一個一個慢慢浮現
         ========================================== */
 
         for (
@@ -845,17 +882,10 @@ async function playTitleAnimation() {
 
 
             /*
-               字與字之間停一下
-            */
+               每個字浮現完成後
+               稍微停一下
 
-            await wait(
-                550
-            );
-
-
-            /*
-               這個字開始自己的
-               若隱若現
+               然後才開始呼吸
             */
 
             startBreathing(
@@ -863,15 +893,25 @@ async function playTitleAnimation() {
                 i
             );
 
+
+            /*
+               下一個字之前的間隔
+            */
+
+            await wait(
+                550
+            );
+
         }
 
 
         /* ==========================================
-           完整標題停留
+           全部出現後
+           再完整停留一段時間
         ========================================== */
 
         await wait(
-            4200
+            4300
         );
 
 
@@ -880,11 +920,11 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           整串慢慢消失
+           整體慢慢消失
         ========================================== */
 
         const fadeOutDuration =
-            2000;
+            2200;
 
 
         const start =
@@ -976,7 +1016,7 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           消失後等待
+           完全消失後等待
         ========================================== */
 
         await wait(
@@ -1230,18 +1270,14 @@ function createRoom() {
         ROOM_DEPTH;
 
 
-    /* =========================
-       地板
-    ========================= */
+    /* 地板 */
 
     const floor =
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
-
                 W,
                 D
-
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1270,18 +1306,14 @@ function createRoom() {
     );
 
 
-    /* =========================
-       天花板
-    ========================= */
+    /* 天花板 */
 
     const ceiling =
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
-
                 W,
                 D
-
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1310,26 +1342,20 @@ function createRoom() {
     );
 
 
-    /* =========================
-       前牆
-    ========================= */
+    /* 前牆 */
 
     const front =
         createWall(
-
             W,
             H,
             0xc2c2c2
-
         );
 
 
     front.position.set(
-
         0,
         H / 2,
         -D / 2
-
     );
 
 
@@ -1338,26 +1364,20 @@ function createRoom() {
     );
 
 
-    /* =========================
-       後牆
-    ========================= */
+    /* 後牆 */
 
     const back =
         createWall(
-
             W,
             H,
             0xb7b7b7
-
         );
 
 
     back.position.set(
-
         0,
         H / 2,
         D / 2
-
     );
 
 
@@ -1366,17 +1386,13 @@ function createRoom() {
     );
 
 
-    /* =========================
-       左牆
-    ========================= */
+    /* 左牆 */
 
     const left =
         createWall(
-
             D,
             H,
             0xaeaeae
-
         );
 
 
@@ -1385,11 +1401,9 @@ function createRoom() {
 
 
     left.position.set(
-
         -W / 2,
         H / 2,
         0
-
     );
 
 
@@ -1398,17 +1412,13 @@ function createRoom() {
     );
 
 
-    /* =========================
-       右牆
-    ========================= */
+    /* 右牆 */
 
     const right =
         createWall(
-
             D,
             H,
             0xa6a6a6
-
         );
 
 
@@ -1417,11 +1427,9 @@ function createRoom() {
 
 
     right.position.set(
-
         W / 2,
         H / 2,
         0
-
     );
 
 
@@ -1431,11 +1439,9 @@ function createRoom() {
 
 
     createRoomEdges(
-
         W,
         H,
         D
-
     );
 
 }
@@ -1446,20 +1452,16 @@ function createRoom() {
 ================================================== */
 
 function createWall(
-
     width,
     height,
     color
-
 ) {
 
     return new THREE.Mesh(
 
         new THREE.PlaneGeometry(
-
             width,
             height
-
         ),
 
         new THREE.MeshBasicMaterial({
@@ -1478,32 +1480,26 @@ function createWall(
 
 
 /* ==================================================
-   房間邊界線
+   房間邊界
 ================================================== */
 
 function createRoomEdges(
-
     W,
     H,
     D
-
 ) {
 
     const geometry =
         new THREE.BoxGeometry(
-
             W,
             H,
             D
-
         );
 
 
     const edges =
         new THREE.EdgesGeometry(
-
             geometry
-
         );
 
 
@@ -1524,10 +1520,8 @@ function createRoomEdges(
 
     const lines =
         new THREE.LineSegments(
-
             edges,
             material
-
         );
 
 
@@ -1569,9 +1563,7 @@ function updatePlayer() {
     let dz = 0;
 
 
-    if (
-        movement.forward
-    ) {
+    if (movement.forward) {
 
         dx +=
             forwardX *
@@ -1584,9 +1576,7 @@ function updatePlayer() {
     }
 
 
-    if (
-        movement.back
-    ) {
+    if (movement.back) {
 
         dx -=
             forwardX *
@@ -1599,9 +1589,7 @@ function updatePlayer() {
     }
 
 
-    if (
-        movement.left
-    ) {
+    if (movement.left) {
 
         dx -=
             Math.cos(yaw) *
@@ -1614,9 +1602,7 @@ function updatePlayer() {
     }
 
 
-    if (
-        movement.right
-    ) {
+    if (movement.right) {
 
         dx +=
             Math.cos(yaw) *
@@ -1652,7 +1638,6 @@ function updatePlayer() {
     if (
         nextX >
         -limitX &&
-
         nextX <
         limitX
     ) {
@@ -1666,7 +1651,6 @@ function updatePlayer() {
     if (
         nextZ >
         -limitZ &&
-
         nextZ <
         limitZ
     ) {
@@ -1678,11 +1662,9 @@ function updatePlayer() {
 
 
     camera.position.set(
-
         player.x,
         player.y,
         player.z
-
     );
 
 
@@ -1738,8 +1720,7 @@ function setupTouch() {
         },
 
         {
-            passive:
-                false
+            passive: false
         }
 
     );
@@ -1790,17 +1771,11 @@ function setupTouch() {
 
             pitch =
                 Math.max(
-
                     -1.4,
-
                     Math.min(
-
                         1.4,
-
                         pitch
-
                     )
-
                 );
 
 
@@ -1814,8 +1789,7 @@ function setupTouch() {
         },
 
         {
-            passive:
-                false
+            passive: false
         }
 
     );
@@ -1872,9 +1846,7 @@ function setupButtons() {
                 ) {
 
                     button.setPointerCapture(
-
                         event.pointerId
-
                     );
 
                 }
@@ -1895,29 +1867,20 @@ function setupButtons() {
 
 
             button.addEventListener(
-
                 "pointerdown",
-
                 press
-
             );
 
 
             button.addEventListener(
-
                 "pointerup",
-
                 release
-
             );
 
 
             button.addEventListener(
-
                 "pointercancel",
-
                 release
-
             );
 
 
@@ -1969,10 +1932,8 @@ function animate() {
     if (renderer) {
 
         renderer.render(
-
             scene,
             camera
-
         );
 
     }
@@ -2006,11 +1967,8 @@ window.addEventListener(
 
 
         renderer.setSize(
-
             window.innerWidth,
-
             window.innerHeight
-
         );
 
     }
