@@ -31,7 +31,7 @@ body {
 
     overflow: hidden;
 
-    background: black;
+    background: #000;
 
     font-family:
         Arial,
@@ -51,9 +51,9 @@ body {
 
     inset: 0;
 
-    background: black;
+    background: #000;
 
-    color: white;
+    color: #fff;
 
     display: flex;
 
@@ -69,18 +69,20 @@ body {
 
 
 /* ==================================================
-   標題
+   標題容器
 ================================================== */
 
 #titleText {
 
-    margin: 0;
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
 
     width: 95%;
 
     min-height: 1.1em;
-
-    text-align: center;
 
     font-size:
         clamp(55px, 13vw, 120px);
@@ -92,13 +94,18 @@ body {
 
     line-height: 1;
 
-    white-space: nowrap;
-
     color: #f5f5f5;
 
-    /*
-       初始透明
-    */
+}
+
+
+/* ==================================================
+   每一個字母
+================================================== */
+
+.letter {
+
+    display: inline-block;
 
     opacity: 0;
 
@@ -136,7 +143,7 @@ body {
 <div id="title">
 
 
-    <h1 id="titleText"></h1>
+    <div id="titleText"></div>
 
 
     <div class="warning">
@@ -174,7 +181,6 @@ body {
 
 <script>
 
-
 /* ==================================================
    標題
 ================================================== */
@@ -185,193 +191,23 @@ const titleText =
     );
 
 
-const titleSteps = [
-
-    "R",
-
-    "Re",
-
-    "Rea",
-
-    "Real",
-
-    "Reali",
-
-    "Realit",
-
-    "Reality",
-
-    "Reality...?"
-
-];
-
+const fullText =
+    "Reality...?";
 
 
 /* ==================================================
-   每一個字串：
-   從透明 → 慢慢出現
+   等待
 ================================================== */
 
-function showStep(
-    text
-) {
-
+function wait(ms) {
 
     return new Promise(
 
         function(resolve) {
 
-
-            /*
-               先清空
-            */
-
-            titleText.textContent =
-                "";
-
-
-            titleText.style.opacity =
-                "0";
-
-
-            /*
-               先讓黑屏保持一下
-
-               避免文字瞬間替換
-            */
-
             setTimeout(
-
-                function() {
-
-
-                    /*
-                       換成新的文字
-                    */
-
-                    titleText.textContent =
-                        text;
-
-
-                    /*
-                       強制瀏覽器
-                       重新計算樣式
-                    */
-
-                    void titleText.offsetWidth;
-
-
-                    /*
-                       從 0 慢慢增加
-                    */
-
-                    let opacity = 0;
-
-
-                    const fadeInTime =
-                        2500;
-
-
-                    const startTime =
-                        performance.now();
-
-
-
-                    function fade(
-                        currentTime
-                    ) {
-
-
-                        const elapsed =
-                            currentTime -
-                            startTime;
-
-
-                        const progress =
-                            Math.min(
-
-                                elapsed /
-                                fadeInTime,
-
-                                1
-
-                            );
-
-
-                        /*
-                           ease-in-out
-
-                           開始慢
-                           中間變快
-                           最後再慢下來
-                        */
-
-                        const eased =
-                            progress *
-                            progress *
-                            (
-                                3 -
-                                2 *
-                                progress
-                            );
-
-
-                        opacity =
-                            eased;
-
-
-                        titleText.style.opacity =
-                            opacity;
-
-
-
-                        if (
-                            progress <
-                            1
-                        ) {
-
-
-                            requestAnimationFrame(
-                                fade
-                            );
-
-
-                        }
-
-                        else {
-
-
-                            titleText.style.opacity =
-                                "1";
-
-
-                            /*
-                               完整顯現後
-                               停留 1.5 秒
-                            */
-
-                            setTimeout(
-
-                                resolve,
-
-                                1500
-
-                            );
-
-                        }
-
-                    }
-
-
-                    requestAnimationFrame(
-                        fade
-                    );
-
-
-                },
-
-                800
-
+                resolve,
+                ms
             );
 
         }
@@ -381,32 +217,286 @@ function showStep(
 }
 
 
+/* ==================================================
+   單一字母慢慢出現
+================================================== */
+
+async function fadeLetter(letter) {
+
+
+    let opacity = 0;
+
+
+    /*
+       一開始完全看不到
+    */
+
+    letter.style.opacity =
+        "0";
+
+
+    /*
+       淡入時間
+
+       很慢
+    */
+
+    const duration =
+        2200;
+
+
+    const start =
+        performance.now();
+
+
+    return new Promise(
+
+        function(resolve) {
+
+
+            function animate(
+                now
+            ) {
+
+
+                const progress =
+                    Math.min(
+
+                        (now - start) /
+                        duration,
+
+                        1
+
+                    );
+
+
+                /*
+                   smoothstep
+
+                   讓開始與結尾
+                   都比較柔
+                */
+
+                const eased =
+                    progress *
+                    progress *
+                    (
+                        3 -
+                        2 *
+                        progress
+                    );
+
+
+                opacity =
+                    eased;
+
+
+                letter.style.opacity =
+                    opacity;
+
+
+
+                if (
+                    progress < 1
+                ) {
+
+                    requestAnimationFrame(
+                        animate
+                    );
+
+                }
+
+                else {
+
+                    letter.style.opacity =
+                        "1";
+
+                    resolve();
+
+                }
+
+            }
+
+
+            requestAnimationFrame(
+                animate
+            );
+
+        }
+
+    );
+
+}
+
 
 /* ==================================================
-   主動畫
+   已出現的字
+   隨機忽隱忽現
+================================================== */
+
+function flickerLetter(
+    letter
+) {
+
+
+    /*
+       隨機延遲
+
+       不要所有字同時閃
+    */
+
+    const delay =
+        900 +
+        Math.random() * 2200;
+
+
+    setTimeout(
+
+        function() {
+
+
+            /*
+               隨機暗度
+
+               不會完全消失
+            */
+
+            const low =
+                0.35 +
+                Math.random() * 0.35;
+
+
+            const fadeTime =
+                350 +
+                Math.random() * 500;
+
+
+            letter.style.transition =
+                `opacity ${fadeTime}ms ease-in-out`;
+
+
+            letter.style.opacity =
+                low;
+
+
+            setTimeout(
+
+                function() {
+
+
+                    letter.style.opacity =
+                        "1";
+
+
+                    /*
+                       再安排下一次
+                    */
+
+                    flickerLetter(
+                        letter
+                    );
+
+
+                },
+
+                fadeTime +
+                150 +
+                Math.random() * 500
+
+            );
+
+
+        },
+
+        delay
+
+    );
+
+}
+
+
+/* ==================================================
+   建立標題
 ================================================== */
 
 async function startTitle() {
 
 
     /*
-       一個一個慢慢出現
+       清空
+    */
+
+    titleText.innerHTML = "";
+
+
+    /*
+       逐字建立
     */
 
     for (
         let i = 0;
 
         i <
-        titleSteps.length;
+        fullText.length;
 
         i++
     ) {
 
 
-        await showStep(
+        /*
+           建立獨立字母
+        */
 
-            titleSteps[i]
+        const letter =
+            document.createElement(
+                "span"
+            );
 
+
+        letter.className =
+            "letter";
+
+
+        letter.textContent =
+            fullText[i];
+
+
+        titleText.appendChild(
+            letter
+        );
+
+
+        /*
+           這個字自己慢慢出現
+        */
+
+        await fadeLetter(
+            letter
+        );
+
+
+        /*
+           這個字出現後
+
+           開始自己的
+           隨機忽隱忽現
+        */
+
+        flickerLetter(
+            letter
+        );
+
+
+        /*
+           下一個字之前
+           停頓
+
+           故意慢
+        */
+
+        await wait(
+            1000 +
+            Math.random() * 900
         );
 
     }
@@ -414,71 +504,55 @@ async function startTitle() {
 
 
     /* ==================================================
-       Reality...? 完整出現
+       Reality...? 已完整出現
     ================================================== */
 
 
     /*
-       再停留一段時間
+       完整停留
 
-       2 ～ 4 秒
+       3 ～ 5 秒
     */
 
-    await new Promise(
+    await wait(
 
-        function(resolve) {
-
-            setTimeout(
-
-                resolve,
-
-                2000 +
-                Math.random() * 2000
-
-            );
-
-        }
+        3000 +
+        Math.random() * 2000
 
     );
 
 
 
     /* ==================================================
-       瞬間消失
+       突然消失
     ================================================== */
-
 
     titleText.style.opacity =
         "0";
 
 
-    titleText.textContent =
+    /*
+       清空
+    */
+
+    await wait(100);
+
+    titleText.innerHTML =
         "";
 
 
-
-    /* ==================================================
+    /*
        黑屏
-    ================================================== */
 
+       4 ～ 6 秒
+    */
 
-    await new Promise(
+    await wait(
 
-        function(resolve) {
-
-            setTimeout(
-
-                resolve,
-
-                4000 +
-                Math.random() * 2000
-
-            );
-
-        }
+        4000 +
+        Math.random() * 2000
 
     );
-
 
 
     /*
@@ -488,7 +562,6 @@ async function startTitle() {
     startTitle();
 
 }
-
 
 
 /* ==================================================
@@ -503,10 +576,9 @@ setTimeout(
 
     },
 
-    1000
+    1200
 
 );
-
 
 </script>
 
