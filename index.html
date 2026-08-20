@@ -8,10 +8,10 @@
 <meta name="viewport"
 content="width=device-width,
 initial-scale=1.0,
-maximum-scale=1.0">
+maximum-scale=1.0,
+user-scalable=no">
 
 <title>Reality...?</title>
-
 
 <style>
 
@@ -19,9 +19,7 @@ html,
 body {
 
     margin: 0;
-
     width: 100%;
-
     height: 100%;
 
     overflow: hidden;
@@ -36,7 +34,6 @@ body {
     position: absolute;
 
     left: 50%;
-
     top: 50%;
 
     transform:
@@ -80,7 +77,6 @@ body {
 <div id="text"></div>
 
 
-
 <script>
 
 
@@ -90,7 +86,6 @@ const text =
 
 const word =
     "Reality...?";
-
 
 
 /* ==================================================
@@ -115,10 +110,11 @@ function wait(ms) {
 }
 
 
-
 /* ==================================================
-   新字：
+   新字顯現
+
    1% → 100%
+   中間完全不閃
 ================================================== */
 
 function revealLetter(letter) {
@@ -127,18 +123,14 @@ function revealLetter(letter) {
 
         function(resolve) {
 
-
             const duration =
                 1200;
-
 
             const start =
                 performance.now();
 
 
-
             function animate(now) {
-
 
                 const progress =
                     Math.min(
@@ -152,22 +144,23 @@ function revealLetter(letter) {
 
 
                 /*
-                   1% → 100%
-
-                   不倒退
+                   1%
+                   ↓
+                   2%
+                   ↓
+                   3%
+                   ↓
+                   ...
+                   ↓
+                   100%
                 */
 
-                const opacity =
+                letter.style.opacity =
                     0.01 +
                     (
                         0.99 *
                         progress
                     );
-
-
-                letter.style.opacity =
-                    opacity;
-
 
 
                 if (
@@ -203,95 +196,82 @@ function revealLetter(letter) {
 }
 
 
-
 /* ==================================================
-   舊字：
-   很慢、很輕微地忽隱忽現
+   舊字開始忽隱忽現
+
+   只有下一個字出現時才啟動
 ================================================== */
 
-function gentleFlicker(letter) {
+function startFlicker(letter) {
 
 
-    /*
-       隨機等待
+    async function flicker() {
 
-       不會全部同時變化
-    */
+        while (
+            letter.isConnected
+        ) {
 
-    const delay =
-        900 +
-        Math.random() * 1800;
+            /*
+               先保持穩定一段時間
+            */
 
+            await wait(
 
+                900 +
+                Math.random() * 1000
 
-    setTimeout(
-
-        async function() {
+            );
 
 
             /*
-               只降低一點
+               慢慢變暗
 
-               不會突然消失
+               不會完全消失
             */
 
             const low =
-                0.88 +
-                Math.random() * 0.08;
+                0.68 +
+                Math.random() * 0.18;
 
 
-            /*
-               慢慢暗下去
-            */
+            const duration =
+                700 +
+                Math.random() * 500;
+
 
             letter.style.transition =
-                "opacity 900ms ease-in-out";
+                `opacity ${duration}ms ease-in-out`;
 
 
             letter.style.opacity =
                 low;
 
 
-
             await wait(
-                900
+                duration
             );
 
 
-
             /*
-               慢慢回到完整
+               慢慢恢復
             */
 
             letter.style.opacity =
                 "1";
 
 
-
             await wait(
-                900 +
-                Math.random() * 1200
+                duration
             );
 
+        }
+
+    }
 
 
-            /*
-               下一次
-            */
-
-            gentleFlicker(
-                letter
-            );
-
-
-        },
-
-        delay
-
-    );
+    flicker();
 
 }
-
 
 
 /* ==================================================
@@ -310,16 +290,14 @@ async function start() {
     );
 
 
-
     /*
-       一個字一個字增加
+       一個字一個字出現
     */
 
     for (
         let i = 0;
 
-        i <
-        word.length;
+        i < word.length;
 
         i++
     ) {
@@ -356,28 +334,23 @@ async function start() {
         );
 
 
-
         /*
-           新字開始顯影
+           =========================================
+           從第二個字開始：
 
-           如果前面已經有字，
-           它們現在才開始輕微閃動
+           舊字開始閃
+           =========================================
         */
 
         if (
             i > 0
         ) {
 
-
             const oldLetters =
                 text.querySelectorAll(
                     ".letter"
                 );
 
-
-            /*
-               不讓最新的字參與舊字閃爍
-            */
 
             for (
                 let j = 0;
@@ -389,20 +362,38 @@ async function start() {
             ) {
 
 
-                gentleFlicker(
+                if (
+                    !oldLetters[j]
+                        .dataset
+                        .flickering
+                ) {
+
+
                     oldLetters[j]
-                );
+                        .dataset
+                        .flickering =
+                        "true";
+
+
+                    startFlicker(
+                        oldLetters[j]
+                    );
+
+                }
 
             }
 
         }
 
 
-
         /*
+           =========================================
            新字：
 
            1% → 100%
+
+           新字自己不閃
+           =========================================
         */
 
         await revealLetter(
@@ -410,43 +401,36 @@ async function start() {
         );
 
 
-
         /*
            字完成後停頓
-
-           故意慢
         */
 
         await wait(
-            1200
+            1300
         );
 
     }
 
 
-
     /*
-       ==================================================
+       =========================================
        Reality...? 完整出現
-       ==================================================
+       =========================================
     */
-
 
     await wait(
         3500
     );
 
 
-
     /*
-       ==================================================
-       突然消失
-       ==================================================
+       =========================================
+       瞬間消失
+       =========================================
     */
 
     text.innerHTML =
         "";
-
 
 
     /*
@@ -458,7 +442,6 @@ async function start() {
     );
 
 
-
     /*
        重新開始
     */
@@ -466,7 +449,6 @@ async function start() {
     start();
 
 }
-
 
 
 /* ==================================================
