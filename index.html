@@ -13,6 +13,7 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
+
 <style>
 
 /* ==================================================
@@ -87,6 +88,8 @@ body {
 
 /* ==================================================
    標題外層
+
+   永遠真正置中
 ================================================== */
 
 .titleWrapper {
@@ -109,7 +112,7 @@ body {
 /* ==================================================
    標題
 
-   整體永遠固定在畫面中央
+   整串文字的位置永遠固定
 ================================================== */
 
 #titleText {
@@ -146,9 +149,9 @@ body {
 
 
 /* ==================================================
-   單字母
+   單一字母
 
-   只改透明度
+   只改 opacity
    不改位置
 ================================================== */
 
@@ -362,6 +365,7 @@ body {
 
 
 <body>
+
 
 <div id="game">
 
@@ -597,10 +601,9 @@ function createTitleLetters() {
 
 
 /* ==================================================
-   單字母漸變
+   單字母第一次浮現
 
-   2200ms
-   慢慢由 0 → 100
+   慢慢 0 → 100
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -610,7 +613,7 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                2200;
+                2400;
 
 
             const start =
@@ -641,10 +644,6 @@ function fadeInLetter(letter) {
 
                     );
 
-
-                /*
-                   Smoothstep
-                */
 
                 const eased =
                     progress *
@@ -694,7 +693,122 @@ function fadeInLetter(letter) {
 
 
 /* ==================================================
-   標題完整動畫
+   單字母若隱若現
+
+   每個字不同步
+
+   最亮：
+   100%
+
+   最暗：
+   18%
+
+   讓效果更明顯
+   但不是快速閃爍
+================================================== */
+
+function startBreathing(
+    letter,
+    index
+) {
+
+    if (
+        letter.dataset.breathing ===
+        "true"
+    )
+        return;
+
+
+    letter.dataset.breathing =
+        "true";
+
+
+    /*
+       每個字不同起點
+    */
+
+    let phase =
+        index *
+        0.95;
+
+
+    /*
+       非常慢
+
+       每個字速度略有不同
+    */
+
+    const speed =
+        0.0017 +
+        (
+            index % 4
+        ) *
+        0.00022;
+
+
+    function breathe() {
+
+        if (!titleRunning)
+            return;
+
+
+        phase += speed;
+
+
+        const wave =
+            (
+                Math.sin(phase)
+                + 1
+            ) / 2;
+
+
+        /*
+           Smoothstep
+        */
+
+        const eased =
+            wave *
+            wave *
+            (
+                3 -
+                2 * wave
+            );
+
+
+        /*
+           18% → 100%
+
+           比之前明顯很多
+        */
+
+        const opacity =
+            0.18 +
+            (
+                eased *
+                0.82
+            );
+
+
+        letter.style.opacity =
+            opacity;
+
+
+        requestAnimationFrame(
+            breathe
+        );
+
+    }
+
+
+    requestAnimationFrame(
+        breathe
+    );
+
+}
+
+
+/* ==================================================
+   標題主流程
 ================================================== */
 
 async function playTitleAnimation() {
@@ -706,12 +820,9 @@ async function playTitleAnimation() {
             createTitleLetters();
 
 
-        /*
-           一個一個出現
-
-           但是整串文字的位置
-           從頭到尾固定
-        */
+        /* ==========================================
+           一個一個浮現
+        ========================================== */
 
         for (
             let i = 0;
@@ -734,22 +845,33 @@ async function playTitleAnimation() {
 
 
             /*
-               字與字之間稍微停頓
+               字與字之間停一下
             */
 
             await wait(
-                500
+                550
+            );
+
+
+            /*
+               這個字開始自己的
+               若隱若現
+            */
+
+            startBreathing(
+                letters[i],
+                i
             );
 
         }
 
 
-        /*
+        /* ==========================================
            完整標題停留
-        */
+        ========================================== */
 
         await wait(
-            3500
+            4200
         );
 
 
@@ -757,12 +879,12 @@ async function playTitleAnimation() {
             return;
 
 
-        /*
-           整體慢慢消失
-        */
+        /* ==========================================
+           整串慢慢消失
+        ========================================== */
 
         const fadeOutDuration =
-            1800;
+            2000;
 
 
         const start =
@@ -853,9 +975,9 @@ async function playTitleAnimation() {
         );
 
 
-        /*
+        /* ==========================================
            消失後等待
-        */
+        ========================================== */
 
         await wait(
 
@@ -943,11 +1065,8 @@ document
         "startButton"
     )
     .addEventListener(
-
         "click",
-
         startGame
-
     );
 
 
@@ -958,7 +1077,6 @@ function startGame() {
 
 
     started = true;
-
 
     titleRunning = false;
 
@@ -1026,9 +1144,7 @@ function createWorld() {
     camera.position.set(
 
         player.x,
-
         player.y,
-
         player.z
 
     );
@@ -1077,7 +1193,6 @@ function createWorld() {
         new THREE.AmbientLight(
 
             0xffffff,
-
             2
 
         );
@@ -1123,8 +1238,10 @@ function createRoom() {
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
+
                 W,
                 D
+
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1161,8 +1278,10 @@ function createRoom() {
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
+
                 W,
                 D
+
             ),
 
             new THREE.MeshBasicMaterial({
@@ -1311,10 +1430,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       房間邊界
-    ========================= */
-
     createRoomEdges(
 
         W,
@@ -1454,8 +1569,6 @@ function updatePlayer() {
     let dz = 0;
 
 
-    /* 前 */
-
     if (
         movement.forward
     ) {
@@ -1470,8 +1583,6 @@ function updatePlayer() {
 
     }
 
-
-    /* 後 */
 
     if (
         movement.back
@@ -1488,8 +1599,6 @@ function updatePlayer() {
     }
 
 
-    /* 左 */
-
     if (
         movement.left
     ) {
@@ -1504,8 +1613,6 @@ function updatePlayer() {
 
     }
 
-
-    /* 右 */
 
     if (
         movement.right
@@ -1573,9 +1680,7 @@ function updatePlayer() {
     camera.position.set(
 
         player.x,
-
         player.y,
-
         player.z
 
     );
@@ -1866,7 +1971,6 @@ function animate() {
         renderer.render(
 
             scene,
-
             camera
 
         );
@@ -1914,6 +2018,7 @@ window.addEventListener(
 );
 
 </script>
+
 
 </body>
 
