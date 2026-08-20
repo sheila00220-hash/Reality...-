@@ -8,18 +8,11 @@
 <meta name="viewport"
 content="width=device-width,
 initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
+maximum-scale=1.0">
 
 <title>Reality...?</title>
 
-
 <style>
-
-* {
-    box-sizing: border-box;
-}
-
 
 html,
 body {
@@ -27,108 +20,51 @@ body {
     margin: 0;
 
     width: 100%;
+
     height: 100%;
+
+    background: black;
 
     overflow: hidden;
 
-    background: #000;
+}
+
+
+#text {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    color: white;
 
     font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-}
-
-
-/* ==================================================
-   開始畫面
-================================================== */
-
-#title {
-
-    position: fixed;
-
-    inset: 0;
-
-    background: #000;
-
-    color: #fff;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-}
-
-
-/* ==================================================
-   標題容器
-================================================== */
-
-#titleText {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    width: 95%;
-
-    min-height: 1.1em;
-
     font-size:
-        clamp(55px, 13vw, 120px);
+        clamp(60px, 15vw, 130px);
 
     font-weight: 300;
 
-    letter-spacing:
-        clamp(5px, 1.4vw, 16px);
+    letter-spacing: 10px;
 
-    line-height: 1;
-
-    color: #f5f5f5;
+    white-space: nowrap;
 
 }
 
-
-/* ==================================================
-   每一個字母
-================================================== */
 
 .letter {
 
     display: inline-block;
 
     opacity: 0;
-
-}
-
-
-/* ==================================================
-   內容提示
-================================================== */
-
-.warning {
-
-    width: 88%;
-
-    max-width: 600px;
-
-    margin-top: 60px;
-
-    color: #cfcfcf;
-
-    font-size: 14px;
-
-    line-height: 1.8;
 
 }
 
@@ -140,311 +76,176 @@ body {
 <body>
 
 
-<div id="title">
-
-
-    <div id="titleText"></div>
-
-
-    <div class="warning">
-
-        <p>
-            內容提示
-        </p>
-
-        <p>
-            本作品包含心理恐怖、
-            令人不安的聲音與視覺表現，
-            以及可能引起部分玩家不適的成人向主題。
-        </p>
-
-        <p>
-            部分內容可能涉及敏感議題。
-        </p>
-
-        <p>
-            若你容易受到心理壓迫、
-            強烈聲音或失真畫面的影響，
-            請自行斟酌是否遊玩。
-        </p>
-
-        <p>
-            你可以隨時離開遊戲。
-        </p>
-
-    </div>
-
-
-</div>
-
+<div id="text"></div>
 
 
 <script>
 
-/* ==================================================
-   標題
-================================================== */
 
-const titleText =
+const text =
     document.getElementById(
-        "titleText"
+        "text"
     );
 
 
-const fullText =
+const word =
     "Reality...?";
 
 
-/* ==================================================
+
+/* ==========================================
    等待
-================================================== */
+========================================== */
 
 function wait(ms) {
 
     return new Promise(
-
-        function(resolve) {
-
+        resolve =>
             setTimeout(
                 resolve,
                 ms
-            );
-
-        }
-
+            )
     );
 
 }
 
 
-/* ==================================================
-   單一字母慢慢出現
-================================================== */
 
-async function fadeLetter(letter) {
+/* ==========================================
+   一個字的「忽亮忽暗顯影」
+========================================== */
 
-
-    let opacity = 0;
+async function revealLetter(letter) {
 
 
     /*
-       一開始完全看不到
+       非常明顯的透明度變化
+
+       不是小幅度閃爍
     */
 
-    letter.style.opacity =
-        "0";
+    const levels = [
+
+        0.00,
+
+        0.25,
+
+        0.07,
+
+        0.45,
+
+        0.12,
+
+        0.68,
+
+        0.30,
+
+        0.82,
+
+        0.55,
+
+        1.00
+
+    ];
 
 
     /*
-       淡入時間
+       每一階停留多久
 
-       很慢
+       故意慢
     */
 
-    const duration =
-        2200;
+    const times = [
 
+        900,
 
-    const start =
-        performance.now();
+        700,
 
+        900,
 
-    return new Promise(
+        700,
 
-        function(resolve) {
+        850,
 
+        650,
 
-            function animate(
-                now
-            ) {
+        750,
 
+        600,
 
-                const progress =
-                    Math.min(
+        650,
 
-                        (now - start) /
-                        duration,
+        1000
 
-                        1
+    ];
 
-                    );
 
-
-                /*
-                   smoothstep
-
-                   讓開始與結尾
-                   都比較柔
-                */
-
-                const eased =
-                    progress *
-                    progress *
-                    (
-                        3 -
-                        2 *
-                        progress
-                    );
-
-
-                opacity =
-                    eased;
-
-
-                letter.style.opacity =
-                    opacity;
-
-
-
-                if (
-                    progress < 1
-                ) {
-
-                    requestAnimationFrame(
-                        animate
-                    );
-
-                }
-
-                else {
-
-                    letter.style.opacity =
-                        "1";
-
-                    resolve();
-
-                }
-
-            }
-
-
-            requestAnimationFrame(
-                animate
-            );
-
-        }
-
-    );
-
-}
-
-
-/* ==================================================
-   已出現的字
-   隨機忽隱忽現
-================================================== */
-
-function flickerLetter(
-    letter
-) {
-
-
-    /*
-       隨機延遲
-
-       不要所有字同時閃
-    */
-
-    const delay =
-        900 +
-        Math.random() * 2200;
-
-
-    setTimeout(
-
-        function() {
-
-
-            /*
-               隨機暗度
-
-               不會完全消失
-            */
-
-            const low =
-                0.35 +
-                Math.random() * 0.35;
-
-
-            const fadeTime =
-                350 +
-                Math.random() * 500;
-
-
-            letter.style.transition =
-                `opacity ${fadeTime}ms ease-in-out`;
-
-
-            letter.style.opacity =
-                low;
-
-
-            setTimeout(
-
-                function() {
-
-
-                    letter.style.opacity =
-                        "1";
-
-
-                    /*
-                       再安排下一次
-                    */
-
-                    flickerLetter(
-                        letter
-                    );
-
-
-                },
-
-                fadeTime +
-                150 +
-                Math.random() * 500
-
-            );
-
-
-        },
-
-        delay
-
-    );
-
-}
-
-
-/* ==================================================
-   建立標題
-================================================== */
-
-async function startTitle() {
-
-
-    /*
-       清空
-    */
-
-    titleText.innerHTML = "";
-
-
-    /*
-       逐字建立
-    */
 
     for (
         let i = 0;
 
         i <
-        fullText.length;
+        levels.length;
 
         i++
     ) {
 
 
         /*
-           建立獨立字母
+           設定透明度
+        */
+
+        letter.style.opacity =
+            levels[i];
+
+
+        /*
+           慢慢等待
+
+           所以你肉眼一定看得到
+        */
+
+        await wait(
+            times[i]
+        );
+
+    }
+
+}
+
+
+
+/* ==========================================
+   開始
+========================================== */
+
+async function start() {
+
+
+    /*
+       黑屏
+    */
+
+    await wait(1500);
+
+
+
+    /*
+       一個字一個字加入
+    */
+
+    for (
+        let i = 0;
+
+        i <
+        word.length;
+
+        i++
+    ) {
+
+
+        /*
+           建立字母
         */
 
         const letter =
@@ -458,130 +259,83 @@ async function startTitle() {
 
 
         letter.textContent =
-            fullText[i];
+            word[i];
 
 
-        titleText.appendChild(
+        text.appendChild(
             letter
         );
+
 
 
         /*
-           這個字自己慢慢出現
+           這個字自己完成
+           「忽亮忽暗顯影」
         */
 
-        await fadeLetter(
+        await revealLetter(
             letter
         );
 
-
-        /*
-           這個字出現後
-
-           開始自己的
-           隨機忽隱忽現
-        */
-
-        flickerLetter(
-            letter
-        );
 
 
         /*
            下一個字之前
-           停頓
 
-           故意慢
+           故意停頓
         */
 
         await wait(
-            1000 +
-            Math.random() * 900
+            1800
         );
 
     }
 
 
 
-    /* ==================================================
-       Reality...? 已完整出現
-    ================================================== */
-
-
     /*
-       完整停留
+       Reality...? 完整出現
 
-       3 ～ 5 秒
+       停很久
     */
 
     await wait(
-
-        3000 +
-        Math.random() * 2000
-
+        4000
     );
 
 
 
-    /* ==================================================
-       突然消失
-    ================================================== */
-
-    titleText.style.opacity =
-        "0";
-
-
     /*
-       清空
+       瞬間消失
     */
 
-    await wait(100);
+    text.innerHTML = "";
 
-    titleText.innerHTML =
-        "";
 
 
     /*
        黑屏
-
-       4 ～ 6 秒
     */
 
     await wait(
-
-        4000 +
-        Math.random() * 2000
-
+        5000
     );
 
 
+
     /*
-       重新開始
+       重播
     */
 
-    startTitle();
+    start();
 
 }
 
 
-/* ==================================================
-   啟動
-================================================== */
 
-setTimeout(
-
-    function() {
-
-        startTitle();
-
-    },
-
-    1200
-
-);
+start();
 
 </script>
-
 
 </body>
 
