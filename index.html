@@ -13,13 +13,11 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
-
 <style>
 
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -41,7 +39,6 @@ body {
         sans-serif;
 
 }
-
 
 #game {
 
@@ -206,7 +203,6 @@ body {
 
 }
 
-
 .startButton:active {
 
     background: white;
@@ -323,7 +319,6 @@ body {
 
 }
 
-
 .left {
 
     left: 8px;
@@ -332,7 +327,6 @@ body {
 
 }
 
-
 .back {
 
     left: 64px;
@@ -340,7 +334,6 @@ body {
     top: 58px;
 
 }
-
 
 .right {
 
@@ -381,25 +374,21 @@ body {
             內容提示
         </p>
 
-
         <p>
             本作品包含心理恐怖、
             令人不安的聲音與視覺表現，
             以及可能引起部分玩家不適的成人向主題。
         </p>
 
-
         <p>
             部分內容可能涉及敏感議題。
         </p>
-
 
         <p>
             若你容易受到心理壓迫、
             強烈聲音或失真畫面的影響，
             請自行斟酌是否遊玩。
         </p>
-
 
         <p>
             你可以隨時離開遊戲。
@@ -507,10 +496,8 @@ const titleText =
         "titleText"
     );
 
-
 const titleWord =
     "Reality...?";
-
 
 let titleRunning = true;
 
@@ -712,22 +699,6 @@ function fadeInLetter(letter) {
 
 /* ==================================================
    不規則若隱若現
-
-   每個字：
-
-   亮著
-      ↓
-   隨機停留
-      ↓
-   慢慢變暗
-      ↓
-   隨機停留
-      ↓
-   慢慢變亮
-      ↓
-   再重新決定下一次
-
-   沒有固定週期。
 ================================================== */
 
 function startIrregularBreathing(
@@ -745,11 +716,6 @@ function startIrregularBreathing(
     letter.dataset.breathing =
         "true";
 
-
-    /*
-       每個字第一次先保持亮
-       時間故意不同
-    */
 
     let state =
         "holdBright";
@@ -776,10 +742,6 @@ function startIrregularBreathing(
 
     function chooseNextState() {
 
-        /*
-           隨機決定下一個狀態
-        */
-
         const roll =
             Math.random();
 
@@ -787,11 +749,6 @@ function startIrregularBreathing(
         if (
             roll < 0.55
         ) {
-
-            /*
-               55%：
-               亮 → 暗
-            */
 
             state =
                 "fadeDown";
@@ -817,11 +774,6 @@ function startIrregularBreathing(
         }
 
         else {
-
-            /*
-               45%：
-               暗 → 亮
-            */
 
             state =
                 "fadeUp";
@@ -874,10 +826,6 @@ function startIrregularBreathing(
             );
 
 
-        /* ==========================================
-           亮著停留
-        ========================================== */
-
         if (
             state ===
             "holdBright"
@@ -888,10 +836,6 @@ function startIrregularBreathing(
 
         }
 
-
-        /* ==========================================
-           慢慢變暗
-        ========================================== */
 
         else if (
             state ===
@@ -915,9 +859,16 @@ function startIrregularBreathing(
         }
 
 
-        /* ==========================================
-           慢慢變亮
-        ========================================== */
+        else if (
+            state ===
+            "holdDark"
+        ) {
+
+            letter.style.opacity =
+                targetOpacity;
+
+        }
+
 
         else if (
             state ===
@@ -941,10 +892,6 @@ function startIrregularBreathing(
         }
 
 
-        /* ==========================================
-           狀態完成
-        ========================================== */
-
         if (
             progress >= 1
         ) {
@@ -954,23 +901,15 @@ function startIrregularBreathing(
                 "holdBright"
             ) {
 
-                /*
-                   亮 → 暗
-                */
-
                 chooseNextState();
 
             }
+
 
             else if (
                 state ===
                 "fadeDown"
             ) {
-
-                /*
-                   暗完後
-                   隨機停留在暗處
-                */
 
                 state =
                     "holdDark";
@@ -988,14 +927,11 @@ function startIrregularBreathing(
 
             }
 
+
             else if (
                 state ===
                 "holdDark"
             ) {
-
-                /*
-                   暗 → 亮
-                */
 
                 state =
                     "fadeUp";
@@ -1023,17 +959,11 @@ function startIrregularBreathing(
 
             }
 
+
             else if (
                 state ===
                 "fadeUp"
             ) {
-
-                /*
-                   回到亮處後
-                   不一定馬上變暗
-
-                   再隨機停一段時間
-                */
 
                 state =
                     "holdBright";
@@ -1104,23 +1034,11 @@ async function playTitleAnimation() {
                 return;
 
 
-            /*
-               浮現完成後
-               立即保持 100%
-
-               不會突然暗
-            */
-
             startIrregularBreathing(
                 letters[i],
                 i
             );
 
-
-            /*
-               下一個字出現前
-               有自然間隔
-            */
 
             await wait(
                 random(
@@ -1135,8 +1053,7 @@ async function playTitleAnimation() {
         /* ==========================================
            全部出現後停留
 
-           這段時間各字仍然
-           各自呼吸
+           各字仍然各自不規則呼吸
         ========================================== */
 
         await wait(
@@ -1152,136 +1069,26 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           整個標題慢慢消失
+           整個標題「瞬間消失」
+
+           注意：
+           這裡故意沒有 fadeOut。
+           不漸變、不變暗。
+           直接從畫面移除。
         ========================================== */
 
-        const fadeOutDuration =
-            random(
-                2600,
-                3400
-            );
-
-
-        const start =
-            performance.now();
-
-
-        /*
-           記錄每個字當下的透明度
-           避免從某個值突然跳動
-        */
-
-        const startingOpacity =
-            letters.map(
-
-                letter =>
-                    parseFloat(
-                        letter.style.opacity
-                    ) || 0
-
-            );
-
-
-        await new Promise(
-
-            resolve => {
-
-                function fadeOut(now) {
-
-                    if (!titleRunning) {
-
-                        resolve();
-
-                        return;
-
-                    }
-
-
-                    const progress =
-                        Math.min(
-
-                            (
-                                now -
-                                start
-                            ) /
-                            fadeOutDuration,
-
-                            1
-
-                        );
-
-
-                    const eased =
-                        smoothstep(
-                            progress
-                        );
-
-
-                    letters.forEach(
-
-                        (
-                            letter,
-                            index
-                        ) => {
-
-                            letter.style.opacity =
-                                startingOpacity[
-                                    index
-                                ] *
-                                (
-                                    1 -
-                                    eased
-                                );
-
-                        }
-
-                    );
-
-
-                    if (
-                        progress < 1
-                    ) {
-
-                        requestAnimationFrame(
-                            fadeOut
-                        );
-
-                    }
-
-                    else {
-
-                        titleText.innerHTML =
-                            "";
-
-                        resolve();
-
-                    }
-
-                }
-
-
-                requestAnimationFrame(
-                    fadeOut
-                );
-
-            }
-
-        );
+        titleText.innerHTML = "";
 
 
         /* ==========================================
-           完全消失
-
-           等待一段不固定時間
+           黑屏停留
         ========================================== */
 
         await wait(
-
             random(
                 2800,
                 4800
             )
-
         );
 
     }
@@ -1289,12 +1096,16 @@ async function playTitleAnimation() {
 }
 
 
+/* ==================================================
+   啟動標題動畫
+================================================== */
+
 playTitleAnimation();
 
 
 
 /* ==================================================
-   Three.js
+   Three.js 變數
 ================================================== */
 
 let scene = null;
@@ -1524,9 +1335,7 @@ function createRoom() {
         ROOM_DEPTH;
 
 
-    /* =========================
-       地板
-    ========================= */
+    /* 地板 */
 
     const floor =
         new THREE.Mesh(
@@ -1562,9 +1371,7 @@ function createRoom() {
     );
 
 
-    /* =========================
-       天花板
-    ========================= */
+    /* 天花板 */
 
     const ceiling =
         new THREE.Mesh(
@@ -1600,9 +1407,7 @@ function createRoom() {
     );
 
 
-    /* =========================
-       前牆
-    ========================= */
+    /* 前牆 */
 
     const front =
         createWall(
@@ -1624,9 +1429,7 @@ function createRoom() {
     );
 
 
-    /* =========================
-       後牆
-    ========================= */
+    /* 後牆 */
 
     const back =
         createWall(
@@ -1648,9 +1451,7 @@ function createRoom() {
     );
 
 
-    /* =========================
-       左牆
-    ========================= */
+    /* 左牆 */
 
     const left =
         createWall(
@@ -1676,9 +1477,7 @@ function createRoom() {
     );
 
 
-    /* =========================
-       右牆
-    ========================= */
+    /* 右牆 */
 
     const right =
         createWall(
@@ -1746,7 +1545,7 @@ function createWall(
 
 
 /* ==================================================
-   房間邊界線
+   房間邊界
 ================================================== */
 
 function createRoomEdges(
@@ -2255,7 +2054,5 @@ window.addEventListener(
 
 </script>
 
-
 </body>
-
 </html>
