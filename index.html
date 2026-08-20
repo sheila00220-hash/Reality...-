@@ -144,9 +144,6 @@ body {
 
 /* ==================================================
    單字母
-
-   位置完全固定
-   只改透明度
 ================================================== */
 
 .titleLetter {
@@ -494,10 +491,6 @@ body {
 </div>
 
 
-<!-- ==================================================
-     Three.js
-================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
 
@@ -506,7 +499,7 @@ body {
 
 
 /* ==================================================
-   Reality...? 標題動畫
+   Reality...? 標題
 ================================================== */
 
 const titleText =
@@ -543,7 +536,40 @@ function wait(ms) {
 
 
 /* ==================================================
-   建立標題字母
+   隨機數
+================================================== */
+
+function random(min, max) {
+
+    return (
+        min +
+        Math.random() *
+        (max - min)
+    );
+
+}
+
+
+/* ==================================================
+   Smoothstep
+================================================== */
+
+function smoothstep(t) {
+
+    return (
+        t *
+        t *
+        (
+            3 -
+            2 * t
+        )
+    );
+
+}
+
+
+/* ==================================================
+   建立標題
 ================================================== */
 
 function createTitleLetters() {
@@ -595,9 +621,7 @@ function createTitleLetters() {
 
 
 /* ==================================================
-   字母浮現
-
-   0 → 100%
+   字母慢慢浮現
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -607,7 +631,10 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                2600;
+                random(
+                    2400,
+                    3000
+                );
 
 
             const start =
@@ -639,20 +666,9 @@ function fadeInLetter(letter) {
                     );
 
 
-                /*
-                   Smoothstep
-
-                   開始慢
-                   中間自然
-                   結尾慢
-                */
-
                 const eased =
-                    progress *
-                    progress *
-                    (
-                        3 -
-                        2 * progress
+                    smoothstep(
+                        progress
                     );
 
 
@@ -671,10 +687,6 @@ function fadeInLetter(letter) {
                 }
 
                 else {
-
-                    /*
-                       確保最後一定是 100%
-                    */
 
                     letter.style.opacity =
                         "1";
@@ -699,16 +711,26 @@ function fadeInLetter(letter) {
 
 
 /* ==================================================
-   呼吸動畫
+   不規則若隱若現
 
-   ★ 重要：
+   每個字：
 
-   每個字從 100% 開始。
+   亮著
+      ↓
+   隨機停留
+      ↓
+   慢慢變暗
+      ↓
+   隨機停留
+      ↓
+   慢慢變亮
+      ↓
+   再重新決定下一次
 
-   不會浮現完馬上掉下去。
+   沒有固定週期。
 ================================================== */
 
-function startBreathing(
+function startIrregularBreathing(
     letter,
     index
 ) {
@@ -725,120 +747,322 @@ function startBreathing(
 
 
     /*
-       第一階段：
-
-       浮現完成後
-       先保持 100%
-
-       不讓它立刻變暗
+       每個字第一次先保持亮
+       時間故意不同
     */
 
-    setTimeout(
-
-        function() {
-
-            if (!titleRunning)
-                return;
+    let state =
+        "holdBright";
 
 
-            let phase = 0;
+    let stateStart =
+        performance.now();
 
+
+    let stateDuration =
+        random(
+            1200,
+            2600
+        );
+
+
+    let startOpacity =
+        1;
+
+
+    let targetOpacity =
+        1;
+
+
+    function chooseNextState() {
+
+        /*
+           隨機決定下一個狀態
+        */
+
+        const roll =
+            Math.random();
+
+
+        if (
+            roll < 0.55
+        ) {
 
             /*
-               每個字速度略微不同
+               55%：
+               亮 → 暗
             */
 
-            const speed =
-                0.00135 +
-                (
-                    index % 4
-                ) *
-                0.00018;
+            state =
+                "fadeDown";
 
 
-            function breathe() {
-
-                if (!titleRunning)
-                    return;
+            startOpacity =
+                1;
 
 
-                phase += speed;
-
-
-                /*
-                   sin：
-
-                   0 → 1 → 0 → -1 → 0
-
-                   我們把它轉成
-                   0 → 1 → 0
-                   的呼吸週期
-                */
-
-                const wave =
-                    (
-                        Math.sin(phase)
-                        + 1
-                    ) / 2;
-
-
-                /*
-                   Smoothstep
-
-                   讓明暗轉換
-                   不會突然變化
-                */
-
-                const eased =
-                    wave *
-                    wave *
-                    (
-                        3 -
-                        2 * wave
-                    );
-
-
-                /*
-                   35% → 100%
-
-                   不會完全消失。
-
-                   這次從 100%
-                   平滑開始往下走。
-                */
-
-                const opacity =
-                    0.35 +
-                    (
-                        eased *
-                        0.65
-                    );
-
-
-                letter.style.opacity =
-                    opacity;
-
-
-                requestAnimationFrame(
-                    breathe
+            targetOpacity =
+                random(
+                    0.22,
+                    0.38
                 );
 
-            }
+
+            stateDuration =
+                random(
+                    2600,
+                    4200
+                );
+
+        }
+
+        else {
+
+            /*
+               45%：
+               暗 → 亮
+            */
+
+            state =
+                "fadeUp";
 
 
-            requestAnimationFrame(
-                breathe
+            startOpacity =
+                parseFloat(
+                    letter.style.opacity
+                ) || 0.3;
+
+
+            targetOpacity =
+                1;
+
+
+            stateDuration =
+                random(
+                    2800,
+                    4500
+                );
+
+        }
+
+
+        stateStart =
+            performance.now();
+
+    }
+
+
+    function animate(now) {
+
+        if (!titleRunning)
+            return;
+
+
+        const elapsed =
+            now -
+            stateStart;
+
+
+        const progress =
+            Math.min(
+
+                elapsed /
+                stateDuration,
+
+                1
+
             );
 
 
-        },
+        /* ==========================================
+           亮著停留
+        ========================================== */
 
-        /*
-           100% 後先停 1.2 秒
-        */
+        if (
+            state ===
+            "holdBright"
+        ) {
 
-        1200
+            letter.style.opacity =
+                "1";
 
+        }
+
+
+        /* ==========================================
+           慢慢變暗
+        ========================================== */
+
+        else if (
+            state ===
+            "fadeDown"
+        ) {
+
+            const eased =
+                smoothstep(
+                    progress
+                );
+
+
+            letter.style.opacity =
+                startOpacity +
+                (
+                    targetOpacity -
+                    startOpacity
+                ) *
+                eased;
+
+        }
+
+
+        /* ==========================================
+           慢慢變亮
+        ========================================== */
+
+        else if (
+            state ===
+            "fadeUp"
+        ) {
+
+            const eased =
+                smoothstep(
+                    progress
+                );
+
+
+            letter.style.opacity =
+                startOpacity +
+                (
+                    targetOpacity -
+                    startOpacity
+                ) *
+                eased;
+
+        }
+
+
+        /* ==========================================
+           狀態完成
+        ========================================== */
+
+        if (
+            progress >= 1
+        ) {
+
+            if (
+                state ===
+                "holdBright"
+            ) {
+
+                /*
+                   亮 → 暗
+                */
+
+                chooseNextState();
+
+            }
+
+            else if (
+                state ===
+                "fadeDown"
+            ) {
+
+                /*
+                   暗完後
+                   隨機停留在暗處
+                */
+
+                state =
+                    "holdDark";
+
+
+                stateStart =
+                    performance.now();
+
+
+                stateDuration =
+                    random(
+                        700,
+                        2200
+                    );
+
+            }
+
+            else if (
+                state ===
+                "holdDark"
+            ) {
+
+                /*
+                   暗 → 亮
+                */
+
+                state =
+                    "fadeUp";
+
+
+                stateStart =
+                    performance.now();
+
+
+                startOpacity =
+                    parseFloat(
+                        letter.style.opacity
+                    );
+
+
+                targetOpacity =
+                    1;
+
+
+                stateDuration =
+                    random(
+                        2800,
+                        4500
+                    );
+
+            }
+
+            else if (
+                state ===
+                "fadeUp"
+            ) {
+
+                /*
+                   回到亮處後
+                   不一定馬上變暗
+
+                   再隨機停一段時間
+                */
+
+                state =
+                    "holdBright";
+
+
+                stateStart =
+                    performance.now();
+
+
+                stateDuration =
+                    random(
+                        900,
+                        3000
+                    );
+
+            }
+
+        }
+
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }
+
+
+    requestAnimationFrame(
+        animate
     );
 
 }
@@ -858,7 +1082,7 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           一個一個慢慢浮現
+           一個一個慢慢出現
         ========================================== */
 
         for (
@@ -866,7 +1090,6 @@ async function playTitleAnimation() {
             i < letters.length;
             i++
         ) {
-
 
             if (!titleRunning)
                 return;
@@ -882,36 +1105,45 @@ async function playTitleAnimation() {
 
 
             /*
-               每個字浮現完成後
-               稍微停一下
+               浮現完成後
+               立即保持 100%
 
-               然後才開始呼吸
+               不會突然暗
             */
 
-            startBreathing(
+            startIrregularBreathing(
                 letters[i],
                 i
             );
 
 
             /*
-               下一個字之前的間隔
+               下一個字出現前
+               有自然間隔
             */
 
             await wait(
-                550
+                random(
+                    500,
+                    800
+                )
             );
 
         }
 
 
         /* ==========================================
-           全部出現後
-           再完整停留一段時間
+           全部出現後停留
+
+           這段時間各字仍然
+           各自呼吸
         ========================================== */
 
         await wait(
-            4300
+            random(
+                4300,
+                5600
+            )
         );
 
 
@@ -920,15 +1152,34 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           整體慢慢消失
+           整個標題慢慢消失
         ========================================== */
 
         const fadeOutDuration =
-            2200;
+            random(
+                2600,
+                3400
+            );
 
 
         const start =
             performance.now();
+
+
+        /*
+           記錄每個字當下的透明度
+           避免從某個值突然跳動
+        */
+
+        const startingOpacity =
+            letters.map(
+
+                letter =>
+                    parseFloat(
+                        letter.style.opacity
+                    ) || 0
+
+            );
 
 
         await new Promise(
@@ -961,23 +1212,26 @@ async function playTitleAnimation() {
 
 
                     const eased =
-                        1 -
-                        (
-                            progress *
-                            progress *
-                            (
-                                3 -
-                                2 * progress
-                            )
+                        smoothstep(
+                            progress
                         );
 
 
                     letters.forEach(
 
-                        letter => {
+                        (
+                            letter,
+                            index
+                        ) => {
 
                             letter.style.opacity =
-                                eased;
+                                startingOpacity[
+                                    index
+                                ] *
+                                (
+                                    1 -
+                                    eased
+                                );
 
                         }
 
@@ -1016,13 +1270,17 @@ async function playTitleAnimation() {
 
 
         /* ==========================================
-           完全消失後等待
+           完全消失
+
+           等待一段不固定時間
         ========================================== */
 
         await wait(
 
-            3000 +
-            Math.random() * 2000
+            random(
+                2800,
+                4800
+            )
 
         );
 
@@ -1201,11 +1459,8 @@ function createWorld() {
     renderer.setPixelRatio(
 
         Math.min(
-
             window.devicePixelRatio,
-
             2
-
         )
 
     );
@@ -1214,7 +1469,6 @@ function createWorld() {
     renderer.setSize(
 
         window.innerWidth,
-
         window.innerHeight
 
     );
@@ -1270,7 +1524,9 @@ function createRoom() {
         ROOM_DEPTH;
 
 
-    /* 地板 */
+    /* =========================
+       地板
+    ========================= */
 
     const floor =
         new THREE.Mesh(
@@ -1306,7 +1562,9 @@ function createRoom() {
     );
 
 
-    /* 天花板 */
+    /* =========================
+       天花板
+    ========================= */
 
     const ceiling =
         new THREE.Mesh(
@@ -1342,7 +1600,9 @@ function createRoom() {
     );
 
 
-    /* 前牆 */
+    /* =========================
+       前牆
+    ========================= */
 
     const front =
         createWall(
@@ -1364,7 +1624,9 @@ function createRoom() {
     );
 
 
-    /* 後牆 */
+    /* =========================
+       後牆
+    ========================= */
 
     const back =
         createWall(
@@ -1386,7 +1648,9 @@ function createRoom() {
     );
 
 
-    /* 左牆 */
+    /* =========================
+       左牆
+    ========================= */
 
     const left =
         createWall(
@@ -1412,7 +1676,9 @@ function createRoom() {
     );
 
 
-    /* 右牆 */
+    /* =========================
+       右牆
+    ========================= */
 
     const right =
         createWall(
@@ -1480,7 +1746,7 @@ function createWall(
 
 
 /* ==================================================
-   房間邊界
+   房間邊界線
 ================================================== */
 
 function createRoomEdges(
@@ -1563,7 +1829,9 @@ function updatePlayer() {
     let dz = 0;
 
 
-    if (movement.forward) {
+    if (
+        movement.forward
+    ) {
 
         dx +=
             forwardX *
@@ -1576,7 +1844,9 @@ function updatePlayer() {
     }
 
 
-    if (movement.back) {
+    if (
+        movement.back
+    ) {
 
         dx -=
             forwardX *
@@ -1589,7 +1859,9 @@ function updatePlayer() {
     }
 
 
-    if (movement.left) {
+    if (
+        movement.left
+    ) {
 
         dx -=
             Math.cos(yaw) *
@@ -1602,7 +1874,9 @@ function updatePlayer() {
     }
 
 
-    if (movement.right) {
+    if (
+        movement.right
+    ) {
 
         dx +=
             Math.cos(yaw) *
@@ -1662,9 +1936,11 @@ function updatePlayer() {
 
 
     camera.position.set(
+
         player.x,
         player.y,
         player.z
+
     );
 
 
@@ -1720,7 +1996,8 @@ function setupTouch() {
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
@@ -1789,7 +2066,8 @@ function setupTouch() {
         },
 
         {
-            passive: false
+            passive:
+                false
         }
 
     );
