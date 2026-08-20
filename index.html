@@ -90,13 +90,6 @@ const word =
 
 
 /* ==================================================
-   所有已經完成的舊字
-================================================== */
-
-const oldLetters = [];
-
-
-/* ==================================================
    等待
 ================================================== */
 
@@ -119,11 +112,11 @@ function wait(ms) {
 
 
 /* ==================================================
-   新字顯現
+   新字：
 
    1% → 100%
 
-   只負責自己
+   完全不閃
 ================================================== */
 
 function revealLetter(letter) {
@@ -134,7 +127,7 @@ function revealLetter(letter) {
 
 
             const duration =
-                1400;
+                1200;
 
 
             const start =
@@ -156,13 +149,13 @@ function revealLetter(letter) {
 
 
                 /*
-                   新字：
+                   新字只做：
 
                    1%
                    ↓
                    100%
 
-                   絕對不倒退
+                   不會回頭
                 */
 
                 letter.style.opacity =
@@ -177,20 +170,16 @@ function revealLetter(letter) {
                     progress < 1
                 ) {
 
-
                     requestAnimationFrame(
                         animate
                     );
-
 
                 }
 
                 else {
 
-
                     letter.style.opacity =
                         "1";
-
 
                     resolve();
 
@@ -211,48 +200,67 @@ function revealLetter(letter) {
 
 
 /* ==================================================
-   舊字「持續呼吸」
+   單字母獨立漸變
 
-   不是閃爍
-
-   是連續的透明度曲線
+   這次故意加大幅度
 ================================================== */
 
-function startBreathing(
-    letter,
-    index
-) {
+function startLetterFade(letter) {
 
 
     /*
-       每個字速度稍微不同
+       每個字自己的速度
 
-       避免全部同步
+       比上一版快一些
     */
 
     const speed =
-        0.0018 +
-        (
-            index *
-            0.00018
-        );
+        0.0015 +
+        Math.random() * 0.002;
 
 
     /*
-       每個字稍微錯開
+       每個字自己的最低透明度
+
+       15% ～ 35%
+
+       這樣會非常明顯
     */
 
-    const phase =
-        index *
-        1.8;
+    const minimum =
+        0.15 +
+        Math.random() * 0.20;
 
 
-    function breathe(time) {
+    /*
+       最高透明度
+
+       保留一點自然感
+    */
+
+    const maximum =
+        0.95 +
+        Math.random() * 0.05;
+
+
+    /*
+       每個字自己的起始位置
+
+       所以不會同步
+    */
+
+    let phase =
+        Math.random() *
+        Math.PI *
+        2;
+
+
+
+    function animate() {
 
 
         /*
-           如果字還存在
-           就一直呼吸
+           被刪除就停止
         */
 
         if (
@@ -265,38 +273,39 @@ function startBreathing(
 
 
         /*
-           sin：
+           每一幀前進
 
-           -1 → +1
-
-           是連續曲線
+           每個字自己的速度
         */
 
-        const wave =
-            Math.sin(
-
-                time *
-                speed
-                +
-                phase
-
-            );
+        phase += speed;
 
 
         /*
-           透明度：
+           連續波形
 
-           25% ～ 100%
+           不會突然跳
+        */
 
-           變化幅度明顯
+        const wave =
+            (
+                Math.sin(phase)
+                + 1
+            ) / 2;
+
+
+        /*
+           在自己的範圍內
+           慢慢變化
         */
 
         const opacity =
-            0.625 +
+            minimum +
             (
-                wave *
-                0.375
-            );
+                maximum -
+                minimum
+            ) *
+            wave;
 
 
         letter.style.opacity =
@@ -304,14 +313,14 @@ function startBreathing(
 
 
         requestAnimationFrame(
-            breathe
+            animate
         );
 
     }
 
 
     requestAnimationFrame(
-        breathe
+        animate
     );
 
 }
@@ -341,15 +350,8 @@ async function start() {
         "";
 
 
-    oldLetters.length =
-        0;
-
-
-
     /*
-       ==========================================
        一個字一個字出現
-       ==========================================
     */
 
     for (
@@ -394,46 +396,42 @@ async function start() {
 
 
         /*
-           ========================================
-           新字開始出現之前：
-
-           先讓所有舊字開始呼吸
-           ========================================
+           ==========================================
+           舊字開始各自漸變
+           ==========================================
         */
+
+        const letters =
+            text.querySelectorAll(
+                ".letter"
+            );
+
 
         for (
             let j = 0;
 
             j <
-            oldLetters.length;
+            letters.length - 1;
 
             j++
         ) {
 
 
-            /*
-               只啟動一次
-            */
-
             if (
-                !oldLetters[j]
+                !letters[j]
                     .dataset
-                    .breathing
+                    .fading
             ) {
 
 
-                oldLetters[j]
+                letters[j]
                     .dataset
-                    .breathing =
+                    .fading =
                     "true";
 
 
-                startBreathing(
-
-                    oldLetters[j],
-
-                    j
-
+                startLetterFade(
+                    letters[j]
                 );
 
             }
@@ -443,11 +441,11 @@ async function start() {
 
 
         /*
-           ========================================
+           ==========================================
            新字：
 
            1% → 100%
-           ========================================
+           ==========================================
         */
 
         await revealLetter(
@@ -455,19 +453,11 @@ async function start() {
         );
 
 
-        /*
-           新字完成
-
-           現在它變成舊字
-        */
-
-        oldLetters.push(
-            letter
-        );
-
 
         /*
+           ==========================================
            停頓
+           ==========================================
         */
 
         await wait(
@@ -479,39 +469,56 @@ async function start() {
 
 
     /*
-       ==========================================
-       全部完成
-       ==========================================
+       最後一個字也加入
+       自己的漸變
     */
 
-    /*
-       最後一個字也加入呼吸
+    const finalLetters =
+        text.querySelectorAll(
+            ".letter"
+        );
 
-       但稍微延遲
+
+    if (
+        finalLetters.length > 0
+    ) {
+
+
+        const last =
+            finalLetters[
+                finalLetters.length - 1
+            ];
+
+
+        startLetterFade(
+            last
+        );
+
+    }
+
+
+
+    /*
+       ==========================================
+       完整停留
+       ==========================================
     */
 
     await wait(
-        800
+        4000
     );
 
-
-    /*
-       Reality...? 完整存在
-    */
-
-    await wait(
-        3500
-    );
 
 
     /*
        ==========================================
-       瞬間消失
+       整體瞬間消失
        ==========================================
     */
 
     text.innerHTML =
         "";
+
 
 
     /*
@@ -523,8 +530,9 @@ async function start() {
     );
 
 
+
     /*
-       重來
+       重新開始
     */
 
     start();
@@ -533,7 +541,7 @@ async function start() {
 
 
 /* ==================================================
-   開始
+   啟動
 ================================================== */
 
 start();
