@@ -13,12 +13,14 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
+
 <style>
 
 html,
 body {
 
     margin: 0;
+
     width: 100%;
     height: 100%;
 
@@ -77,6 +79,7 @@ body {
 <div id="text"></div>
 
 
+
 <script>
 
 
@@ -86,6 +89,7 @@ const text =
 
 const word =
     "Reality...?";
+
 
 
 /* ==================================================
@@ -110,27 +114,36 @@ function wait(ms) {
 }
 
 
+
 /* ==================================================
    新字顯現
 
    1% → 100%
-   中間完全不閃
+
+   完全不閃
 ================================================== */
 
-function revealLetter(letter) {
+function revealLetter(
+    letter,
+    oldLetters
+) {
 
     return new Promise(
 
         function(resolve) {
 
+
             const duration =
-                1200;
+                1400;
+
 
             const start =
                 performance.now();
 
 
+
             function animate(now) {
+
 
                 const progress =
                     Math.min(
@@ -144,15 +157,9 @@ function revealLetter(letter) {
 
 
                 /*
-                   1%
-                   ↓
-                   2%
-                   ↓
-                   3%
-                   ↓
-                   ...
-                   ↓
-                   100%
+                   新字：
+
+                   1 → 100
                 */
 
                 letter.style.opacity =
@@ -161,6 +168,70 @@ function revealLetter(letter) {
                         0.99 *
                         progress
                     );
+
+
+
+                /*
+                   舊字：
+
+                   使用連續波形
+                   做非常柔和的透明度變化
+                */
+
+                oldLetters.forEach(
+
+                    function(
+                        oldLetter,
+                        index
+                    ) {
+
+
+                        /*
+                           每個字有不同相位
+
+                           所以不會全部一起動
+                        */
+
+                        const phase =
+                            index *
+                            1.7;
+
+
+                        /*
+                           緩慢波動
+
+                           範圍：
+
+                           約 86% ～ 100%
+                        */
+
+                        const wave =
+                            Math.sin(
+
+                                progress *
+                                Math.PI *
+                                2
+                                +
+                                phase
+
+                            );
+
+
+                        const opacity =
+                            0.93 +
+                            (
+                                wave *
+                                0.07
+                            );
+
+
+                        oldLetter.style.opacity =
+                            opacity;
+
+                    }
+
+                );
+
 
 
                 if (
@@ -175,8 +246,34 @@ function revealLetter(letter) {
 
                 else {
 
+
+                    /*
+                       新字固定 100%
+                    */
+
                     letter.style.opacity =
                         "1";
+
+
+                    /*
+                       舊字也回到 100%
+
+                       不停頓、不跳閃
+                    */
+
+                    oldLetters.forEach(
+
+                        function(
+                            oldLetter
+                        ) {
+
+                            oldLetter.style.opacity =
+                                "1";
+
+                        }
+
+                    );
+
 
                     resolve();
 
@@ -196,83 +293,6 @@ function revealLetter(letter) {
 }
 
 
-/* ==================================================
-   舊字開始忽隱忽現
-
-   只有下一個字出現時才啟動
-================================================== */
-
-function startFlicker(letter) {
-
-
-    async function flicker() {
-
-        while (
-            letter.isConnected
-        ) {
-
-            /*
-               先保持穩定一段時間
-            */
-
-            await wait(
-
-                900 +
-                Math.random() * 1000
-
-            );
-
-
-            /*
-               慢慢變暗
-
-               不會完全消失
-            */
-
-            const low =
-                0.68 +
-                Math.random() * 0.18;
-
-
-            const duration =
-                700 +
-                Math.random() * 500;
-
-
-            letter.style.transition =
-                `opacity ${duration}ms ease-in-out`;
-
-
-            letter.style.opacity =
-                low;
-
-
-            await wait(
-                duration
-            );
-
-
-            /*
-               慢慢恢復
-            */
-
-            letter.style.opacity =
-                "1";
-
-
-            await wait(
-                duration
-            );
-
-        }
-
-    }
-
-
-    flicker();
-
-}
-
 
 /* ==================================================
    主動畫
@@ -282,7 +302,7 @@ async function start() {
 
 
     /*
-       開始前黑屏
+       開始黑屏
     */
 
     await wait(
@@ -290,8 +310,9 @@ async function start() {
     );
 
 
+
     /*
-       一個字一個字出現
+       一個字一個字增加
     */
 
     for (
@@ -322,7 +343,7 @@ async function start() {
 
 
         /*
-           新字從 1% 開始
+           新字從 1%
         */
 
         letter.style.opacity =
@@ -334,75 +355,42 @@ async function start() {
         );
 
 
-        /*
-           =========================================
-           從第二個字開始：
 
-           舊字開始閃
-           =========================================
+        /*
+           取得前面已完成的字
         */
 
-        if (
-            i > 0
-        ) {
-
-            const oldLetters =
+        const oldLetters =
+            Array.from(
                 text.querySelectorAll(
                     ".letter"
-                );
+                )
+            ).slice(
+                0,
+                -1
+            );
 
-
-            for (
-                let j = 0;
-
-                j <
-                oldLetters.length - 1;
-
-                j++
-            ) {
-
-
-                if (
-                    !oldLetters[j]
-                        .dataset
-                        .flickering
-                ) {
-
-
-                    oldLetters[j]
-                        .dataset
-                        .flickering =
-                        "true";
-
-
-                    startFlicker(
-                        oldLetters[j]
-                    );
-
-                }
-
-            }
-
-        }
 
 
         /*
-           =========================================
-           新字：
+           新字顯現
 
-           1% → 100%
-
-           新字自己不閃
-           =========================================
+           同時舊字做
+           非常柔和的漸變
         */
 
         await revealLetter(
-            letter
+
+            letter,
+
+            oldLetters
+
         );
 
 
+
         /*
-           字完成後停頓
+           停頓
         */
 
         await wait(
@@ -412,25 +400,28 @@ async function start() {
     }
 
 
+
     /*
-       =========================================
-       Reality...? 完整出現
-       =========================================
+       ==========================================
+       Reality...? 完整狀態
+       ==========================================
     */
 
     await wait(
-        3500
+        4000
     );
 
 
+
     /*
-       =========================================
-       瞬間消失
-       =========================================
+       ==========================================
+       整個瞬間消失
+       ==========================================
     */
 
     text.innerHTML =
         "";
+
 
 
     /*
@@ -442,13 +433,15 @@ async function start() {
     );
 
 
+
     /*
-       重新開始
+       再來一次
     */
 
     start();
 
 }
+
 
 
 /* ==================================================
