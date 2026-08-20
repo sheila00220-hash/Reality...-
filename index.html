@@ -13,11 +13,17 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
+
 <style>
+
+/* ==================================================
+   基本設定
+================================================== */
 
 * {
     box-sizing: border-box;
 }
+
 
 html,
 body {
@@ -29,7 +35,7 @@ body {
 
     overflow: hidden;
 
-    background: black;
+    background: #000;
 
     font-family:
         Arial,
@@ -38,15 +44,20 @@ body {
 
 }
 
+
+/* ==================================================
+   開始畫面
+================================================== */
+
 #title {
 
     position: fixed;
 
     inset: 0;
 
-    background: black;
+    background: #000;
 
-    color: white;
+    color: #fff;
 
     display: flex;
 
@@ -61,9 +72,9 @@ body {
 }
 
 
-/* =========================
-   標題
-========================= */
+/* ==================================================
+   Reality...? 標題
+================================================== */
 
 #titleText {
 
@@ -71,13 +82,17 @@ body {
 
     min-height: 1em;
 
+    width: 95%;
+
+    text-align: center;
+
     font-size:
         clamp(55px, 13vw, 120px);
 
     font-weight: 300;
 
     letter-spacing:
-        clamp(4px, 1.2vw, 14px);
+        clamp(5px, 1.4vw, 16px);
 
     line-height: 1;
 
@@ -85,12 +100,52 @@ body {
 
     color: #f5f5f5;
 
+
+    /*
+       初始狀態
+
+       完全透明
+       稍微模糊
+    */
+
+    opacity: 0;
+
+    filter:
+        blur(10px);
+
+
+    /*
+       浮現速度
+
+       故意放慢
+    */
+
+    transition:
+
+        opacity 1.8s ease,
+
+        filter 1.8s ease;
+
 }
 
 
-/* =========================
-   提示文字
-========================= */
+/* ==================================================
+   標題浮現完成
+================================================== */
+
+#titleText.visible {
+
+    opacity: 1;
+
+    filter:
+        blur(0);
+
+}
+
+
+/* ==================================================
+   內容提示
+================================================== */
 
 .warning {
 
@@ -98,7 +153,7 @@ body {
 
     max-width: 600px;
 
-    margin-top: 55px;
+    margin-top: 60px;
 
     color: #cfcfcf;
 
@@ -117,6 +172,10 @@ body {
 <body>
 
 
+<!-- ==================================================
+     開始頁
+================================================== -->
+
 <div id="title">
 
 
@@ -125,26 +184,32 @@ body {
 
     <div class="warning">
 
-        <p>內容提示</p>
-
         <p>
-        本作品包含心理恐怖、
-        令人不安的聲音與視覺表現，
-        以及可能引起部分玩家不適的成人向主題。
+            內容提示
         </p>
 
-        <p>
-        部分內容可能涉及敏感議題。
-        </p>
 
         <p>
-        若你容易受到心理壓迫、
-        強烈聲音或失真畫面的影響，
-        請自行斟酌是否遊玩。
+            本作品包含心理恐怖、
+            令人不安的聲音與視覺表現，
+            以及可能引起部分玩家不適的成人向主題。
         </p>
 
+
         <p>
-        你可以隨時離開遊戲。
+            部分內容可能涉及敏感議題。
+        </p>
+
+
+        <p>
+            若你容易受到心理壓迫、
+            強烈聲音或失真畫面的影響，
+            請自行斟酌是否遊玩。
+        </p>
+
+
+        <p>
+            你可以隨時離開遊戲。
         </p>
 
     </div>
@@ -153,11 +218,11 @@ body {
 </div>
 
 
+
 <script>
 
-
 /* ==================================================
-   Reality...? 測試動畫
+   Reality...? 動畫
 ================================================== */
 
 
@@ -166,6 +231,10 @@ const titleText =
         "titleText"
     );
 
+
+/*
+   每一個階段的文字
+*/
 
 const titleSteps = [
 
@@ -188,24 +257,88 @@ const titleSteps = [
 ];
 
 
+
+/* ==================================================
+   浮現一段文字
+================================================== */
+
+function fadeInTitle(text) {
+
+
+    /*
+       先確保上一段消失
+    */
+
+    titleText.classList.remove(
+        "visible"
+    );
+
+
+    /*
+       換文字
+    */
+
+    titleText.textContent =
+        text;
+
+
+    /*
+       等瀏覽器完成文字更新
+    */
+
+    requestAnimationFrame(
+
+        function() {
+
+            requestAnimationFrame(
+
+                function() {
+
+                    titleText.classList.add(
+                        "visible"
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+
+
+/* ==================================================
+   主動畫
+================================================== */
+
 function playTitleAnimation() {
 
 
     let index = 0;
 
 
-    function typeNext() {
+
+    function next() {
 
 
-        titleText.textContent =
-            titleSteps[index];
+        /*
+           顯示目前文字
+        */
+
+        fadeInTitle(
+            titleSteps[index]
+        );
 
 
         index++;
 
 
+
         /* =========================
-           還沒完成
+           還沒有到 Reality...?
         ========================= */
 
         if (
@@ -214,11 +347,24 @@ function playTitleAnimation() {
         ) {
 
 
+            /*
+               每一段慢慢浮現後
+
+               再停留一小段時間
+
+               然後進下一段
+            */
+
+            const waitTime =
+                1900 +
+                Math.random() * 500;
+
+
             setTimeout(
 
-                typeNext,
+                next,
 
-                180
+                waitTime
 
             );
 
@@ -230,18 +376,19 @@ function playTitleAnimation() {
 
 
         /* =========================
-           完整 Reality...?
+           Reality...? 已經完整出現
         ========================= */
 
 
         /*
-           隨機停留
-           0.8 ～ 2.6 秒
+           完整標題停留
+
+           1.8 ～ 3.5 秒
         */
 
-        const disappearTime =
-            800 +
-            Math.random() * 1800;
+        const stayTime =
+            1800 +
+            Math.random() * 1700;
 
 
         setTimeout(
@@ -250,29 +397,48 @@ function playTitleAnimation() {
 
 
                 /*
+                   =====================
                    瞬間消失
+                   =====================
                 */
 
-                titleText.textContent =
-                    "";
+                titleText.classList.remove(
+                    "visible"
+                );
 
 
                 /*
-                   確認真的沒有文字
+                   不做淡出
+
+                   等一點點時間後
+                   直接清空
                 */
 
-                titleText.style.visibility =
-                    "hidden";
+                setTimeout(
+
+                    function() {
+
+
+                        titleText.textContent =
+                            "";
+
+
+                    },
+
+                    100
+
+                );
 
 
                 /*
                    黑屏
-                   2.5 ～ 5 秒
+
+                   3 ～ 5 秒
                 */
 
-                const nextAppearance =
-                    2500 +
-                    Math.random() * 2500;
+                const blackTime =
+                    3000 +
+                    Math.random() * 2000;
 
 
                 setTimeout(
@@ -280,39 +446,58 @@ function playTitleAnimation() {
                     function() {
 
 
-                        titleText.style.visibility =
-                            "visible";
+                        /*
+                           重新開始
+                        */
 
+                        next = null;
 
                         playTitleAnimation();
 
 
                     },
 
-                    nextAppearance
+                    blackTime
 
                 );
 
 
             },
 
-            disappearTime
+            stayTime
 
         );
 
     }
 
 
-    typeNext();
+
+    next();
 
 }
 
 
-/* =========================
-   開始
-========================= */
 
-playTitleAnimation();
+/* ==================================================
+   開始
+================================================== */
+
+
+/*
+   開場先黑屏一秒
+*/
+
+setTimeout(
+
+    function() {
+
+        playTitleAnimation();
+
+    },
+
+    1000
+
+);
 
 
 </script>
