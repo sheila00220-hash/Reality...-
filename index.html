@@ -476,14 +476,11 @@ function wait(ms) {
 
 
 /* ==================================================
-   正在出現的字
+   單字母慢速浮現
 
    1% → 100%
 
-   只做漸變
-   不閃爍
-
-   速度：1400ms
+   1800ms
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -493,7 +490,7 @@ function fadeInLetter(letter) {
         resolve => {
 
             const duration =
-                1400;
+                1800;
 
 
             const start =
@@ -524,10 +521,6 @@ function fadeInLetter(letter) {
 
                     );
 
-
-                /*
-                   smoothstep
-                */
 
                 const eased =
                     progress *
@@ -585,10 +578,7 @@ function fadeInLetter(letter) {
 
 
 /* ==================================================
-   已完成的字
-
-   下一個字開始出現後
-   才開始忽隱忽現
+   已出現字母的平滑忽隱忽現
 ================================================== */
 
 function startPulse(letter) {
@@ -608,10 +598,6 @@ function startPulse(letter) {
         Math.PI *
         2;
 
-
-    /*
-       很慢的變化
-    */
 
     const speed =
         0.006 +
@@ -635,10 +621,6 @@ function startPulse(letter) {
             ) / 2;
 
 
-        /*
-           平滑曲線
-        */
-
         const eased =
             wave *
             wave *
@@ -650,6 +632,8 @@ function startPulse(letter) {
 
         /*
            25% → 100%
+
+           平滑漸變
         */
 
         const opacity =
@@ -680,137 +664,160 @@ function startPulse(letter) {
 
 /* ==================================================
    主標題流程
+
+   完成後重新開始
 ================================================== */
 
 async function playTitleAnimation() {
 
-    if (!titleRunning)
-        return;
+    while (titleRunning) {
 
 
-    titleText.innerHTML =
-        "";
+        titleText.innerHTML =
+            "";
 
 
-    const letters = [];
+        const letters = [];
 
 
-    for (
-        let i = 0;
-        i < titleWord.length;
-        i++
-    ) {
-
-
-        if (!titleRunning)
-            return;
-
-
-        /*
-           建立字母
-        */
-
-        const letter =
-            document.createElement(
-                "span"
-            );
-
-
-        letter.className =
-            "titleLetter";
-
-
-        letter.textContent =
-            titleWord[i];
-
-
-        letter.style.opacity =
-            "0.01";
-
-
-        titleText.appendChild(
-            letter
-        );
-
-
-        letters.push(
-            letter
-        );
-
-
-        /*
-           目前字母：
-
-           1 → 100%
-
-           1400ms
-        */
-
-        await fadeInLetter(
-            letter
-        );
-
-
-        if (!titleRunning)
-            return;
-
-
-        /*
-           字母完成後停頓
-
-           650ms
-        */
-
-        await wait(
-            650
-        );
-
-
-        if (!titleRunning)
-            return;
-
-
-        /*
-           前面已經出現的字
-           開始忽隱忽現
-        */
+        /* ==========================================
+           逐字出現
+        ========================================== */
 
         for (
-            let j = 0;
-            j < letters.length;
-            j++
+            let i = 0;
+            i < titleWord.length;
+            i++
         ) {
 
-            startPulse(
-                letters[j]
+
+            if (!titleRunning)
+                return;
+
+
+            const letter =
+                document.createElement(
+                    "span"
+                );
+
+
+            letter.className =
+                "titleLetter";
+
+
+            letter.textContent =
+                titleWord[i];
+
+
+            letter.style.opacity =
+                "0.01";
+
+
+            titleText.appendChild(
+                letter
             );
+
+
+            letters.push(
+                letter
+            );
+
+
+            /*
+               當前字：
+
+               1% → 100%
+               1800ms
+            */
+
+            await fadeInLetter(
+                letter
+            );
+
+
+            if (!titleRunning)
+                return;
+
+
+            /*
+               字與字之間停頓
+            */
+
+            await wait(
+                650
+            );
+
+
+            if (!titleRunning)
+                return;
+
+
+            /*
+               下一個字開始時，
+               前面的字才開始呼吸
+            */
+
+            for (
+                let j = 0;
+                j < letters.length;
+                j++
+            ) {
+
+                startPulse(
+                    letters[j]
+                );
+
+            }
 
         }
 
+
+        /* ==========================================
+           完整標題停留
+        ========================================== */
+
+        await wait(
+            3500
+        );
+
+
+        if (!titleRunning)
+            return;
+
+
+        /* ==========================================
+           標題消失
+        ========================================== */
+
+        titleText.innerHTML =
+            "";
+
+
+        /* ==========================================
+           消失後等待
+
+           2.5 ～ 5 秒
+        ========================================== */
+
+        const restartDelay =
+            2500 +
+            Math.random() * 2500;
+
+
+        await wait(
+            restartDelay
+        );
+
+
+        if (!titleRunning)
+            return;
+
+
+        /*
+           while 重新開始
+        */
+
     }
-
-
-    /*
-       完整標題停留
-    */
-
-    await wait(
-        3500
-    );
-
-
-    if (!titleRunning)
-        return;
-
-
-    /*
-       只讓標題消失
-
-       警告與按鈕仍然存在
-    */
-
-    titleText.innerHTML =
-        "";
 
 }
 
@@ -1057,10 +1064,6 @@ function createRoom() {
         ROOM_DEPTH;
 
 
-    /* =========================
-       地板
-    ========================= */
-
     const floor =
         new THREE.Mesh(
 
@@ -1096,10 +1099,6 @@ function createRoom() {
         floor
     );
 
-
-    /* =========================
-       天花板
-    ========================= */
 
     const ceiling =
         new THREE.Mesh(
@@ -1137,10 +1136,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       前牆
-    ========================= */
-
     const front =
         createWall(
 
@@ -1165,10 +1160,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       後牆
-    ========================= */
-
     const back =
         createWall(
 
@@ -1192,10 +1183,6 @@ function createRoom() {
         back
     );
 
-
-    /* =========================
-       左牆
-    ========================= */
 
     const left =
         createWall(
@@ -1224,10 +1211,6 @@ function createRoom() {
         left
     );
 
-
-    /* =========================
-       右牆
-    ========================= */
 
     const right =
         createWall(
