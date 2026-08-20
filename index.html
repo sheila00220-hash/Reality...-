@@ -47,32 +47,52 @@ body {
         Helvetica,
         sans-serif;
 
+
     /*
-       比上一版小一點
-       避免手機畫面超出
+       字體稍微放大
     */
 
     font-size:
-        clamp(42px, 11vw, 90px);
+        clamp(46px, 12vw, 96px);
 
-    font-weight: 300;
+
+    font-weight:
+        300;
+
 
     /*
-       字距收窄
+       字距縮小
+
+       避免整個標題被撐寬
     */
 
-    letter-spacing: 5px;
+    letter-spacing:
+        1px;
 
-    white-space: nowrap;
+
+    /*
+       防止標題超出手機畫面
+
+       左右保留安全距離
+    */
+
+    max-width:
+        calc(100vw - 24px);
+
+
+    white-space:
+        nowrap;
 
 }
 
 
 .letter {
 
-    display: inline-block;
+    display:
+        inline-block;
 
-    opacity: 0;
+    opacity:
+        0;
 
 }
 
@@ -163,9 +183,6 @@ function revealLetter(letter) {
                    1%
                    ↓
                    100%
-
-                   只增加
-                   不倒退
                 */
 
                 letter.style.opacity =
@@ -211,14 +228,6 @@ function revealLetter(letter) {
 
 /* ==================================================
    單字母獨立漸變
-
-   每個字：
-
-   不同步
-   不跳動
-   不閃爍
-
-   只是慢慢改變透明度
 ================================================== */
 
 function startLetterFade(letter) {
@@ -246,8 +255,6 @@ function startLetterFade(letter) {
 
     /*
        每個字自己的最高透明度
-
-       95% ～ 100%
     */
 
     const maximum =
@@ -257,8 +264,6 @@ function startLetterFade(letter) {
 
     /*
        每個字自己的起始位置
-
-       所以不會完全同步
     */
 
     let phase =
@@ -272,8 +277,8 @@ function startLetterFade(letter) {
 
 
         /*
-           如果字已經被刪除
-           就停止動畫
+           如果字已經不存在
+           停止動畫
         */
 
         if (
@@ -286,18 +291,14 @@ function startLetterFade(letter) {
 
 
         /*
-           每個字自己前進
-
-           速度不同
+           自己獨立前進
         */
 
         phase += speed;
 
 
         /*
-           平滑曲線
-
-           不會突然跳
+           平滑波形
         */
 
         const wave =
@@ -308,13 +309,7 @@ function startLetterFade(letter) {
 
 
         /*
-           透明度
-
-           最低：
-           約 15% ～ 35%
-
-           最高：
-           約 95% ～ 100%
+           自己的透明度範圍
         */
 
         const opacity =
@@ -361,7 +356,7 @@ async function start() {
 
 
     /*
-       清空
+       清空標題
     */
 
     text.innerHTML =
@@ -400,7 +395,7 @@ async function start() {
 
 
         /*
-           新字從 1% 開始
+           新字從 1%
         */
 
         letter.style.opacity =
@@ -435,10 +430,6 @@ async function start() {
         ) {
 
 
-            /*
-               每個舊字只啟動一次
-            */
-
             if (
                 !letters[j]
                     .dataset
@@ -464,9 +455,7 @@ async function start() {
 
         /*
            ==========================================
-           新字顯現
-
-           1% → 100%
+           新字 1% → 100%
            ==========================================
         */
 
