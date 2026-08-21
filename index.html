@@ -480,10 +480,6 @@ body {
 </div>
 
 
-<!-- ==================================================
-     Three.js
-================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
 
@@ -1056,9 +1052,8 @@ async function playTitleAnimation() {
 
         /* ==========================================
            全部出現後停留
-
-           ★ 這裡由原本 4.3～5.6 秒
-             改成 2.9～3.7 秒
+           
+           已縮短為約 2.9～3.7 秒
         ========================================== */
 
         await wait(
@@ -1075,10 +1070,6 @@ async function playTitleAnimation() {
 
         /* ==========================================
            整個標題瞬間消失
-
-           不漸變
-           不變暗
-           直接消失
         ========================================== */
 
         titleText.innerHTML = "";
@@ -1519,10 +1510,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       房間邊界線
-    ========================= */
-
     createRoomEdges(
         W,
         H,
@@ -1565,7 +1552,7 @@ function createWall(
 
 
 /* ==================================================
-   建立房間邊界線
+   房間邊界線
 ================================================== */
 
 function createRoomEdges(
@@ -1623,6 +1610,7 @@ function createRoomEdges(
 
 /* ==================================================
    玩家移動
+   修正版：使用 clamp 邊界
 ================================================== */
 
 function updatePlayer() {
@@ -1726,16 +1714,25 @@ function updatePlayer() {
 
     /* =========================
        房間邊界
+       
+       不再使用：
+       
+       if (nextX > ...)
+
+       改成直接限制座標。
+       
+       到邊界時人物停住，
+       但按鈕狀態不會因此被卡住。
     ========================= */
 
     const limitX =
         ROOM_WIDTH / 2 -
-        0.05;
+        0.08;
 
 
     const limitZ =
         ROOM_DEPTH / 2 -
-        0.05;
+        0.08;
 
 
     const nextX =
@@ -1748,30 +1745,24 @@ function updatePlayer() {
         dz;
 
 
-    if (
-        nextX >
-        -limitX &&
-        nextX <
-        limitX
-    ) {
-
-        player.x =
-            nextX;
-
-    }
+    player.x =
+        Math.max(
+            -limitX,
+            Math.min(
+                limitX,
+                nextX
+            )
+        );
 
 
-    if (
-        nextZ >
-        -limitZ &&
-        nextZ <
-        limitZ
-    ) {
-
-        player.z =
-            nextZ;
-
-    }
+    player.z =
+        Math.max(
+            -limitZ,
+            Math.min(
+                limitZ,
+                nextZ
+            )
+        );
 
 
     /* =========================
@@ -2099,4 +2090,5 @@ window.addEventListener(
 </script>
 
 </body>
+
 </html>
