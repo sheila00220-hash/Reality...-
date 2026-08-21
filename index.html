@@ -13,12 +13,7 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
-
 <style>
-
-/* ==================================================
-   基本設定
-================================================== */
 
 * {
     box-sizing: border-box;
@@ -252,7 +247,7 @@ body {
 
 
 /* ==================================================
-   手機按鍵區
+   手機按鍵
 ================================================== */
 
 #controls {
@@ -311,11 +306,6 @@ body {
 
 }
 
-
-/* ==================================================
-   按鍵位置
-================================================== */
-
 .forward {
 
     left: 64px;
@@ -347,11 +337,6 @@ body {
     top: 58px;
 
 }
-
-
-/* ==================================================
-   按下狀態
-================================================== */
 
 .control.active {
 
@@ -496,16 +481,11 @@ body {
 </div>
 
 
-<!-- ==================================================
-     Three.js
-================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
 
 
 <script>
-
 
 /* ==================================================
    Reality...? 標題動畫
@@ -516,10 +496,8 @@ const titleText =
         "titleText"
     );
 
-
 const titleWord =
     "Reality...?";
-
 
 let titleRunning =
     true;
@@ -559,10 +537,6 @@ function smoothstep(t) {
 
 }
 
-
-/* ==================================================
-   建立標題
-================================================== */
 
 function createTitleLetters() {
 
@@ -606,10 +580,6 @@ function createTitleLetters() {
 
 }
 
-
-/* ==================================================
-   字浮現
-================================================== */
 
 function fadeInLetter(letter) {
 
@@ -693,10 +663,6 @@ function fadeInLetter(letter) {
 }
 
 
-/* ==================================================
-   不規則若隱若現
-================================================== */
-
 function startIrregularBreathing(letter) {
 
     if (
@@ -727,7 +693,6 @@ function startIrregularBreathing(letter) {
 
     let startOpacity =
         1;
-
 
     let targetOpacity =
         1;
@@ -966,10 +931,6 @@ function startIrregularBreathing(letter) {
 }
 
 
-/* ==================================================
-   標題循環
-================================================== */
-
 async function playTitleAnimation() {
 
     while (titleRunning) {
@@ -1023,10 +984,6 @@ async function playTitleAnimation() {
         if (!titleRunning)
             return;
 
-
-        /*
-           最後直接消失
-        */
 
         titleText.innerHTML =
             "";
@@ -1104,13 +1061,32 @@ let pitch =
     0;
 
 
-/*
-   普通第一人稱視角。
+/* ==================================================
+   FOV
+================================================== */
 
-   不再額外限制左右角度，
-   但把滑動靈敏度降低，
-   避免手機一滑就轉太快。
+/*
+   原本是 75。
+
+   這個範圍：
+   55 = 比較近
+   75 = 原本
+   95 = 更廣
 */
+
+const MIN_FOV =
+    55;
+
+const MAX_FOV =
+    95;
+
+const DEFAULT_FOV =
+    75;
+
+
+/* ==================================================
+   視角靈敏度
+================================================== */
 
 const LOOK_SENSITIVITY_X =
     0.0022;
@@ -1119,28 +1095,16 @@ const LOOK_SENSITIVITY_Y =
     0.0022;
 
 
-/*
-   上下視角限制。
-*/
+/* ==================================================
+   上下視角
+================================================== */
 
 const PITCH_LIMIT =
     1.0;
 
 
 /* ==================================================
-   牆體
-================================================== */
-
-/*
-   房間尺寸與牆體保持不變。
-*/
-
-const WALL_MARGIN =
-    0.08;
-
-
-/* ==================================================
-   移動狀態
+   移動
 ================================================== */
 
 const movement = {
@@ -1235,7 +1199,7 @@ function createWorld() {
     camera =
         new THREE.PerspectiveCamera(
 
-            75,
+            DEFAULT_FOV,
 
             window.innerWidth /
             window.innerHeight,
@@ -1308,7 +1272,7 @@ function createWorld() {
 
     createRoom();
 
-    setupLook();
+    setupTouch();
 
     setupButtons();
 
@@ -1332,10 +1296,6 @@ function createRoom() {
     const D =
         ROOM_DEPTH;
 
-
-    /* =========================
-       地板
-    ========================= */
 
     const floor =
         new THREE.Mesh(
@@ -1371,10 +1331,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       天花板
-    ========================= */
-
     const ceiling =
         new THREE.Mesh(
 
@@ -1409,10 +1365,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       前牆
-    ========================= */
-
     const front =
         createWall(
             W,
@@ -1435,10 +1387,6 @@ function createRoom() {
     );
 
 
-    /* =========================
-       後牆
-    ========================= */
-
     const back =
         createWall(
             W,
@@ -1460,10 +1408,6 @@ function createRoom() {
         back
     );
 
-
-    /* =========================
-       左牆
-    ========================= */
 
     const left =
         createWall(
@@ -1490,10 +1434,6 @@ function createRoom() {
         left
     );
 
-
-    /* =========================
-       右牆
-    ========================= */
 
     const right =
         createWall(
@@ -1531,7 +1471,7 @@ function createRoom() {
 
 
 /* ==================================================
-   建立牆
+   牆
 ================================================== */
 
 function createWall(
@@ -1633,22 +1573,18 @@ function updatePlayer() {
         0.08;
 
 
-    let moveX =
-        0;
-
-    let moveZ =
-        0;
-
-
-    /*
-       前後
-    */
-
     const forwardX =
         Math.sin(yaw);
 
     const forwardZ =
         -Math.cos(yaw);
+
+
+    let moveX =
+        0;
+
+    let moveZ =
+        0;
 
 
     if (
@@ -1677,10 +1613,6 @@ function updatePlayer() {
     }
 
 
-    /*
-       左右
-    */
-
     if (
         movement.left
     ) {
@@ -1707,10 +1639,6 @@ function updatePlayer() {
     }
 
 
-    /*
-       ★ 防止斜向移動速度變快
-    */
-
     const length =
         Math.sqrt(
             moveX * moveX +
@@ -1736,43 +1664,23 @@ function updatePlayer() {
 
 
     /*
-       ★ 房間邊界
-
-       不再「下一步合法才移動」。
-
-       而是直接把玩家位置
-       限制在合法範圍。
-
-       這樣撞牆時：
-       只停止位置，
-       不碰觸視角。
+       保留目前牆體系統。
     */
 
-    const minX =
-        -ROOM_WIDTH / 2 +
-        WALL_MARGIN;
-
-
-    const maxX =
+    const limitX =
         ROOM_WIDTH / 2 -
-        WALL_MARGIN;
+        0.08;
 
-
-    const minZ =
-        -ROOM_DEPTH / 2 +
-        WALL_MARGIN;
-
-
-    const maxZ =
+    const limitZ =
         ROOM_DEPTH / 2 -
-        WALL_MARGIN;
+        0.08;
 
 
     player.x =
         Math.max(
-            minX,
+            -limitX,
             Math.min(
-                maxX,
+                limitX,
                 player.x + moveX
             )
         );
@@ -1780,18 +1688,13 @@ function updatePlayer() {
 
     player.z =
         Math.max(
-            minZ,
+            -limitZ,
             Math.min(
-                maxZ,
+                limitZ,
                 player.z + moveZ
             )
         );
 
-
-    /*
-       ★ 相機只讀取玩家位置
-       不會因為碰撞修改 yaw / pitch
-    */
 
     camera.position.set(
 
@@ -1805,10 +1708,8 @@ function updatePlayer() {
     camera.rotation.order =
         "YXZ";
 
-
     camera.rotation.y =
         yaw;
-
 
     camera.rotation.x =
         pitch;
@@ -1817,30 +1718,173 @@ function updatePlayer() {
 
 
 /* ==================================================
-   視角控制
+   ★ 單指／雙指觸控系統
 ================================================== */
 
-let looking =
-    false;
+const activeTouches =
+    new Map();
+
+
+let touchMode =
+    "none";
+
 
 let lookPointerId =
     null;
 
+
 let lastLookX =
     0;
+
 
 let lastLookY =
     0;
 
 
-/*
-   視角只在 renderer canvas 上工作。
+let previousPinchDistance =
+    null;
 
-   左下角按鍵是獨立 DOM，
-   不會進入這個系統。
-*/
 
-function setupLook() {
+/* ==================================================
+   計算兩指距離
+================================================== */
+
+function getPinchDistance() {
+
+    const points =
+        Array.from(
+            activeTouches.values()
+        );
+
+
+    if (
+        points.length < 2
+    )
+        return null;
+
+
+    const a =
+        points[0];
+
+    const b =
+        points[1];
+
+
+    const dx =
+        b.x -
+        a.x;
+
+    const dy =
+        b.y -
+        a.y;
+
+
+    return Math.sqrt(
+        dx * dx +
+        dy * dy
+    );
+
+}
+
+
+/* ==================================================
+   進入雙指模式
+================================================== */
+
+function enterPinchMode() {
+
+    touchMode =
+        "pinch";
+
+
+    /*
+       完全停止單指視角。
+    */
+
+    lookPointerId =
+        null;
+
+
+    /*
+       記錄目前兩指距離。
+
+       不在進入瞬間改 FOV，
+       避免突然跳一下。
+    */
+
+    previousPinchDistance =
+        getPinchDistance();
+
+}
+
+
+/* ==================================================
+   回到單指模式
+================================================== */
+
+function enterLookMode() {
+
+    const points =
+        Array.from(
+            activeTouches.entries()
+        );
+
+
+    if (
+        points.length !== 1
+    ) {
+
+        touchMode =
+            "none";
+
+        lookPointerId =
+            null;
+
+        return;
+
+    }
+
+
+    const [
+        pointerId,
+        point
+    ] =
+        points[0];
+
+
+    touchMode =
+        "look";
+
+
+    lookPointerId =
+        pointerId;
+
+
+    /*
+       ★ 重新建立座標。
+
+       不使用雙指期間的舊座標，
+       避免恢復單指時鏡頭突然跳動。
+    */
+
+    lastLookX =
+        point.x;
+
+    lastLookY =
+        point.y;
+
+
+    previousPinchDistance =
+        null;
+
+}
+
+
+/* ==================================================
+   Touch 系統
+================================================== */
+
+function setupTouch() {
 
     const canvas =
         renderer.domElement;
@@ -1857,101 +1901,100 @@ function setupLook() {
         function(event) {
 
             /*
-               滑鼠只接受左鍵。
+               只接受觸控。
+
+               滑鼠仍然可以使用
+               左鍵拖動視角。
             */
 
             if (
                 event.pointerType ===
-                "mouse" &&
-                event.button !== 0
-            )
+                "mouse"
+            ) {
+
+                if (
+                    event.button !== 0
+                )
+                    return;
+
+                looking =
+                    true;
+
+                lastLookX =
+                    event.clientX;
+
+                lastLookY =
+                    event.clientY;
+
                 return;
 
-
-            looking =
-                true;
-
-
-            lookPointerId =
-                event.pointerId;
-
-
-            lastLookX =
-                event.clientX;
-
-
-            lastLookY =
-                event.clientY;
-
-        }
-
-    );
-
-
-    canvas.addEventListener(
-
-        "pointermove",
-
-        function(event) {
-
-            if (
-                !looking ||
-                event.pointerId !==
-                lookPointerId
-            )
-                return;
-
-
-            const dx =
-                event.clientX -
-                lastLookX;
-
-
-            const dy =
-                event.clientY -
-                lastLookY;
+            }
 
 
             /*
-               左右
+               手機觸控
             */
-
-            yaw -=
-                dx *
-                LOOK_SENSITIVITY_X;
-
-
-            /*
-               上下
-            */
-
-            pitch -=
-                dy *
-                LOOK_SENSITIVITY_Y;
-
-
-            pitch =
-                Math.max(
-
-                    -PITCH_LIMIT,
-
-                    Math.min(
-                        PITCH_LIMIT,
-                        pitch
-                    )
-
-                );
-
-
-            lastLookX =
-                event.clientX;
-
-
-            lastLookY =
-                event.clientY;
-
 
             event.preventDefault();
+
+
+            activeTouches.set(
+
+                event.pointerId,
+
+                {
+                    x:
+                        event.clientX,
+
+                    y:
+                        event.clientY
+
+                }
+
+            );
+
+
+            const count =
+                activeTouches.size;
+
+
+            if (
+                count === 1
+            ) {
+
+                /*
+                   第一根手指：
+                   單指視角
+                */
+
+                touchMode =
+                    "look";
+
+
+                lookPointerId =
+                    event.pointerId;
+
+
+                lastLookX =
+                    event.clientX;
+
+                lastLookY =
+                    event.clientY;
+
+            }
+
+            else if (
+                count >= 2
+            ) {
+
+                /*
+                   第二根手指加入：
+                   立刻進入雙指
+                */
+
+                enterPinchMode();
+
+            }
 
         },
 
@@ -1963,48 +2006,14 @@ function setupLook() {
     );
 
 
-    function stopLook(event) {
-
-        if (
-            event &&
-            event.pointerId !==
-            lookPointerId
-        )
-            return;
-
-
-        looking =
-            false;
-
-
-        lookPointerId =
-            null;
-
-    }
-
-
     canvas.addEventListener(
-        "pointerup",
-        stopLook
-    );
 
+        "pointermove",
 
-    canvas.addEventListener(
-        "pointercancel",
-        stopLook
-    );
-
-
-    canvas.addEventListener(
-        "pointerleave",
         function(event) {
 
             /*
-               只對滑鼠離開處理。
-
-               手機觸控不因為
-               手指暫時離開 canvas
-               而亂掉。
+               滑鼠視角
             */
 
             if (
@@ -2012,14 +2021,319 @@ function setupLook() {
                 "mouse"
             ) {
 
-                stopLook(event);
+                if (
+                    !looking
+                )
+                    return;
+
+
+                const dx =
+                    event.clientX -
+                    lastLookX;
+
+
+                const dy =
+                    event.clientY -
+                    lastLookY;
+
+
+                yaw -=
+                    dx *
+                    LOOK_SENSITIVITY_X;
+
+
+                pitch -=
+                    dy *
+                    LOOK_SENSITIVITY_Y;
+
+
+                pitch =
+                    Math.max(
+                        -PITCH_LIMIT,
+                        Math.min(
+                            PITCH_LIMIT,
+                            pitch
+                        )
+                    );
+
+
+                lastLookX =
+                    event.clientX;
+
+
+                lastLookY =
+                    event.clientY;
+
+
+                event.preventDefault();
+
+                return;
 
             }
 
+
+            /*
+               手機觸控
+            */
+
+            if (
+                !activeTouches.has(
+                    event.pointerId
+                )
+            )
+                return;
+
+
+            event.preventDefault();
+
+
+            activeTouches.set(
+
+                event.pointerId,
+
+                {
+                    x:
+                        event.clientX,
+
+                    y:
+                        event.clientY
+
+                }
+
+            );
+
+
+            /*
+               ==================================
+               雙指模式
+               ==================================
+            */
+
+            if (
+                touchMode ===
+                "pinch"
+            ) {
+
+                const distance =
+                    getPinchDistance();
+
+
+                if (
+                    distance !==
+                    null &&
+                    previousPinchDistance !==
+                    null
+                ) {
+
+                    const delta =
+                        distance -
+                        previousPinchDistance;
+
+
+                    /*
+                       手指距離增加
+                       → FOV 增加
+                       → 看得更廣
+
+                       手指距離減少
+                       → FOV 減少
+                       → 看得更近
+                    */
+
+                    camera.fov +=
+                        delta *
+                        0.08;
+
+
+                    camera.fov =
+                        Math.max(
+
+                            MIN_FOV,
+
+                            Math.min(
+                                MAX_FOV,
+                                camera.fov
+                            )
+
+                        );
+
+
+                    camera.updateProjectionMatrix();
+
+                }
+
+
+                previousPinchDistance =
+                    distance;
+
+
+                return;
+
+            }
+
+
+            /*
+               ==================================
+               單指視角
+               ==================================
+            */
+
+            if (
+                touchMode ===
+                "look" &&
+                event.pointerId ===
+                lookPointerId
+            ) {
+
+                const dx =
+                    event.clientX -
+                    lastLookX;
+
+
+                const dy =
+                    event.clientY -
+                    lastLookY;
+
+
+                yaw -=
+                    dx *
+                    LOOK_SENSITIVITY_X;
+
+
+                pitch -=
+                    dy *
+                    LOOK_SENSITIVITY_Y;
+
+
+                pitch =
+                    Math.max(
+
+                        -PITCH_LIMIT,
+
+                        Math.min(
+                            PITCH_LIMIT,
+                            pitch
+                        )
+
+                    );
+
+
+                lastLookX =
+                    event.clientX;
+
+
+                lastLookY =
+                    event.clientY;
+
+            }
+
+        },
+
+        {
+            passive:
+                false
         }
+
+    );
+
+
+    function pointerEnd(event) {
+
+        /*
+           滑鼠
+        */
+
+        if (
+            event.pointerType ===
+            "mouse"
+        ) {
+
+            looking =
+                false;
+
+            return;
+
+        }
+
+
+        /*
+           手機
+        */
+
+        if (
+            !activeTouches.has(
+                event.pointerId
+            )
+        )
+            return;
+
+
+        activeTouches.delete(
+            event.pointerId
+        );
+
+
+        const count =
+            activeTouches.size;
+
+
+        /*
+           沒有手指
+        */
+
+        if (
+            count === 0
+        ) {
+
+            touchMode =
+                "none";
+
+            lookPointerId =
+                null;
+
+            previousPinchDistance =
+                null;
+
+            return;
+
+        }
+
+
+        /*
+           雙指 → 單指
+        */
+
+        if (
+            count === 1
+        ) {
+
+            enterLookMode();
+
+        }
+
+    }
+
+
+    canvas.addEventListener(
+        "pointerup",
+        pointerEnd
+    );
+
+
+    canvas.addEventListener(
+        "pointercancel",
+        pointerEnd
     );
 
 }
+
+
+/* ==================================================
+   滑鼠狀態
+================================================== */
+
+let looking =
+    false;
 
 
 /* ==================================================
@@ -2041,12 +2355,6 @@ function setupButtons() {
             const direction =
                 button.dataset.direction;
 
-
-            /*
-               ★ 不使用 pointer capture。
-
-               這是這一版的重要改動。
-            */
 
             button.addEventListener(
 
@@ -2142,15 +2450,6 @@ function setupButtons() {
     );
 
 
-    /*
-       ★ 全域安全解除。
-
-       手指突然離開畫面、
-       系統取消觸控、
-       瀏覽器中斷 pointer，
-       都會把按鍵歸零。
-    */
-
     window.addEventListener(
 
         "pointerup",
@@ -2180,7 +2479,7 @@ function setupButtons() {
 
 
 /* ==================================================
-   停止所有移動
+   停止移動
 ================================================== */
 
 function stopAllMovement() {
@@ -2228,7 +2527,9 @@ function animate() {
     );
 
 
-    if (started) {
+    if (
+        started
+    ) {
 
         updatePlayer();
 
