@@ -13,17 +13,11 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
-
 <style>
-
-/* ==================================================
-   基本設定
-================================================== */
 
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -45,7 +39,6 @@ body {
         sans-serif;
 
 }
-
 
 #game {
 
@@ -144,11 +137,6 @@ body {
 
 }
 
-
-/* ==================================================
-   單字母
-================================================== */
-
 .titleLetter {
 
     display: inline;
@@ -163,7 +151,7 @@ body {
 
 
 /* ==================================================
-   內容提示
+   警告
 ================================================== */
 
 .warning {
@@ -208,7 +196,6 @@ body {
     touch-action: manipulation;
 
 }
-
 
 .startButton:active {
 
@@ -317,7 +304,6 @@ body {
 
 }
 
-
 .forward {
 
     left: 64px;
@@ -325,7 +311,6 @@ body {
     top: 0;
 
 }
-
 
 .left {
 
@@ -335,7 +320,6 @@ body {
 
 }
 
-
 .back {
 
     left: 64px;
@@ -343,7 +327,6 @@ body {
     top: 58px;
 
 }
-
 
 .right {
 
@@ -360,7 +343,6 @@ body {
 
 <body>
 
-
 <div id="game">
 
 
@@ -369,7 +351,6 @@ body {
 ================================================== -->
 
 <div id="title">
-
 
     <div class="titleWrapper">
 
@@ -384,25 +365,21 @@ body {
             內容提示
         </p>
 
-
         <p>
             本作品包含心理恐怖、
             令人不安的聲音與視覺表現，
             以及可能引起部分玩家不適的成人向主題。
         </p>
 
-
         <p>
             部分內容可能涉及敏感議題。
         </p>
-
 
         <p>
             若你容易受到心理壓迫、
             強烈聲音或失真畫面的影響，
             請自行斟酌是否遊玩。
         </p>
-
 
         <p>
             你可以隨時離開遊戲。
@@ -418,7 +395,6 @@ body {
         開始你的旅程
 
     </button>
-
 
 </div>
 
@@ -451,7 +427,6 @@ body {
     id="controls"
     style="display:none;">
 
-
     <div
         class="control forward"
         data-direction="forward">
@@ -459,7 +434,6 @@ body {
         ↑
 
     </div>
-
 
     <div
         class="control left"
@@ -469,7 +443,6 @@ body {
 
     </div>
 
-
     <div
         class="control back"
         data-direction="back">
@@ -477,7 +450,6 @@ body {
         ↓
 
     </div>
-
 
     <div
         class="control right"
@@ -487,9 +459,7 @@ body {
 
     </div>
 
-
 </div>
-
 
 </div>
 
@@ -506,7 +476,7 @@ body {
 
 
 /* ==================================================
-   Reality...? 標題動畫
+   Reality...? 標題
 ================================================== */
 
 const titleText =
@@ -514,72 +484,54 @@ const titleText =
         "titleText"
     );
 
-
 const titleWord =
     "Reality...?";
-
 
 let titleRunning =
     true;
 
 
 /* ==================================================
-   等待
+   工具
 ================================================== */
 
 function wait(ms) {
 
     return new Promise(
-
         resolve =>
-
             setTimeout(
                 resolve,
                 ms
             )
-
     );
 
 }
 
-
-/* ==================================================
-   隨機
-================================================== */
 
 function random(min, max) {
 
     return (
         min +
         Math.random() *
-        (
-            max - min
-        )
+        (max - min)
     );
 
 }
 
-
-/* ==================================================
-   Smoothstep
-================================================== */
 
 function smoothstep(t) {
 
     return (
         t *
         t *
-        (
-            3 -
-            2 * t
-        )
+        (3 - 2 * t)
     );
 
 }
 
 
 /* ==================================================
-   建立標題字母
+   建立標題
 ================================================== */
 
 function createTitleLetters() {
@@ -600,23 +552,18 @@ function createTitleLetters() {
                 "span"
             );
 
-
         letter.className =
             "titleLetter";
-
 
         letter.textContent =
             titleWord[i];
 
-
         letter.style.opacity =
             "0";
-
 
         titleText.appendChild(
             letter
         );
-
 
         letters.push(
             letter
@@ -637,7 +584,6 @@ function createTitleLetters() {
 function fadeInLetter(letter) {
 
     return new Promise(
-
         resolve => {
 
             const duration =
@@ -645,7 +591,6 @@ function fadeInLetter(letter) {
                     2400,
                     3000
                 );
-
 
             const start =
                 performance.now();
@@ -701,7 +646,6 @@ function fadeInLetter(letter) {
                     letter.style.opacity =
                         "1";
 
-
                     resolve();
 
                 }
@@ -714,7 +658,6 @@ function fadeInLetter(letter) {
             );
 
         }
-
     );
 
 }
@@ -773,17 +716,14 @@ function startIrregularBreathing(letter) {
             state =
                 "fadeDown";
 
-
             startOpacity =
                 1;
-
 
             targetOpacity =
                 random(
                     0.22,
                     0.38
                 );
-
 
             stateDuration =
                 random(
@@ -798,16 +738,13 @@ function startIrregularBreathing(letter) {
             state =
                 "fadeUp";
 
-
             startOpacity =
                 parseFloat(
                     letter.style.opacity
                 ) || 0.3;
 
-
             targetOpacity =
                 1;
-
 
             stateDuration =
                 random(
@@ -837,12 +774,9 @@ function startIrregularBreathing(letter) {
 
         const progress =
             Math.min(
-
                 elapsed /
                 stateDuration,
-
                 1
-
             );
 
 
@@ -856,7 +790,6 @@ function startIrregularBreathing(letter) {
 
         }
 
-
         else if (
             state ===
             "fadeDown"
@@ -866,7 +799,6 @@ function startIrregularBreathing(letter) {
                 smoothstep(
                     progress
                 );
-
 
             letter.style.opacity =
                 startOpacity +
@@ -878,7 +810,6 @@ function startIrregularBreathing(letter) {
 
         }
 
-
         else if (
             state ===
             "holdDark"
@@ -889,7 +820,6 @@ function startIrregularBreathing(letter) {
 
         }
 
-
         else if (
             state ===
             "fadeUp"
@@ -899,7 +829,6 @@ function startIrregularBreathing(letter) {
                 smoothstep(
                     progress
                 );
-
 
             letter.style.opacity =
                 startOpacity +
@@ -933,10 +862,8 @@ function startIrregularBreathing(letter) {
                 state =
                     "holdDark";
 
-
                 stateStart =
                     performance.now();
-
 
                 stateDuration =
                     random(
@@ -954,20 +881,16 @@ function startIrregularBreathing(letter) {
                 state =
                     "fadeUp";
 
-
                 stateStart =
                     performance.now();
-
 
                 startOpacity =
                     parseFloat(
                         letter.style.opacity
                     );
 
-
                 targetOpacity =
                     1;
-
 
                 stateDuration =
                     random(
@@ -985,10 +908,8 @@ function startIrregularBreathing(letter) {
                 state =
                     "holdBright";
 
-
                 stateStart =
                     performance.now();
-
 
                 stateDuration =
                     random(
@@ -1016,7 +937,7 @@ function startIrregularBreathing(letter) {
 
 
 /* ==================================================
-   標題主流程
+   標題主循環
 ================================================== */
 
 async function playTitleAnimation() {
@@ -1061,10 +982,6 @@ async function playTitleAnimation() {
         }
 
 
-        /* =========================
-           完整標題停留
-        ========================= */
-
         await wait(
             random(
                 2900,
@@ -1077,17 +994,13 @@ async function playTitleAnimation() {
             return;
 
 
-        /* =========================
-           直接消失
-        ========================= */
+        /*
+           最後這一下保持直接消失
+        */
 
         titleText.innerHTML =
             "";
 
-
-        /* =========================
-           黑屏停留
-        ========================= */
 
         await wait(
             random(
@@ -1102,7 +1015,6 @@ async function playTitleAnimation() {
 
 
 playTitleAnimation();
-
 
 
 /* ==================================================
@@ -1125,10 +1037,8 @@ let started = false;
 const ROOM_WIDTH =
     14;
 
-
 const ROOM_DEPTH =
     14;
-
 
 const ROOM_HEIGHT =
     10;
@@ -1149,34 +1059,36 @@ const player = {
 };
 
 
-/* ==================================================
-   玩家碰撞半徑
-================================================== */
-
-/*
-   這不是看得到的牆。
-
-   它只是讓玩家與牆
-   保留一點距離。
-
-   數值越大：
-   玩家離牆越遠。
-
-   數值越小：
-   玩家可以更靠近牆。
-*/
-
-const PLAYER_RADIUS =
-    0.35;
-
-
 let yaw = 0;
 
 let pitch = 0;
 
 
 /* ==================================================
-   移動
+   ★ 非常小的牆體安全距離
+================================================== */
+
+/*
+   舊版：
+
+   0.35
+
+   會讓玩家在真正看到牆之前
+   就感覺撞到空氣。
+
+   現在縮到：
+
+   0.08
+
+   只留下非常小的安全距離。
+*/
+
+const WALL_MARGIN =
+    0.08;
+
+
+/* ==================================================
+   移動狀態
 ================================================== */
 
 const movement = {
@@ -1213,7 +1125,6 @@ function startGame() {
 
 
     started = true;
-
 
     titleRunning =
         false;
@@ -1282,9 +1193,7 @@ function createWorld() {
     camera.position.set(
 
         player.x,
-
         player.y,
-
         player.z
 
     );
@@ -1293,7 +1202,8 @@ function createWorld() {
     renderer =
         new THREE.WebGLRenderer({
 
-            antialias: true
+            antialias:
+                true
 
         });
 
@@ -1329,7 +1239,6 @@ function createWorld() {
         new THREE.AmbientLight(
 
             0xffffff,
-
             2
 
         );
@@ -1355,7 +1264,7 @@ function createWorld() {
 
 
 /* ==================================================
-   建立房間
+   房間
 ================================================== */
 
 function createRoom() {
@@ -1600,7 +1509,7 @@ function createWall(
 
 
 /* ==================================================
-   房間邊界線
+   房間邊線
 ================================================== */
 
 function createRoomEdges(
@@ -1657,7 +1566,7 @@ function createRoomEdges(
 
 
 /* ==================================================
-   玩家移動
+   ★ 玩家移動
 ================================================== */
 
 function updatePlayer() {
@@ -1684,7 +1593,7 @@ function updatePlayer() {
 
 
     /* =========================
-       計算移動方向
+       前
     ========================= */
 
     if (
@@ -1702,6 +1611,10 @@ function updatePlayer() {
     }
 
 
+    /* =========================
+       後
+    ========================= */
+
     if (
         movement.back
     ) {
@@ -1717,6 +1630,10 @@ function updatePlayer() {
     }
 
 
+    /* =========================
+       左
+    ========================= */
+
     if (
         movement.left
     ) {
@@ -1731,6 +1648,10 @@ function updatePlayer() {
 
     }
 
+
+    /* =========================
+       右
+    ========================= */
 
     if (
         movement.right
@@ -1748,60 +1669,59 @@ function updatePlayer() {
 
 
     /* ==================================================
-       碰撞處理
-
-       重要：
-
-       X、Z 分開判定。
-
-       所以撞到牆時，
-       只會停止撞牆方向。
-
-       另一個方向仍然可以移動。
-
-       例如：
-
-       前 + 右
-       ↓
-       撞右牆
-       ↓
-       右停止
-       前仍然可以走
+       ★ 這次只做「很小」的邊界判定
     ================================================== */
-
 
     const minX =
         -ROOM_WIDTH / 2 +
-        PLAYER_RADIUS;
+        WALL_MARGIN;
 
 
     const maxX =
         ROOM_WIDTH / 2 -
-        PLAYER_RADIUS;
+        WALL_MARGIN;
 
 
     const minZ =
         -ROOM_DEPTH / 2 +
-        PLAYER_RADIUS;
+        WALL_MARGIN;
 
 
     const maxZ =
         ROOM_DEPTH / 2 -
-        PLAYER_RADIUS;
+        WALL_MARGIN;
 
 
-    /* =========================
-       先嘗試 X
-    ========================= */
+    /*
+       不直接把玩家硬拉回牆邊。
+
+       只檢查「下一步」是否會越過牆。
+
+       如果沒有越過：
+       正常移動。
+
+       如果會越過：
+       這一軸不移動。
+    */
+
 
     const nextX =
         player.x +
         dx;
 
 
+    const nextZ =
+        player.z +
+        dz;
+
+
+    /* =========================
+       X
+    ========================= */
+
     if (
-        nextX >= minX &&
-        nextX <= maxX
+        nextX > minX &&
+        nextX < maxX
     ) {
 
         player.x =
@@ -1811,17 +1731,12 @@ function updatePlayer() {
 
 
     /* =========================
-       再嘗試 Z
+       Z
     ========================= */
 
-    const nextZ =
-        player.z +
-        dz;
-
-
     if (
-        nextZ >= minZ &&
-        nextZ <= maxZ
+        nextZ > minZ &&
+        nextZ < maxZ
     ) {
 
         player.z =
@@ -1864,10 +1779,8 @@ function updatePlayer() {
 let touching =
     false;
 
-
 let lastX =
     0;
-
 
 let lastY =
     0;
