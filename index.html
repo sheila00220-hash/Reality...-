@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
+
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+<meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no"
+>
 
 <title>Reality...?</title>
 
@@ -19,9 +23,12 @@
 
 html,
 body {
-    margin: 0;
+
     width: 100%;
     height: 100%;
+
+    margin: 0;
+
     overflow: hidden;
 
     background: #000;
@@ -35,9 +42,13 @@ body {
 }
 
 #game {
+
     position: relative;
+
     width: 100vw;
     height: 100vh;
+
+    overflow: hidden;
 }
 
 
@@ -46,6 +57,7 @@ body {
 ================================================== */
 
 #title {
+
     position: absolute;
 
     inset: 0;
@@ -53,38 +65,40 @@ body {
     z-index: 100;
 
     display: flex;
+
     flex-direction: column;
 
-    justify-content: center;
     align-items: center;
 
-    text-align: center;
+    justify-content: center;
 
     background: #000;
 
     color: #fff;
 
-    overflow: hidden;
+    text-align: center;
+
 }
 
 .titleWrapper {
+
     width: 100vw;
+
     height: 1.2em;
 
     display: flex;
 
-    justify-content: center;
     align-items: center;
+
+    justify-content: center;
+
 }
 
 #titleText {
-    margin: 0;
-    padding: 0;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    margin: 0;
+
+    padding: 0;
 
     font-size:
         clamp(48px, 11vw, 104px);
@@ -95,24 +109,28 @@ body {
 
     letter-spacing: 0;
 
-    color: #f5f5f5;
-
     white-space: nowrap;
 
-    text-align: center;
+    color: #f5f5f5;
+
 }
 
 .titleLetter {
+
     display: inline;
 
+    opacity: 0;
+
     margin: 0;
+
     padding: 0;
 
-    opacity: 0;
 }
 
 .warning {
+
     width: 88%;
+
     max-width: 600px;
 
     margin-top: 55px;
@@ -122,9 +140,11 @@ body {
     font-size: 14px;
 
     line-height: 1.8;
+
 }
 
 .startButton {
+
     margin-top: 25px;
 
     padding: 14px 30px;
@@ -140,11 +160,7 @@ body {
     letter-spacing: 2px;
 
     touch-action: manipulation;
-}
 
-.startButton:active {
-    background: white;
-    color: black;
 }
 
 
@@ -153,8 +169,11 @@ body {
 ================================================== */
 
 #threeContainer {
+
     position: absolute;
+
     inset: 0;
+
 }
 
 
@@ -163,9 +182,11 @@ body {
 ================================================== */
 
 #hint {
+
     position: absolute;
 
     top: 15px;
+
     left: 50%;
 
     transform: translateX(-50%);
@@ -184,6 +205,7 @@ body {
     font-size: 13px;
 
     pointer-events: none;
+
 }
 
 
@@ -192,26 +214,33 @@ body {
 ================================================== */
 
 #joystickArea {
+
     position: absolute;
 
     left: 18px;
+
     bottom: 22px;
 
     width: 150px;
+
     height: 150px;
 
     z-index: 50;
 
     pointer-events: none;
+
 }
 
 #joystickBase {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 130px;
+
     height: 130px;
 
     transform:
@@ -229,15 +258,19 @@ body {
     pointer-events: auto;
 
     touch-action: none;
+
 }
 
 #joystickRing {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 86px;
+
     height: 86px;
 
     transform:
@@ -250,15 +283,19 @@ body {
         rgba(255,255,255,.16);
 
     pointer-events: none;
+
 }
 
 #joystickKnob {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 56px;
+
     height: 56px;
 
     transform:
@@ -275,41 +312,54 @@ body {
 
     pointer-events: none;
 
-    will-change: transform;
 }
 
 #joystickBase.active {
+
     background:
         rgba(0,0,0,.36);
+
 }
 
 #joystickBase.active
 #joystickKnob {
+
     background:
         rgba(255,255,255,.32);
+
 }
 
 @media (max-width:420px) {
 
     #joystickArea {
+
         left: 12px;
+
         bottom: 15px;
 
         width: 140px;
+
         height: 140px;
+
     }
 
     #joystickBase {
+
         width: 120px;
+
         height: 120px;
+
     }
+
 }
 
 </style>
+
 </head>
 
 
 <body>
+
 
 <div id="game">
 
@@ -321,8 +371,11 @@ body {
 <div id="title">
 
     <div class="titleWrapper">
+
         <h1 id="titleText"></h1>
+
     </div>
+
 
     <div class="warning">
 
@@ -349,6 +402,7 @@ body {
         </p>
 
     </div>
+
 
     <button
         id="startButton"
@@ -401,7 +455,9 @@ body {
 ================================================== */
 
 const titleText =
-    document.getElementById("titleText");
+    document.getElementById(
+        "titleText"
+    );
 
 const titleWord =
     "Reality...?";
@@ -448,7 +504,9 @@ function createTitleLetters() {
     ) {
 
         const letter =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
 
         letter.className =
             "titleLetter";
@@ -456,7 +514,9 @@ function createTitleLetters() {
         letter.textContent =
             titleWord[i];
 
-        titleText.appendChild(letter);
+        titleText.appendChild(
+            letter
+        );
 
         letters.push(letter);
 
@@ -477,12 +537,17 @@ function fadeInLetter(letter) {
         const start =
             performance.now();
 
+
         function animate(now) {
 
             if (!titleRunning) {
+
                 resolve();
+
                 return;
+
             }
+
 
             const progress =
                 Math.min(
@@ -491,18 +556,25 @@ function fadeInLetter(letter) {
                     1
                 );
 
+
             letter.style.opacity =
                 smoothstep(progress);
 
-            if (progress < 1) {
+
+            if (
+                progress < 1
+            ) {
 
                 requestAnimationFrame(
                     animate
                 );
 
-            } else {
+            }
 
-                letter.style.opacity = "1";
+            else {
+
+                letter.style.opacity =
+                    "1";
 
                 resolve();
 
@@ -510,7 +582,10 @@ function fadeInLetter(letter) {
 
         }
 
-        requestAnimationFrame(animate);
+
+        requestAnimationFrame(
+            animate
+        );
 
     });
 
@@ -525,29 +600,36 @@ function startIrregularBreathing(letter) {
     )
         return;
 
+
     letter.dataset.breathing =
         "true";
+
 
     let state =
         "holdBright";
 
+
     let stateStart =
         performance.now();
+
 
     let stateDuration =
         random(1200, 2600);
 
+
     let startOpacity = 1;
+
     let targetOpacity = 1;
 
 
     function chooseNextState() {
 
         if (
-            Math.random() < 0.55
+            Math.random() < .55
         ) {
 
-            state = "fadeDown";
+            state =
+                "fadeDown";
 
             startOpacity = 1;
 
@@ -555,11 +637,17 @@ function startIrregularBreathing(letter) {
                 random(.22, .38);
 
             stateDuration =
-                random(2600, 4200);
+                random(
+                    2600,
+                    4200
+                );
 
-        } else {
+        }
 
-            state = "fadeUp";
+        else {
+
+            state =
+                "fadeUp";
 
             startOpacity =
                 parseFloat(
@@ -569,9 +657,13 @@ function startIrregularBreathing(letter) {
             targetOpacity = 1;
 
             stateDuration =
-                random(2800, 4500);
+                random(
+                    2800,
+                    4500
+                );
 
         }
+
 
         stateStart =
             performance.now();
@@ -584,8 +676,10 @@ function startIrregularBreathing(letter) {
         if (!titleRunning)
             return;
 
+
         const elapsed =
             now - stateStart;
+
 
         const progress =
             Math.min(
@@ -600,7 +694,8 @@ function startIrregularBreathing(letter) {
             "holdBright"
         ) {
 
-            letter.style.opacity = "1";
+            letter.style.opacity =
+                "1";
 
         }
 
@@ -645,7 +740,9 @@ function startIrregularBreathing(letter) {
         }
 
 
-        if (progress >= 1) {
+        if (
+            progress >= 1
+        ) {
 
             if (
                 state ===
@@ -661,13 +758,17 @@ function startIrregularBreathing(letter) {
                 "fadeDown"
             ) {
 
-                state = "holdDark";
+                state =
+                    "holdDark";
 
                 stateStart =
                     performance.now();
 
                 stateDuration =
-                    random(700, 2200);
+                    random(
+                        700,
+                        2200
+                    );
 
             }
 
@@ -676,7 +777,8 @@ function startIrregularBreathing(letter) {
                 "holdDark"
             ) {
 
-                state = "fadeUp";
+                state =
+                    "fadeUp";
 
                 stateStart =
                     performance.now();
@@ -689,29 +791,42 @@ function startIrregularBreathing(letter) {
                 targetOpacity = 1;
 
                 stateDuration =
-                    random(2800, 4500);
+                    random(
+                        2800,
+                        4500
+                    );
 
             }
 
             else {
 
-                state = "holdBright";
+                state =
+                    "holdBright";
 
                 stateStart =
                     performance.now();
 
                 stateDuration =
-                    random(900, 3000);
+                    random(
+                        900,
+                        3000
+                    );
 
             }
 
         }
 
-        requestAnimationFrame(animate);
+
+        requestAnimationFrame(
+            animate
+        );
 
     }
 
-    requestAnimationFrame(animate);
+
+    requestAnimationFrame(
+        animate
+    );
 
 }
 
@@ -723,6 +838,7 @@ async function playTitleAnimation() {
         const letters =
             createTitleLetters();
 
+
         for (
             let i = 0;
             i < letters.length;
@@ -732,31 +848,47 @@ async function playTitleAnimation() {
             if (!titleRunning)
                 return;
 
+
             await fadeInLetter(
                 letters[i]
             );
+
 
             startIrregularBreathing(
                 letters[i]
             );
 
+
             await wait(
-                random(500, 800)
+                random(
+                    500,
+                    800
+                )
             );
 
         }
 
+
         await wait(
-            random(2900, 3700)
+            random(
+                2900,
+                3700
+            )
         );
+
 
         if (!titleRunning)
             return;
 
+
         titleText.innerHTML = "";
 
+
         await wait(
-            random(2800, 4800)
+            random(
+                2800,
+                4800
+            )
         );
 
     }
@@ -772,18 +904,22 @@ playTitleAnimation();
 ================================================== */
 
 let scene = null;
+
 let camera = null;
+
 let renderer = null;
 
 let started = false;
 
 
 /* ==================================================
-   ROOM SIZE
+   ROOM
 ================================================== */
 
 const ROOM_WIDTH = 14;
+
 const ROOM_DEPTH = 14;
+
 const ROOM_HEIGHT = 10;
 
 
@@ -791,59 +927,44 @@ const ROOM_HEIGHT = 10;
    PLAYER
 ================================================== */
 
+/*
+   這次不再把玩家當成一個點。
+
+   PLAYER_RADIUS 是玩家在平面上的
+   實際碰撞半徑。
+*/
+
+const PLAYER_RADIUS = .28;
+
+
+/*
+   眼睛高度。
+
+   先用比較自然的人類視角高度，
+   避免之前 Y=2 帶來的浮空感。
+*/
+
+const PLAYER_EYE_HEIGHT = 1.65;
+
+
+/*
+   牆體安全距離。
+
+   不會讓玩家真的貼到視覺牆。
+*/
+
+const WALL_BUFFER = .10;
+
+
 const player = {
 
     x: 0,
-    y: 2,
+
+    y: PLAYER_EYE_HEIGHT,
+
     z: 4
 
 };
-
-
-/*
-    玩家本身的安全半徑。
-*/
-
-const PLAYER_RADIUS = .25;
-
-
-/*
-    =================================================
-    立體碰撞牆
-    =================================================
-
-    這不是視覺牆。
-
-    它是「隱形的厚盒子」。
-
-    COLLISION_THICKNESS：
-    真正牆面往房間內外各延伸多少。
-
-    玩家會先撞到這個盒子，
-    而不是撞到視覺牆本身。
-*/
-
-const COLLISION_THICKNESS = .45;
-
-
-/*
-    額外安全距離。
-
-    避免玩家因浮點數精度
-    緊貼在碰撞盒表面。
-*/
-
-const COLLISION_MARGIN = .08;
-
-
-/*
-    最終玩家不能進入的邊界。
-*/
-
-const COLLISION_OFFSET =
-    COLLISION_THICKNESS +
-    PLAYER_RADIUS +
-    COLLISION_MARGIN;
 
 
 /* ==================================================
@@ -851,12 +972,16 @@ const COLLISION_OFFSET =
 ================================================== */
 
 let yaw = 0;
+
 let pitch = 0;
+
 
 const PITCH_LIMIT = 1.0;
 
+
 const LOOK_SENSITIVITY_X =
     .0022;
+
 
 const LOOK_SENSITIVITY_Y =
     .0022;
@@ -867,7 +992,9 @@ const LOOK_SENSITIVITY_Y =
 ================================================== */
 
 const MIN_FOV = 55;
+
 const MAX_FOV = 95;
+
 const DEFAULT_FOV = 75;
 
 
@@ -878,96 +1005,388 @@ const DEFAULT_FOV = 75;
 const movement = {
 
     forward: false,
+
     back: false,
+
     left: false,
+
     right: false
 
 };
 
 
 /* ==================================================
-   COLLISION BOUNDARIES
+   COLLISION
 ================================================== */
 
 /*
-    注意：
+   真正可以站立的區域。
 
-    這裡不再用「碰到精確牆面」
-    的方式判斷。
+   注意：
 
-    而是直接建立一個安全內框。
+   這裡不再用「厚空氣牆直接推玩家」。
 
-    玩家只允許存在於：
+   而是把玩家本身當成有半徑的圓，
+   所以玩家中心只能進入安全範圍。
 
-       minX ～ maxX
-       minZ ～ maxZ
-
-    裡面。
-
-    這相當於四面厚厚的隱形牆。
+   這能避免牆面把玩家卡成一個點。
 */
 
-function getCollisionBounds() {
+function getPlayableBounds() {
+
+    const halfW =
+        ROOM_WIDTH / 2;
+
+    const halfD =
+        ROOM_DEPTH / 2;
+
 
     return {
 
         minX:
-            -ROOM_WIDTH / 2 +
-            COLLISION_OFFSET,
+            -halfW +
+            PLAYER_RADIUS +
+            WALL_BUFFER,
 
         maxX:
-            ROOM_WIDTH / 2 -
-            COLLISION_OFFSET,
+            halfW -
+            PLAYER_RADIUS -
+            WALL_BUFFER,
 
         minZ:
-            -ROOM_DEPTH / 2 +
-            COLLISION_OFFSET,
+            -halfD +
+            PLAYER_RADIUS +
+            WALL_BUFFER,
 
         maxZ:
-            ROOM_DEPTH / 2 -
-            COLLISION_OFFSET
+            halfD -
+            PLAYER_RADIUS -
+            WALL_BUFFER
 
     };
 
 }
 
 
+/*
+   判斷玩家中心點是否可以位於
+   指定位置。
+
+   玩家碰撞半徑已經包含在 bounds 中。
+*/
+
+function canPlayerOccupy(
+    x,
+    z
+) {
+
+    const bounds =
+        getPlayableBounds();
+
+
+    return (
+
+        x >= bounds.minX &&
+
+        x <= bounds.maxX &&
+
+        z >= bounds.minZ &&
+
+        z <= bounds.maxZ
+
+    );
+
+}
+
+
 /* ==================================================
-   START
+   MOVEMENT RESOLUTION
 ================================================== */
 
-document
-    .getElementById("startButton")
-    .addEventListener(
-        "click",
-        startGame
+/*
+   這是這次最重要的修改。
+
+   不再：
+
+       X 判斷
+       ↓
+       改 X
+       ↓
+       Z 判斷
+       ↓
+       改 Z
+
+   而是：
+
+       先算完整移動
+              ↓
+       完整移動可以？
+          ↙       ↘
+        可以       不可以
+         ↓          ↓
+       整體走     嘗試 X
+                    ↓
+                  嘗試 Z
+
+   這樣撞牆時自然產生
+   「沿牆滑動」效果。
+*/
+
+function resolveMovement(
+    moveX,
+    moveZ
+) {
+
+    const currentX =
+        player.x;
+
+    const currentZ =
+        player.z;
+
+
+    const targetX =
+        currentX +
+        moveX;
+
+    const targetZ =
+        currentZ +
+        moveZ;
+
+
+    /*
+       ① 整體移動
+    */
+
+    if (
+        canPlayerOccupy(
+            targetX,
+            targetZ
+        )
+    ) {
+
+        player.x =
+            targetX;
+
+        player.z =
+            targetZ;
+
+        return;
+
+    }
+
+
+    /*
+       ② 只嘗試 X
+
+       如果前方被牆擋住，
+       但左右仍有空間，
+       玩家就能沿牆滑動。
+    */
+
+    const canMoveX =
+        canPlayerOccupy(
+            targetX,
+            currentZ
+        );
+
+
+    /*
+       ③ 只嘗試 Z
+    */
+
+    const canMoveZ =
+        canPlayerOccupy(
+            currentX,
+            targetZ
+        );
+
+
+    /*
+       X 可以、Z 不可以：
+
+       沿 X 滑。
+    */
+
+    if (canMoveX) {
+
+        player.x =
+            targetX;
+
+    }
+
+
+    /*
+       Z 可以、X 不可以：
+
+       沿 Z 滑。
+    */
+
+    if (canMoveZ) {
+
+        player.z =
+            targetZ;
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAYER MOVEMENT
+================================================== */
+
+function updatePlayer() {
+
+    if (!camera)
+        return;
+
+
+    const speed = .08;
+
+
+    /*
+       視角方向。
+    */
+
+    const forwardX =
+        Math.sin(yaw);
+
+    const forwardZ =
+        -Math.cos(yaw);
+
+
+    const rightX =
+        Math.cos(yaw);
+
+    const rightZ =
+        Math.sin(yaw);
+
+
+    let inputX = 0;
+
+    let inputZ = 0;
+
+
+    if (
+        movement.forward
+    ) {
+
+        inputX +=
+            forwardX;
+
+        inputZ +=
+            forwardZ;
+
+    }
+
+
+    if (
+        movement.back
+    ) {
+
+        inputX -=
+            forwardX;
+
+        inputZ -=
+            forwardZ;
+
+    }
+
+
+    if (
+        movement.left
+    ) {
+
+        inputX -=
+            rightX;
+
+        inputZ -=
+            rightZ;
+
+    }
+
+
+    if (
+        movement.right
+    ) {
+
+        inputX +=
+            rightX;
+
+        inputZ +=
+            rightZ;
+
+    }
+
+
+    const length =
+        Math.hypot(
+            inputX,
+            inputZ
+        );
+
+
+    if (
+        length > 0
+    ) {
+
+        inputX /=
+            length;
+
+        inputZ /=
+            length;
+
+
+        const moveX =
+            inputX *
+            speed;
+
+
+        const moveZ =
+            inputZ *
+            speed;
+
+
+        resolveMovement(
+            moveX,
+            moveZ
+        );
+
+    }
+
+
+    updateCamera();
+
+}
+
+
+/* ==================================================
+   CAMERA
+================================================== */
+
+function updateCamera() {
+
+    camera.position.set(
+
+        player.x,
+
+        player.y,
+
+        player.z
+
     );
 
 
-function startGame() {
+    camera.rotation.order =
+        "YXZ";
 
-    if (started)
-        return;
 
-    started = true;
+    camera.rotation.y =
+        yaw;
 
-    titleRunning = false;
 
-    stopJoystick();
-
-    document
-        .getElementById("title")
-        .style.display = "none";
-
-    document
-        .getElementById("hint")
-        .style.display = "block";
-
-    document
-        .getElementById("joystickArea")
-        .style.display = "block";
-
-    createWorld();
+    camera.rotation.x =
+        pitch;
 
 }
 
@@ -981,8 +1400,11 @@ function createWorld() {
     scene =
         new THREE.Scene();
 
+
     scene.background =
-        new THREE.Color(0xb0b0b0);
+        new THREE.Color(
+            0xb0b0b0
+        );
 
 
     camera =
@@ -1001,29 +1423,43 @@ function createWorld() {
 
 
     camera.position.set(
+
         player.x,
+
         player.y,
+
         player.z
+
     );
 
 
     renderer =
         new THREE.WebGLRenderer({
+
             antialias: true
+
         });
 
 
     renderer.setPixelRatio(
+
         Math.min(
+
             window.devicePixelRatio,
+
             2
+
         )
+
     );
 
 
     renderer.setSize(
+
         window.innerWidth,
+
         window.innerHeight
+
     );
 
 
@@ -1037,18 +1473,26 @@ function createWorld() {
 
 
     scene.add(
+
         new THREE.AmbientLight(
+
             0xffffff,
+
             2
+
         )
+
     );
 
 
     createRoom();
 
+
     setupTouch();
 
+
     setupJoystick();
+
 
     animate();
 
@@ -1056,7 +1500,7 @@ function createWorld() {
 
 
 /* ==================================================
-   CREATE VISUAL ROOM
+   ROOM
 ================================================== */
 
 function createRoom() {
@@ -1098,7 +1542,10 @@ function createRoom() {
     floor.rotation.x =
         -Math.PI / 2;
 
-    scene.add(floor);
+
+    scene.add(
+        floor
+    );
 
 
     /*
@@ -1128,10 +1575,14 @@ function createRoom() {
     ceiling.rotation.x =
         Math.PI / 2;
 
+
     ceiling.position.y =
         H;
 
-    scene.add(ceiling);
+
+    scene.add(
+        ceiling
+    );
 
 
     /*
@@ -1145,13 +1596,21 @@ function createRoom() {
             0xc2c2c2
         );
 
+
     front.position.set(
+
         0,
+
         H / 2,
+
         -D / 2
+
     );
 
-    scene.add(front);
+
+    scene.add(
+        front
+    );
 
 
     /*
@@ -1165,13 +1624,21 @@ function createRoom() {
             0xb7b7b7
         );
 
+
     back.position.set(
+
         0,
+
         H / 2,
+
         D / 2
+
     );
 
-    scene.add(back);
+
+    scene.add(
+        back
+    );
 
 
     /*
@@ -1185,16 +1652,25 @@ function createRoom() {
             0xaeaeae
         );
 
+
     left.rotation.y =
         Math.PI / 2;
 
+
     left.position.set(
+
         -W / 2,
+
         H / 2,
+
         0
+
     );
 
-    scene.add(left);
+
+    scene.add(
+        left
+    );
 
 
     /*
@@ -1208,16 +1684,25 @@ function createRoom() {
             0xa6a6a6
         );
 
+
     right.rotation.y =
         Math.PI / 2;
 
+
     right.position.set(
+
         W / 2,
+
         H / 2,
+
         0
+
     );
 
-    scene.add(right);
+
+    scene.add(
+        right
+    );
 
 
     createRoomEdges(
@@ -1228,10 +1713,16 @@ function createRoom() {
 
 
     /*
-       建立真正的立體隱形碰撞體。
+       這裡仍然建立真正的
+       立體隱形碰撞體。
+
+       但「玩家移動」不再直接
+       依賴這些 Mesh。
+
+       避免兩套碰撞系統互相打架。
     */
 
-    createCollisionWalls(
+    createInvisibleCollisionWalls(
         W,
         H,
         D
@@ -1268,27 +1759,14 @@ function createWall(
 
 
 /* ==================================================
-   INVISIBLE 3D COLLISION WALLS
+   INVISIBLE 3D WALLS
 ================================================== */
 
-function createCollisionWalls(
+function createInvisibleCollisionWalls(
     W,
     H,
     D
 ) {
-
-    /*
-       這些 BoxGeometry 是真正的
-       「立體空氣牆」。
-
-       它們不會被渲染。
-
-       目前實際碰撞主要仍由
-       bounds 控制，這些 Mesh
-       是為後面擴充真正 3D 碰撞
-       預留的標準結構。
-    */
-
 
     const material =
         new THREE.MeshBasicMaterial({
@@ -1302,124 +1780,183 @@ function createCollisionWalls(
         });
 
 
+    const thickness =
+        .45;
+
+
     /*
-       前後碰撞盒
+       前
     */
-
-    const frontDepth =
-        COLLISION_THICKNESS;
-
-    const frontGeometry =
-        new THREE.BoxGeometry(
-            W +
-            COLLISION_THICKNESS * 2,
-            H,
-            frontDepth
-        );
-
 
     const front =
         new THREE.Mesh(
-            frontGeometry,
+
+            new THREE.BoxGeometry(
+
+                W + thickness * 2,
+
+                H,
+
+                thickness
+
+            ),
+
             material
+
         );
 
 
     front.position.set(
+
         0,
+
         H / 2,
+
         -D / 2 +
-        frontDepth / 2
+        thickness / 2
+
     );
 
 
     front.visible = false;
 
-    scene.add(front);
+
+    scene.add(
+        front
+    );
 
 
-    const backGeometry =
-        new THREE.BoxGeometry(
-            W +
-            COLLISION_THICKNESS * 2,
-            H,
-            frontDepth
-        );
-
+    /*
+       後
+    */
 
     const back =
         new THREE.Mesh(
-            backGeometry,
+
+            new THREE.BoxGeometry(
+
+                W + thickness * 2,
+
+                H,
+
+                thickness
+
+            ),
+
             material
+
         );
 
 
     back.position.set(
+
         0,
+
         H / 2,
+
         D / 2 -
-        frontDepth / 2
+        thickness / 2
+
     );
 
 
     back.visible = false;
 
-    scene.add(back);
+
+    scene.add(
+        back
+    );
 
 
     /*
-       左右碰撞盒
+       左
     */
-
-    const sideGeometry =
-        new THREE.BoxGeometry(
-            frontDepth,
-            H,
-            D
-        );
-
 
     const left =
         new THREE.Mesh(
-            sideGeometry,
+
+            new THREE.BoxGeometry(
+
+                thickness,
+
+                H,
+
+                D
+
+            ),
+
             material
+
         );
 
 
     left.position.set(
+
         -W / 2 +
-        frontDepth / 2,
+        thickness / 2,
+
         H / 2,
+
         0
+
     );
 
 
     left.visible = false;
 
-    scene.add(left);
 
+    scene.add(
+        left
+    );
+
+
+    /*
+       右
+    */
 
     const right =
         new THREE.Mesh(
-            sideGeometry,
+
+            new THREE.BoxGeometry(
+
+                thickness,
+
+                H,
+
+                D
+
+            ),
+
             material
+
         );
 
 
     right.position.set(
+
         W / 2 -
-        frontDepth / 2,
+        thickness / 2,
+
         H / 2,
+
         0
+
     );
 
 
     right.visible = false;
 
-    scene.add(right);
+
+    scene.add(
+        right
+    );
 
 }
 
+
+/* ==================================================
+   ROOM EDGES
+================================================== */
 
 function createRoomEdges(
     W,
@@ -1434,10 +1971,12 @@ function createRoomEdges(
             D
         );
 
+
     const edges =
         new THREE.EdgesGeometry(
             geometry
         );
+
 
     const material =
         new THREE.LineBasicMaterial({
@@ -1450,226 +1989,30 @@ function createRoomEdges(
 
         });
 
+
     const lines =
         new THREE.LineSegments(
+
             edges,
+
             material
+
         );
+
 
     lines.position.y =
         H / 2;
 
-    scene.add(lines);
 
-}
-
-
-/* ==================================================
-   MOVEMENT
-================================================== */
-
-function updatePlayer() {
-
-    if (!camera)
-        return;
-
-
-    const speed = .08;
-
-
-    /*
-       由 yaw 得到玩家面向方向。
-
-       視角與碰撞完全分離。
-    */
-
-    const forwardX =
-        Math.sin(yaw);
-
-    const forwardZ =
-        -Math.cos(yaw);
-
-
-    const rightX =
-        Math.cos(yaw);
-
-    const rightZ =
-        Math.sin(yaw);
-
-
-    let inputX = 0;
-    let inputZ = 0;
-
-
-    if (movement.forward) {
-
-        inputX += forwardX;
-        inputZ += forwardZ;
-
-    }
-
-    if (movement.back) {
-
-        inputX -= forwardX;
-        inputZ -= forwardZ;
-
-    }
-
-    if (movement.left) {
-
-        inputX -= rightX;
-        inputZ -= rightZ;
-
-    }
-
-    if (movement.right) {
-
-        inputX += rightX;
-        inputZ += rightZ;
-
-    }
-
-
-    const length =
-        Math.hypot(
-            inputX,
-            inputZ
-        );
-
-
-    if (length <= 0) {
-
-        updateCamera();
-
-        return;
-
-    }
-
-
-    const moveX =
-        inputX /
-        length *
-        speed;
-
-
-    const moveZ =
-        inputZ /
-        length *
-        speed;
-
-
-    /*
-       =================================================
-       立體碰撞安全框
-       =================================================
-    */
-
-    const bounds =
-        getCollisionBounds();
-
-
-    /*
-       -------------------------------------------------
-       X 軸
-       -------------------------------------------------
-
-       只處理 X。
-
-       如果 X 被牆擋住，
-       X 完全不動。
-
-       不會改變 Z。
-    */
-
-    const candidateX =
-        player.x +
-        moveX;
-
-
-    if (
-        candidateX >=
-            bounds.minX &&
-        candidateX <=
-            bounds.maxX
-    ) {
-
-        player.x =
-            candidateX;
-
-    }
-
-
-    /*
-       -------------------------------------------------
-       Z 軸
-       -------------------------------------------------
-
-       只處理 Z。
-
-       如果 Z 被牆擋住，
-       Z 完全不動。
-
-       不會影響 X。
-    */
-
-    const candidateZ =
-        player.z +
-        moveZ;
-
-
-    if (
-        candidateZ >=
-            bounds.minZ &&
-        candidateZ <=
-            bounds.maxZ
-    ) {
-
-        player.z =
-            candidateZ;
-
-    }
-
-
-    updateCamera();
-
-}
-
-
-/* ==================================================
-   CAMERA
-================================================== */
-
-function updateCamera() {
-
-    /*
-       碰撞系統永遠不修改：
-
-       yaw
-       pitch
-       FOV
-    */
-
-    camera.position.set(
-        player.x,
-        player.y,
-        player.z
+    scene.add(
+        lines
     );
 
-
-    camera.rotation.order =
-        "YXZ";
-
-    camera.rotation.y =
-        yaw;
-
-    camera.rotation.x =
-        pitch;
-
 }
 
 
 /* ==================================================
-   TOUCH STATE
+   TOUCH
 ================================================== */
 
 const activeTouches =
@@ -1685,6 +2028,7 @@ let lookPointerId =
 
 
 let lastLookX = 0;
+
 let lastLookY = 0;
 
 
@@ -1695,10 +2039,6 @@ let previousPinchDistance =
 let mouseLooking =
     false;
 
-
-/* ==================================================
-   PINCH
-================================================== */
 
 function getPinchDistance() {
 
@@ -1722,8 +2062,11 @@ function getPinchDistance() {
 
 
     return Math.hypot(
+
         b.x - a.x,
+
         b.y - a.y
+
     );
 
 }
@@ -1734,8 +2077,10 @@ function enterPinchMode() {
     touchMode =
         "pinch";
 
+
     lookPointerId =
         null;
+
 
     previousPinchDistance =
         getPinchDistance();
@@ -1775,14 +2120,18 @@ function enterLookMode() {
     touchMode =
         "look";
 
+
     lookPointerId =
         id;
+
 
     lastLookX =
         point.x;
 
+
     lastLookY =
         point.y;
+
 
     previousPinchDistance =
         null;
@@ -1791,7 +2140,7 @@ function enterLookMode() {
 
 
 /* ==================================================
-   TOUCH
+   TOUCH SETUP
 ================================================== */
 
 function setupTouch() {
@@ -1805,7 +2154,9 @@ function setupTouch() {
 
 
     canvas.addEventListener(
+
         "pointerdown",
+
         event => {
 
             if (
@@ -1818,14 +2169,18 @@ function setupTouch() {
                 )
                     return;
 
+
                 mouseLooking =
                     true;
+
 
                 lastLookX =
                     event.clientX;
 
+
                 lastLookY =
                     event.clientY;
+
 
                 return;
 
@@ -1836,14 +2191,19 @@ function setupTouch() {
 
 
             activeTouches.set(
+
                 event.pointerId,
+
                 {
+
                     x:
                         event.clientX,
 
                     y:
                         event.clientY
+
                 }
+
             );
 
 
@@ -1855,11 +2215,14 @@ function setupTouch() {
                 touchMode =
                     "look";
 
+
                 lookPointerId =
                     event.pointerId;
 
+
                 lastLookX =
                     event.clientX;
+
 
                 lastLookY =
                     event.clientY;
@@ -1873,14 +2236,18 @@ function setupTouch() {
             }
 
         },
+
         {
             passive: false
         }
+
     );
 
 
     canvas.addEventListener(
+
         "pointermove",
+
         event => {
 
             if (
@@ -1895,6 +2262,7 @@ function setupTouch() {
                 const dx =
                     event.clientX -
                     lastLookX;
+
 
                 const dy =
                     event.clientY -
@@ -1913,19 +2281,27 @@ function setupTouch() {
 
                 pitch =
                     Math.max(
+
                         -PITCH_LIMIT,
+
                         Math.min(
+
                             PITCH_LIMIT,
+
                             pitch
+
                         )
+
                     );
 
 
                 lastLookX =
                     event.clientX;
 
+
                 lastLookY =
                     event.clientY;
+
 
                 return;
 
@@ -1944,14 +2320,19 @@ function setupTouch() {
 
 
             activeTouches.set(
+
                 event.pointerId,
+
                 {
+
                     x:
                         event.clientX,
 
                     y:
                         event.clientY
+
                 }
+
             );
 
 
@@ -1965,8 +2346,11 @@ function setupTouch() {
 
 
                 if (
+
                     distance !== null &&
+
                     previousPinchDistance !== null
+
                 ) {
 
                     const delta =
@@ -1981,11 +2365,17 @@ function setupTouch() {
 
                     camera.fov =
                         Math.max(
+
                             MIN_FOV,
+
                             Math.min(
+
                                 MAX_FOV,
+
                                 camera.fov
+
                             )
+
                         );
 
 
@@ -1997,20 +2387,26 @@ function setupTouch() {
                 previousPinchDistance =
                     distance;
 
+
                 return;
 
             }
 
 
             if (
-                touchMode === "look" &&
+
+                touchMode ===
+                    "look" &&
+
                 event.pointerId ===
-                lookPointerId
+                    lookPointerId
+
             ) {
 
                 const dx =
                     event.clientX -
                     lastLookX;
+
 
                 const dy =
                     event.clientY -
@@ -2029,16 +2425,23 @@ function setupTouch() {
 
                 pitch =
                     Math.max(
+
                         -PITCH_LIMIT,
+
                         Math.min(
+
                             PITCH_LIMIT,
+
                             pitch
+
                         )
+
                     );
 
 
                 lastLookX =
                     event.clientX;
+
 
                 lastLookY =
                     event.clientY;
@@ -2046,9 +2449,11 @@ function setupTouch() {
             }
 
         },
+
         {
             passive: false
         }
+
     );
 
 
@@ -2081,15 +2486,16 @@ function setupTouch() {
 
 
         if (
-            activeTouches.size ===
-            0
+            activeTouches.size === 0
         ) {
 
             touchMode =
                 "none";
 
+
             lookPointerId =
                 null;
+
 
             previousPinchDistance =
                 null;
@@ -2097,8 +2503,7 @@ function setupTouch() {
         }
 
         else if (
-            activeTouches.size ===
-            1
+            activeTouches.size === 1
         ) {
 
             enterLookMode();
@@ -2131,6 +2536,7 @@ const joystickBase =
         "joystickBase"
     );
 
+
 const joystickKnob =
     document.getElementById(
         "joystickKnob"
@@ -2140,12 +2546,14 @@ const joystickKnob =
 let joystickPointerId =
     null;
 
+
 let joystickActive =
     false;
 
 
 const JOYSTICK_RADIUS =
     37;
+
 
 const JOYSTICK_DEAD_ZONE =
     .12;
@@ -2186,6 +2594,7 @@ function updateJoystick(
         clientX -
         center.x;
 
+
     let dy =
         clientY -
         center.y;
@@ -2207,7 +2616,9 @@ function updateJoystick(
             JOYSTICK_RADIUS /
             distance;
 
+
         dx *= scale;
+
         dy *= scale;
 
     }
@@ -2217,12 +2628,14 @@ function updateJoystick(
         dx /
         JOYSTICK_RADIUS;
 
+
     const y =
         dy /
         JOYSTICK_RADIUS;
 
 
     joystickKnob.style.transform =
+
         `translate(
             calc(-50% + ${dx}px),
             calc(-50% + ${dy}px)
@@ -2233,13 +2646,16 @@ function updateJoystick(
         y <
         -JOYSTICK_DEAD_ZONE;
 
+
     movement.back =
         y >
         JOYSTICK_DEAD_ZONE;
 
+
     movement.left =
         x <
         -JOYSTICK_DEAD_ZONE;
+
 
     movement.right =
         x >
@@ -2253,6 +2669,7 @@ function stopJoystick() {
     joystickPointerId =
         null;
 
+
     joystickActive =
         false;
 
@@ -2260,11 +2677,14 @@ function stopJoystick() {
     movement.forward =
         false;
 
+
     movement.back =
         false;
 
+
     movement.left =
         false;
+
 
     movement.right =
         false;
@@ -2284,7 +2704,9 @@ function stopJoystick() {
 function setupJoystick() {
 
     joystickBase.addEventListener(
+
         "pointerdown",
+
         event => {
 
             event.preventDefault();
@@ -2324,25 +2746,35 @@ function setupJoystick() {
 
 
             updateJoystick(
+
                 event.clientX,
+
                 event.clientY
+
             );
 
         },
+
         {
             passive: false
         }
+
     );
 
 
     joystickBase.addEventListener(
+
         "pointermove",
+
         event => {
 
             if (
+
                 !joystickActive ||
+
                 event.pointerId !==
-                joystickPointerId
+                    joystickPointerId
+
             )
                 return;
 
@@ -2353,19 +2785,26 @@ function setupJoystick() {
 
 
             updateJoystick(
+
                 event.clientX,
+
                 event.clientY
+
             );
 
         },
+
         {
             passive: false
         }
+
     );
 
 
     joystickBase.addEventListener(
+
         "pointerup",
+
         event => {
 
             if (
@@ -2383,14 +2822,18 @@ function setupJoystick() {
             stopJoystick();
 
         },
+
         {
             passive: false
         }
+
     );
 
 
     joystickBase.addEventListener(
+
         "pointercancel",
+
         event => {
 
             if (
@@ -2403,14 +2846,18 @@ function setupJoystick() {
             stopJoystick();
 
         },
+
         {
             passive: false
         }
+
     );
 
 
     joystickBase.addEventListener(
+
         "lostpointercapture",
+
         () => {
 
             if (
@@ -2423,7 +2870,67 @@ function setupJoystick() {
             }
 
         }
+
     );
+
+}
+
+
+/* ==================================================
+   START
+================================================== */
+
+document
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+        "click",
+        startGame
+    );
+
+
+function startGame() {
+
+    if (started)
+        return;
+
+
+    started = true;
+
+
+    titleRunning =
+        false;
+
+
+    stopJoystick();
+
+
+    document
+        .getElementById(
+            "title"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "hint"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "joystickArea"
+        )
+        .style.display =
+        "block";
+
+
+    createWorld();
 
 }
 
@@ -2447,9 +2954,13 @@ function animate() {
 
 
     if (
+
         renderer &&
+
         scene &&
+
         camera
+
     ) {
 
         renderer.render(
@@ -2467,7 +2978,9 @@ function animate() {
 ================================================== */
 
 window.addEventListener(
+
     "resize",
+
     () => {
 
         if (
@@ -2486,11 +2999,15 @@ window.addEventListener(
 
 
         renderer.setSize(
+
             window.innerWidth,
+
             window.innerHeight
+
         );
 
     }
+
 );
 
 
@@ -2499,26 +3016,34 @@ window.addEventListener(
 ================================================== */
 
 window.addEventListener(
+
     "blur",
+
     () => {
 
         stopJoystick();
 
+
         activeTouches.clear();
+
 
         touchMode =
             "none";
 
+
         lookPointerId =
             null;
+
 
         mouseLooking =
             false;
 
     }
+
 );
 
 </script>
 
 </body>
+
 </html>
