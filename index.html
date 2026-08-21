@@ -45,7 +45,6 @@ body {
     position: relative;
 
     width: 100vw;
-
     height: 100vh;
 
 }
@@ -89,13 +88,11 @@ body {
 .titleWrapper {
 
     width: 100vw;
-
     height: 1.2em;
 
     display: flex;
 
     justify-content: center;
-
     align-items: center;
 
 }
@@ -108,7 +105,6 @@ body {
 #titleText {
 
     margin: 0;
-
     padding: 0;
 
     display: inline-block;
@@ -142,7 +138,6 @@ body {
     display: inline;
 
     margin: 0;
-
     padding: 0;
 
     opacity: 0;
@@ -247,6 +242,8 @@ body {
 
     font-size: 13px;
 
+    pointer-events: none;
+
 }
 
 
@@ -266,7 +263,9 @@ body {
 
     height: 120px;
 
-    z-index: 20;
+    z-index: 30;
+
+    pointer-events: none;
 
 }
 
@@ -276,13 +275,11 @@ body {
     position: absolute;
 
     width: 52px;
-
     height: 52px;
 
     display: flex;
 
     justify-content: center;
-
     align-items: center;
 
     color: white;
@@ -300,14 +297,24 @@ body {
 
     user-select: none;
 
+    -webkit-user-select: none;
+
     touch-action: none;
 
+    pointer-events: auto;
+
+    cursor: pointer;
+
 }
+
+
+/* ==================================================
+   按鍵位置
+================================================== */
 
 .forward {
 
     left: 64px;
-
     top: 0;
 
 }
@@ -315,7 +322,6 @@ body {
 .left {
 
     left: 8px;
-
     top: 58px;
 
 }
@@ -323,7 +329,6 @@ body {
 .back {
 
     left: 64px;
-
     top: 58px;
 
 }
@@ -331,8 +336,22 @@ body {
 .right {
 
     left: 120px;
-
     top: 58px;
+
+}
+
+
+/* ==================================================
+   按下狀態
+================================================== */
+
+.control.active {
+
+    background:
+        rgba(255,255,255,.28);
+
+    border-color:
+        rgba(255,255,255,.8);
 
 }
 
@@ -435,6 +454,7 @@ body {
 
     </div>
 
+
     <div
         class="control left"
         data-direction="left">
@@ -443,6 +463,7 @@ body {
 
     </div>
 
+
     <div
         class="control back"
         data-direction="back">
@@ -450,6 +471,7 @@ body {
         ↓
 
     </div>
+
 
     <div
         class="control right"
@@ -476,7 +498,7 @@ body {
 
 
 /* ==================================================
-   Reality...? 標題
+   Reality...? 標題動畫
 ================================================== */
 
 const titleText =
@@ -995,7 +1017,7 @@ async function playTitleAnimation() {
 
 
         /*
-           最後這一下保持直接消失
+           最後一下直接消失
         */
 
         titleText.innerHTML =
@@ -1059,28 +1081,50 @@ const player = {
 };
 
 
+/* ==================================================
+   視角
+================================================== */
+
 let yaw = 0;
 
 let pitch = 0;
 
 
+/*
+   ★ 水平視角限制
+
+   不再讓鏡頭無限 360° 旋轉。
+
+   左右各約 105°。
+
+   總視角約 210°。
+
+   這比較接近「人在房間裡轉頭觀察」
+   的感覺，而不是攝影機一直繞圈。
+*/
+
+const YAW_LIMIT =
+    Math.PI * 0.58;
+
+
+/*
+   ★ 上下視角限制
+
+   避免抬頭／低頭過度造成暈眩。
+*/
+
+const PITCH_LIMIT =
+    1.0;
+
+
 /* ==================================================
-   ★ 非常小的牆體安全距離
+   牆體碰撞
 ================================================== */
 
 /*
-   舊版：
+   這裡維持上一版。
 
-   0.35
-
-   會讓玩家在真正看到牆之前
-   就感覺撞到空氣。
-
-   現在縮到：
-
-   0.08
-
-   只留下非常小的安全距離。
+   不修改牆體邏輯。
 */
 
 const WALL_MARGIN =
@@ -1088,7 +1132,7 @@ const WALL_MARGIN =
 
 
 /* ==================================================
-   移動狀態
+   移動
 ================================================== */
 
 const movement = {
@@ -1141,16 +1185,14 @@ function startGame() {
     document
         .getElementById(
             "hint"
-        )
-        .style.display =
+        ).style.display =
         "block";
 
 
     document
         .getElementById(
             "controls"
-        )
-        .style.display =
+        ).style.display =
         "block";
 
 
@@ -1264,7 +1306,7 @@ function createWorld() {
 
 
 /* ==================================================
-   房間
+   建立房間
 ================================================== */
 
 function createRoom() {
@@ -1566,7 +1608,7 @@ function createRoomEdges(
 
 
 /* ==================================================
-   ★ 玩家移動
+   玩家移動
 ================================================== */
 
 function updatePlayer() {
@@ -1592,10 +1634,6 @@ function updatePlayer() {
     let dz = 0;
 
 
-    /* =========================
-       前
-    ========================= */
-
     if (
         movement.forward
     ) {
@@ -1610,10 +1648,6 @@ function updatePlayer() {
 
     }
 
-
-    /* =========================
-       後
-    ========================= */
 
     if (
         movement.back
@@ -1630,10 +1664,6 @@ function updatePlayer() {
     }
 
 
-    /* =========================
-       左
-    ========================= */
-
     if (
         movement.left
     ) {
@@ -1648,10 +1678,6 @@ function updatePlayer() {
 
     }
 
-
-    /* =========================
-       右
-    ========================= */
 
     if (
         movement.right
@@ -1669,7 +1695,8 @@ function updatePlayer() {
 
 
     /* ==================================================
-       ★ 這次只做「很小」的邊界判定
+       牆體碰撞
+       ★ 保持原本測試版
     ================================================== */
 
     const minX =
@@ -1692,19 +1719,6 @@ function updatePlayer() {
         WALL_MARGIN;
 
 
-    /*
-       不直接把玩家硬拉回牆邊。
-
-       只檢查「下一步」是否會越過牆。
-
-       如果沒有越過：
-       正常移動。
-
-       如果會越過：
-       這一軸不移動。
-    */
-
-
     const nextX =
         player.x +
         dx;
@@ -1714,10 +1728,6 @@ function updatePlayer() {
         player.z +
         dz;
 
-
-    /* =========================
-       X
-    ========================= */
 
     if (
         nextX > minX &&
@@ -1730,10 +1740,6 @@ function updatePlayer() {
     }
 
 
-    /* =========================
-       Z
-    ========================= */
-
     if (
         nextZ > minZ &&
         nextZ < maxZ
@@ -1744,10 +1750,6 @@ function updatePlayer() {
 
     }
 
-
-    /* =========================
-       相機
-    ========================= */
 
     camera.position.set(
 
@@ -1773,18 +1775,25 @@ function updatePlayer() {
 
 
 /* ==================================================
-   手機滑動
+   ★ 手機視角
 ================================================== */
 
-let touching =
+let looking =
     false;
 
-let lastX =
+let lastLookX =
     0;
 
-let lastY =
+let lastLookY =
     0;
 
+
+/*
+   只在畫面空白區域滑動時
+   控制視角。
+
+   按鍵本身不會進入這裡。
+*/
 
 function setupTouch() {
 
@@ -1794,28 +1803,38 @@ function setupTouch() {
 
     canvas.addEventListener(
 
-        "touchstart",
+        "pointerdown",
 
         function(event) {
 
-            touching =
+            /*
+               只接受滑鼠左鍵／觸控。
+            */
+
+            if (
+                event.pointerType ===
+                "mouse" &&
+                event.button !== 0
+            )
+                return;
+
+
+            looking =
                 true;
 
 
-            lastX =
-                event.touches[0]
-                .clientX;
+            lastLookX =
+                event.clientX;
 
 
-            lastY =
-                event.touches[0]
-                .clientY;
+            lastLookY =
+                event.clientY;
 
-        },
 
-        {
-            passive:
-                false
+            canvas.setPointerCapture(
+                event.pointerId
+            );
+
         }
 
     );
@@ -1823,95 +1842,136 @@ function setupTouch() {
 
     canvas.addEventListener(
 
-        "touchmove",
+        "pointermove",
 
         function(event) {
 
-            if (!touching)
+            if (!looking)
                 return;
 
 
-            event.preventDefault();
-
-
-            const x =
-                event.touches[0]
-                .clientX;
-
-
-            const y =
-                event.touches[0]
-                .clientY;
-
-
             const dx =
-                x -
-                lastX;
+                event.clientX -
+                lastLookX;
 
 
             const dy =
-                y -
-                lastY;
+                event.clientY -
+                lastLookY;
 
+
+            /*
+               左右視角
+            */
 
             yaw -=
                 dx *
-                0.004;
+                0.003;
 
+
+            /*
+               ★ 限制左右視角
+
+               不再無限 360°。
+            */
+
+            yaw =
+                Math.max(
+
+                    -YAW_LIMIT,
+
+                    Math.min(
+                        YAW_LIMIT,
+                        yaw
+                    )
+
+                );
+
+
+            /*
+               上下視角
+            */
 
             pitch -=
                 dy *
-                0.004;
+                0.003;
 
 
             pitch =
                 Math.max(
 
-                    -1.4,
+                    -PITCH_LIMIT,
 
                     Math.min(
-                        1.4,
+                        PITCH_LIMIT,
                         pitch
                     )
 
                 );
 
 
-            lastX =
-                x;
+            lastLookX =
+                event.clientX;
 
 
-            lastY =
-                y;
+            lastLookY =
+                event.clientY;
 
-        },
-
-        {
-            passive:
-                false
         }
 
     );
 
 
-    canvas.addEventListener(
+    function stopLooking(event) {
 
-        "touchend",
+        looking =
+            false;
 
-        function() {
 
-            touching =
-                false;
+        if (
+            event &&
+            canvas.hasPointerCapture &&
+            canvas.hasPointerCapture(
+                event.pointerId
+            )
+        ) {
+
+            canvas.releasePointerCapture(
+                event.pointerId
+            );
 
         }
 
+    }
+
+
+    canvas.addEventListener(
+        "pointerup",
+        stopLooking
+    );
+
+
+    canvas.addEventListener(
+        "pointercancel",
+        stopLooking
+    );
+
+
+    canvas.addEventListener(
+        "lostpointercapture",
+        function() {
+
+            looking =
+                false;
+
+        }
     );
 
 }
 
 
 /* ==================================================
-   移動按鈕
+   ★ 移動按鍵
 ================================================== */
 
 function setupButtons() {
@@ -1934,11 +1994,23 @@ function setupButtons() {
 
                 event.preventDefault();
 
+                event.stopPropagation();
+
 
                 movement[
                     direction
                 ] = true;
 
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                /*
+                   確保這顆按鍵
+                   自己接收 pointer 事件。
+                */
 
                 if (
                     button.setPointerCapture
@@ -1955,12 +2027,23 @@ function setupButtons() {
 
             function release(event) {
 
-                event.preventDefault();
+                if (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                }
 
 
                 movement[
                     direction
                 ] = false;
+
+
+                button.classList.remove(
+                    "active"
+                );
 
             }
 
@@ -1984,28 +2067,60 @@ function setupButtons() {
 
 
             button.addEventListener(
-
-                "pointerleave",
-
-                function(event) {
-
-                    if (
-                        event.buttons === 0
-                    ) {
-
-                        movement[
-                            direction
-                        ] = false;
-
-                    }
-
-                }
-
+                "lostpointercapture",
+                release
             );
 
         }
 
     );
+
+
+    /*
+       如果手指離開按鍵，
+       或瀏覽器突然取消觸控，
+       全部方向都強制停止。
+    */
+
+    window.addEventListener(
+        "pointerup",
+        stopAllMovement
+    );
+
+
+    window.addEventListener(
+        "pointercancel",
+        stopAllMovement
+    );
+
+}
+
+
+function stopAllMovement() {
+
+    movement.forward =
+        false;
+
+    movement.back =
+        false;
+
+    movement.left =
+        false;
+
+    movement.right =
+        false;
+
+
+    document
+        .querySelectorAll(
+            ".control"
+        )
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
 
 }
 
