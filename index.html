@@ -13,11 +13,17 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
+
 <style>
+
+/* ==================================================
+   基本設定
+================================================== */
 
 * {
     box-sizing: border-box;
 }
+
 
 html,
 body {
@@ -40,11 +46,13 @@ body {
 
 }
 
+
 #game {
 
     position: relative;
 
     width: 100vw;
+
     height: 100vh;
 
 }
@@ -96,8 +104,6 @@ body {
     justify-content: center;
 
     align-items: center;
-
-    overflow: visible;
 
 }
 
@@ -202,6 +208,7 @@ body {
     touch-action: manipulation;
 
 }
+
 
 .startButton:active {
 
@@ -319,6 +326,7 @@ body {
 
 }
 
+
 .left {
 
     left: 8px;
@@ -327,6 +335,7 @@ body {
 
 }
 
+
 .back {
 
     left: 64px;
@@ -334,6 +343,7 @@ body {
     top: 58px;
 
 }
+
 
 .right {
 
@@ -374,21 +384,25 @@ body {
             內容提示
         </p>
 
+
         <p>
             本作品包含心理恐怖、
             令人不安的聲音與視覺表現，
             以及可能引起部分玩家不適的成人向主題。
         </p>
 
+
         <p>
             部分內容可能涉及敏感議題。
         </p>
+
 
         <p>
             若你容易受到心理壓迫、
             強烈聲音或失真畫面的影響，
             請自行斟酌是否遊玩。
         </p>
+
 
         <p>
             你可以隨時離開遊戲。
@@ -480,6 +494,10 @@ body {
 </div>
 
 
+<!-- ==================================================
+     Three.js
+================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
 
@@ -488,7 +506,7 @@ body {
 
 
 /* ==================================================
-   Reality...? 標題
+   Reality...? 標題動畫
 ================================================== */
 
 const titleText =
@@ -496,10 +514,13 @@ const titleText =
         "titleText"
     );
 
+
 const titleWord =
     "Reality...?";
 
-let titleRunning = true;
+
+let titleRunning =
+    true;
 
 
 /* ==================================================
@@ -523,7 +544,7 @@ function wait(ms) {
 
 
 /* ==================================================
-   隨機數
+   隨機
 ================================================== */
 
 function random(min, max) {
@@ -531,7 +552,9 @@ function random(min, max) {
     return (
         min +
         Math.random() *
-        (max - min)
+        (
+            max - min
+        )
     );
 
 }
@@ -556,7 +579,7 @@ function smoothstep(t) {
 
 
 /* ==================================================
-   建立標題
+   建立標題字母
 ================================================== */
 
 function createTitleLetters() {
@@ -608,7 +631,7 @@ function createTitleLetters() {
 
 
 /* ==================================================
-   字母慢慢浮現
+   字母浮現
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -701,10 +724,7 @@ function fadeInLetter(letter) {
    不規則若隱若現
 ================================================== */
 
-function startIrregularBreathing(
-    letter,
-    index
-) {
+function startIrregularBreathing(letter) {
 
     if (
         letter.dataset.breathing ===
@@ -905,7 +925,6 @@ function startIrregularBreathing(
 
             }
 
-
             else if (
                 state ===
                 "fadeDown"
@@ -926,7 +945,6 @@ function startIrregularBreathing(
                     );
 
             }
-
 
             else if (
                 state ===
@@ -958,7 +976,6 @@ function startIrregularBreathing(
                     );
 
             }
-
 
             else if (
                 state ===
@@ -1006,14 +1023,9 @@ async function playTitleAnimation() {
 
     while (titleRunning) {
 
-
         const letters =
             createTitleLetters();
 
-
-        /* ==========================================
-           一個一個慢慢出現
-        ========================================== */
 
         for (
             let i = 0;
@@ -1035,8 +1047,7 @@ async function playTitleAnimation() {
 
 
             startIrregularBreathing(
-                letters[i],
-                i
+                letters[i]
             );
 
 
@@ -1050,11 +1061,9 @@ async function playTitleAnimation() {
         }
 
 
-        /* ==========================================
-           全部出現後停留
-           
-           已縮短為約 2.9～3.7 秒
-        ========================================== */
+        /* =========================
+           完整標題停留
+        ========================= */
 
         await wait(
             random(
@@ -1068,16 +1077,17 @@ async function playTitleAnimation() {
             return;
 
 
-        /* ==========================================
-           整個標題瞬間消失
-        ========================================== */
+        /* =========================
+           直接消失
+        ========================= */
 
-        titleText.innerHTML = "";
+        titleText.innerHTML =
+            "";
 
 
-        /* ==========================================
+        /* =========================
            黑屏停留
-        ========================================== */
+        ========================= */
 
         await wait(
             random(
@@ -1091,16 +1101,12 @@ async function playTitleAnimation() {
 }
 
 
-/* ==================================================
-   啟動標題動畫
-================================================== */
-
 playTitleAnimation();
 
 
 
 /* ==================================================
-   Three.js 變數
+   Three.js
 ================================================== */
 
 let scene = null;
@@ -1116,11 +1122,16 @@ let started = false;
    房間尺寸
 ================================================== */
 
-const ROOM_WIDTH = 14;
+const ROOM_WIDTH =
+    14;
 
-const ROOM_DEPTH = 14;
 
-const ROOM_HEIGHT = 10;
+const ROOM_DEPTH =
+    14;
+
+
+const ROOM_HEIGHT =
+    10;
 
 
 /* ==================================================
@@ -1138,13 +1149,34 @@ const player = {
 };
 
 
+/* ==================================================
+   玩家碰撞半徑
+================================================== */
+
+/*
+   這不是看得到的牆。
+
+   它只是讓玩家與牆
+   保留一點距離。
+
+   數值越大：
+   玩家離牆越遠。
+
+   數值越小：
+   玩家可以更靠近牆。
+*/
+
+const PLAYER_RADIUS =
+    0.35;
+
+
 let yaw = 0;
 
 let pitch = 0;
 
 
 /* ==================================================
-   移動狀態
+   移動
 ================================================== */
 
 const movement = {
@@ -1182,7 +1214,9 @@ function startGame() {
 
     started = true;
 
-    titleRunning = false;
+
+    titleRunning =
+        false;
 
 
     document
@@ -1215,7 +1249,7 @@ function startGame() {
 
 
 /* ==================================================
-   建立 3D 世界
+   建立世界
 ================================================== */
 
 function createWorld() {
@@ -1248,7 +1282,9 @@ function createWorld() {
     camera.position.set(
 
         player.x,
+
         player.y,
+
         player.z
 
     );
@@ -1293,6 +1329,7 @@ function createWorld() {
         new THREE.AmbientLight(
 
             0xffffff,
+
             2
 
         );
@@ -1305,9 +1342,12 @@ function createWorld() {
 
     createRoom();
 
+
     setupTouch();
 
+
     setupButtons();
+
 
     animate();
 
@@ -1419,9 +1459,11 @@ function createRoom() {
 
 
     front.position.set(
+
         0,
         H / 2,
         -D / 2
+
     );
 
 
@@ -1443,9 +1485,11 @@ function createRoom() {
 
 
     back.position.set(
+
         0,
         H / 2,
         D / 2
+
     );
 
 
@@ -1471,9 +1515,11 @@ function createRoom() {
 
 
     left.position.set(
+
         -W / 2,
         H / 2,
         0
+
     );
 
 
@@ -1499,9 +1545,11 @@ function createRoom() {
 
 
     right.position.set(
+
         W / 2,
         H / 2,
         0
+
     );
 
 
@@ -1610,7 +1658,6 @@ function createRoomEdges(
 
 /* ==================================================
    玩家移動
-   修正版：使用 clamp 邊界
 ================================================== */
 
 function updatePlayer() {
@@ -1637,7 +1684,7 @@ function updatePlayer() {
 
 
     /* =========================
-       前
+       計算移動方向
     ========================= */
 
     if (
@@ -1655,10 +1702,6 @@ function updatePlayer() {
     }
 
 
-    /* =========================
-       後
-    ========================= */
-
     if (
         movement.back
     ) {
@@ -1673,10 +1716,6 @@ function updatePlayer() {
 
     }
 
-
-    /* =========================
-       左
-    ========================= */
 
     if (
         movement.left
@@ -1693,10 +1732,6 @@ function updatePlayer() {
     }
 
 
-    /* =========================
-       右
-    ========================= */
-
     if (
         movement.right
     ) {
@@ -1712,57 +1747,87 @@ function updatePlayer() {
     }
 
 
-    /* =========================
-       房間邊界
-       
-       不再使用：
-       
-       if (nextX > ...)
+    /* ==================================================
+       碰撞處理
 
-       改成直接限制座標。
-       
-       到邊界時人物停住，
-       但按鈕狀態不會因此被卡住。
-    ========================= */
+       重要：
 
-    const limitX =
+       X、Z 分開判定。
+
+       所以撞到牆時，
+       只會停止撞牆方向。
+
+       另一個方向仍然可以移動。
+
+       例如：
+
+       前 + 右
+       ↓
+       撞右牆
+       ↓
+       右停止
+       前仍然可以走
+    ================================================== */
+
+
+    const minX =
+        -ROOM_WIDTH / 2 +
+        PLAYER_RADIUS;
+
+
+    const maxX =
         ROOM_WIDTH / 2 -
-        0.08;
+        PLAYER_RADIUS;
 
 
-    const limitZ =
+    const minZ =
+        -ROOM_DEPTH / 2 +
+        PLAYER_RADIUS;
+
+
+    const maxZ =
         ROOM_DEPTH / 2 -
-        0.08;
+        PLAYER_RADIUS;
 
+
+    /* =========================
+       先嘗試 X
+    ========================= */
 
     const nextX =
         player.x +
         dx;
 
 
+    if (
+        nextX >= minX &&
+        nextX <= maxX
+    ) {
+
+        player.x =
+            nextX;
+
+    }
+
+
+    /* =========================
+       再嘗試 Z
+    ========================= */
+
     const nextZ =
         player.z +
         dz;
 
 
-    player.x =
-        Math.max(
-            -limitX,
-            Math.min(
-                limitX,
-                nextX
-            )
-        );
+    if (
+        nextZ >= minZ &&
+        nextZ <= maxZ
+    ) {
 
+        player.z =
+            nextZ;
 
-    player.z =
-        Math.max(
-            -limitZ,
-            Math.min(
-                limitZ,
-                nextZ
-            )
-        );
+    }
 
 
     /* =========================
@@ -1796,11 +1861,16 @@ function updatePlayer() {
    手機滑動
 ================================================== */
 
-let touching = false;
+let touching =
+    false;
 
-let lastX = 0;
 
-let lastY = 0;
+let lastX =
+    0;
+
+
+let lastY =
+    0;
 
 
 function setupTouch() {
@@ -1815,7 +1885,8 @@ function setupTouch() {
 
         function(event) {
 
-            touching = true;
+            touching =
+                true;
 
 
             lastX =
@@ -1882,11 +1953,14 @@ function setupTouch() {
 
             pitch =
                 Math.max(
+
                     -1.4,
+
                     Math.min(
                         1.4,
                         pitch
                     )
+
                 );
 
 
@@ -2079,8 +2153,10 @@ window.addEventListener(
 
 
         renderer.setSize(
+
             window.innerWidth,
             window.innerHeight
+
         );
 
     }
