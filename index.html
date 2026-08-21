@@ -13,7 +13,12 @@ user-scalable=no">
 
 <title>Reality...?</title>
 
+
 <style>
+
+/* ==================================================
+   基本設定
+================================================== */
 
 * {
     box-sizing: border-box;
@@ -82,29 +87,27 @@ body {
 
 
 /* ==================================================
-   標題容器
+   標題
 ================================================== */
 
 .titleWrapper {
 
     width: 100vw;
+
     height: 1.2em;
 
     display: flex;
 
     justify-content: center;
+
     align-items: center;
 
 }
 
-
-/* ==================================================
-   標題
-================================================== */
-
 #titleText {
 
     margin: 0;
+
     padding: 0;
 
     display: inline-block;
@@ -138,6 +141,7 @@ body {
     display: inline;
 
     margin: 0;
+
     padding: 0;
 
     opacity: 0;
@@ -202,7 +206,7 @@ body {
 
 
 /* ==================================================
-   3D 房間
+   3D
 ================================================== */
 
 #threeContainer {
@@ -248,7 +252,7 @@ body {
 
 
 /* ==================================================
-   手機控制
+   手機按鍵區
 ================================================== */
 
 #controls {
@@ -263,7 +267,7 @@ body {
 
     height: 120px;
 
-    z-index: 30;
+    z-index: 50;
 
     pointer-events: none;
 
@@ -275,11 +279,13 @@ body {
     position: absolute;
 
     width: 52px;
+
     height: 52px;
 
     display: flex;
 
     justify-content: center;
+
     align-items: center;
 
     color: white;
@@ -303,8 +309,6 @@ body {
 
     pointer-events: auto;
 
-    cursor: pointer;
-
 }
 
 
@@ -315,6 +319,7 @@ body {
 .forward {
 
     left: 64px;
+
     top: 0;
 
 }
@@ -322,6 +327,7 @@ body {
 .left {
 
     left: 8px;
+
     top: 58px;
 
 }
@@ -329,6 +335,7 @@ body {
 .back {
 
     left: 64px;
+
     top: 58px;
 
 }
@@ -336,6 +343,7 @@ body {
 .right {
 
     left: 120px;
+
     top: 58px;
 
 }
@@ -348,10 +356,10 @@ body {
 .control.active {
 
     background:
-        rgba(255,255,255,.28);
+        rgba(255,255,255,.25);
 
     border-color:
-        rgba(255,255,255,.8);
+        rgba(255,255,255,.85);
 
 }
 
@@ -361,6 +369,7 @@ body {
 
 
 <body>
+
 
 <div id="game">
 
@@ -439,7 +448,7 @@ body {
 
 
 <!-- ==================================================
-     移動控制
+     移動按鍵
 ================================================== -->
 
 <div
@@ -483,6 +492,7 @@ body {
 
 </div>
 
+
 </div>
 
 
@@ -506,16 +516,14 @@ const titleText =
         "titleText"
     );
 
+
 const titleWord =
     "Reality...?";
+
 
 let titleRunning =
     true;
 
-
-/* ==================================================
-   工具
-================================================== */
 
 function wait(ms) {
 
@@ -600,7 +608,7 @@ function createTitleLetters() {
 
 
 /* ==================================================
-   字母浮現
+   字浮現
 ================================================== */
 
 function fadeInLetter(letter) {
@@ -959,7 +967,7 @@ function startIrregularBreathing(letter) {
 
 
 /* ==================================================
-   標題主循環
+   標題循環
 ================================================== */
 
 async function playTitleAnimation() {
@@ -1017,7 +1025,7 @@ async function playTitleAnimation() {
 
 
         /*
-           最後一下直接消失
+           最後直接消失
         */
 
         titleText.innerHTML =
@@ -1043,13 +1051,17 @@ playTitleAnimation();
    Three.js
 ================================================== */
 
-let scene = null;
+let scene =
+    null;
 
-let camera = null;
+let camera =
+    null;
 
-let renderer = null;
+let renderer =
+    null;
 
-let started = false;
+let started =
+    false;
 
 
 /* ==================================================
@@ -1085,32 +1097,30 @@ const player = {
    視角
 ================================================== */
 
-let yaw = 0;
+let yaw =
+    0;
 
-let pitch = 0;
+let pitch =
+    0;
 
 
 /*
-   ★ 水平視角限制
+   普通第一人稱視角。
 
-   不再讓鏡頭無限 360° 旋轉。
-
-   左右各約 105°。
-
-   總視角約 210°。
-
-   這比較接近「人在房間裡轉頭觀察」
-   的感覺，而不是攝影機一直繞圈。
+   不再額外限制左右角度，
+   但把滑動靈敏度降低，
+   避免手機一滑就轉太快。
 */
 
-const YAW_LIMIT =
-    Math.PI * 0.58;
+const LOOK_SENSITIVITY_X =
+    0.0022;
+
+const LOOK_SENSITIVITY_Y =
+    0.0022;
 
 
 /*
-   ★ 上下視角限制
-
-   避免抬頭／低頭過度造成暈眩。
+   上下視角限制。
 */
 
 const PITCH_LIMIT =
@@ -1118,13 +1128,11 @@ const PITCH_LIMIT =
 
 
 /* ==================================================
-   牆體碰撞
+   牆體
 ================================================== */
 
 /*
-   這裡維持上一版。
-
-   不修改牆體邏輯。
+   房間尺寸與牆體保持不變。
 */
 
 const WALL_MARGIN =
@@ -1132,7 +1140,7 @@ const WALL_MARGIN =
 
 
 /* ==================================================
-   移動
+   移動狀態
 ================================================== */
 
 const movement = {
@@ -1149,7 +1157,7 @@ const movement = {
 
 
 /* ==================================================
-   開始遊戲
+   開始
 ================================================== */
 
 document
@@ -1168,10 +1176,15 @@ function startGame() {
         return;
 
 
-    started = true;
+    started =
+        true;
+
 
     titleRunning =
         false;
+
+
+    stopAllMovement();
 
 
     document
@@ -1185,14 +1198,16 @@ function startGame() {
     document
         .getElementById(
             "hint"
-        ).style.display =
+        )
+        .style.display =
         "block";
 
 
     document
         .getElementById(
             "controls"
-        ).style.display =
+        )
+        .style.display =
         "block";
 
 
@@ -1293,12 +1308,9 @@ function createWorld() {
 
     createRoom();
 
-
-    setupTouch();
-
+    setupLook();
 
     setupButtons();
-
 
     animate();
 
@@ -1621,30 +1633,33 @@ function updatePlayer() {
         0.08;
 
 
+    let moveX =
+        0;
+
+    let moveZ =
+        0;
+
+
+    /*
+       前後
+    */
+
     const forwardX =
         Math.sin(yaw);
 
-
     const forwardZ =
         -Math.cos(yaw);
-
-
-    let dx = 0;
-
-    let dz = 0;
 
 
     if (
         movement.forward
     ) {
 
-        dx +=
-            forwardX *
-            speed;
+        moveX +=
+            forwardX;
 
-        dz +=
-            forwardZ *
-            speed;
+        moveZ +=
+            forwardZ;
 
     }
 
@@ -1653,28 +1668,28 @@ function updatePlayer() {
         movement.back
     ) {
 
-        dx -=
-            forwardX *
-            speed;
+        moveX -=
+            forwardX;
 
-        dz -=
-            forwardZ *
-            speed;
+        moveZ -=
+            forwardZ;
 
     }
 
+
+    /*
+       左右
+    */
 
     if (
         movement.left
     ) {
 
-        dx -=
-            Math.cos(yaw) *
-            speed;
+        moveX -=
+            Math.cos(yaw);
 
-        dz -=
-            Math.sin(yaw) *
-            speed;
+        moveZ -=
+            Math.sin(yaw);
 
     }
 
@@ -1683,21 +1698,55 @@ function updatePlayer() {
         movement.right
     ) {
 
-        dx +=
-            Math.cos(yaw) *
+        moveX +=
+            Math.cos(yaw);
+
+        moveZ +=
+            Math.sin(yaw);
+
+    }
+
+
+    /*
+       ★ 防止斜向移動速度變快
+    */
+
+    const length =
+        Math.sqrt(
+            moveX * moveX +
+            moveZ * moveZ
+        );
+
+
+    if (
+        length > 0
+    ) {
+
+        moveX =
+            moveX /
+            length *
             speed;
 
-        dz +=
-            Math.sin(yaw) *
+        moveZ =
+            moveZ /
+            length *
             speed;
 
     }
 
 
-    /* ==================================================
-       牆體碰撞
-       ★ 保持原本測試版
-    ================================================== */
+    /*
+       ★ 房間邊界
+
+       不再「下一步合法才移動」。
+
+       而是直接把玩家位置
+       限制在合法範圍。
+
+       這樣撞牆時：
+       只停止位置，
+       不碰觸視角。
+    */
 
     const minX =
         -ROOM_WIDTH / 2 +
@@ -1719,37 +1768,30 @@ function updatePlayer() {
         WALL_MARGIN;
 
 
-    const nextX =
-        player.x +
-        dx;
+    player.x =
+        Math.max(
+            minX,
+            Math.min(
+                maxX,
+                player.x + moveX
+            )
+        );
 
 
-    const nextZ =
-        player.z +
-        dz;
+    player.z =
+        Math.max(
+            minZ,
+            Math.min(
+                maxZ,
+                player.z + moveZ
+            )
+        );
 
 
-    if (
-        nextX > minX &&
-        nextX < maxX
-    ) {
-
-        player.x =
-            nextX;
-
-    }
-
-
-    if (
-        nextZ > minZ &&
-        nextZ < maxZ
-    ) {
-
-        player.z =
-            nextZ;
-
-    }
-
+    /*
+       ★ 相機只讀取玩家位置
+       不會因為碰撞修改 yaw / pitch
+    */
 
     camera.position.set(
 
@@ -1775,11 +1817,14 @@ function updatePlayer() {
 
 
 /* ==================================================
-   ★ 手機視角
+   視角控制
 ================================================== */
 
 let looking =
     false;
+
+let lookPointerId =
+    null;
 
 let lastLookX =
     0;
@@ -1789,16 +1834,20 @@ let lastLookY =
 
 
 /*
-   只在畫面空白區域滑動時
-   控制視角。
+   視角只在 renderer canvas 上工作。
 
-   按鍵本身不會進入這裡。
+   左下角按鍵是獨立 DOM，
+   不會進入這個系統。
 */
 
-function setupTouch() {
+function setupLook() {
 
     const canvas =
         renderer.domElement;
+
+
+    canvas.style.touchAction =
+        "none";
 
 
     canvas.addEventListener(
@@ -1808,7 +1857,7 @@ function setupTouch() {
         function(event) {
 
             /*
-               只接受滑鼠左鍵／觸控。
+               滑鼠只接受左鍵。
             */
 
             if (
@@ -1823,17 +1872,16 @@ function setupTouch() {
                 true;
 
 
+            lookPointerId =
+                event.pointerId;
+
+
             lastLookX =
                 event.clientX;
 
 
             lastLookY =
                 event.clientY;
-
-
-            canvas.setPointerCapture(
-                event.pointerId
-            );
 
         }
 
@@ -1846,7 +1894,11 @@ function setupTouch() {
 
         function(event) {
 
-            if (!looking)
+            if (
+                !looking ||
+                event.pointerId !==
+                lookPointerId
+            )
                 return;
 
 
@@ -1861,40 +1913,21 @@ function setupTouch() {
 
 
             /*
-               左右視角
+               左右
             */
 
             yaw -=
                 dx *
-                0.003;
+                LOOK_SENSITIVITY_X;
 
 
             /*
-               ★ 限制左右視角
-
-               不再無限 360°。
-            */
-
-            yaw =
-                Math.max(
-
-                    -YAW_LIMIT,
-
-                    Math.min(
-                        YAW_LIMIT,
-                        yaw
-                    )
-
-                );
-
-
-            /*
-               上下視角
+               上下
             */
 
             pitch -=
                 dy *
-                0.003;
+                LOOK_SENSITIVITY_Y;
 
 
             pitch =
@@ -1917,52 +1950,71 @@ function setupTouch() {
             lastLookY =
                 event.clientY;
 
+
+            event.preventDefault();
+
+        },
+
+        {
+            passive:
+                false
         }
 
     );
 
 
-    function stopLooking(event) {
+    function stopLook(event) {
+
+        if (
+            event &&
+            event.pointerId !==
+            lookPointerId
+        )
+            return;
+
 
         looking =
             false;
 
 
-        if (
-            event &&
-            canvas.hasPointerCapture &&
-            canvas.hasPointerCapture(
-                event.pointerId
-            )
-        ) {
-
-            canvas.releasePointerCapture(
-                event.pointerId
-            );
-
-        }
+        lookPointerId =
+            null;
 
     }
 
 
     canvas.addEventListener(
         "pointerup",
-        stopLooking
+        stopLook
     );
 
 
     canvas.addEventListener(
         "pointercancel",
-        stopLooking
+        stopLook
     );
 
 
     canvas.addEventListener(
-        "lostpointercapture",
-        function() {
+        "pointerleave",
+        function(event) {
 
-            looking =
-                false;
+            /*
+               只對滑鼠離開處理。
+
+               手機觸控不因為
+               手指暫時離開 canvas
+               而亂掉。
+            */
+
+            if (
+                event.pointerType ===
+                "mouse"
+            ) {
+
+                stopLook(event);
+
+            }
 
         }
     );
@@ -1971,7 +2023,7 @@ function setupTouch() {
 
 
 /* ==================================================
-   ★ 移動按鍵
+   移動按鍵
 ================================================== */
 
 function setupButtons() {
@@ -1990,85 +2042,99 @@ function setupButtons() {
                 button.dataset.direction;
 
 
-            function press(event) {
+            /*
+               ★ 不使用 pointer capture。
 
-                event.preventDefault();
+               這是這一版的重要改動。
+            */
 
-                event.stopPropagation();
+            button.addEventListener(
 
+                "pointerdown",
 
-                movement[
-                    direction
-                ] = true;
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                /*
-                   確保這顆按鍵
-                   自己接收 pointer 事件。
-                */
-
-                if (
-                    button.setPointerCapture
-                ) {
-
-                    button.setPointerCapture(
-                        event.pointerId
-                    );
-
-                }
-
-            }
-
-
-            function release(event) {
-
-                if (event) {
+                function(event) {
 
                     event.preventDefault();
 
                     event.stopPropagation();
 
+
+                    movement[
+                        direction
+                    ] = true;
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                },
+
+                {
+                    passive:
+                        false
                 }
 
-
-                movement[
-                    direction
-                ] = false;
-
-
-                button.classList.remove(
-                    "active"
-                );
-
-            }
-
-
-            button.addEventListener(
-                "pointerdown",
-                press
             );
 
 
             button.addEventListener(
+
                 "pointerup",
-                release
+
+                function(event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    movement[
+                        direction
+                    ] = false;
+
+
+                    button.classList.remove(
+                        "active"
+                    );
+
+                },
+
+                {
+                    passive:
+                        false
+                }
+
             );
 
 
             button.addEventListener(
+
                 "pointercancel",
-                release
-            );
+
+                function(event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
 
 
-            button.addEventListener(
-                "lostpointercapture",
-                release
+                    movement[
+                        direction
+                    ] = false;
+
+
+                    button.classList.remove(
+                        "active"
+                    );
+
+                },
+
+                {
+                    passive:
+                        false
+                }
+
             );
 
         }
@@ -2077,24 +2143,45 @@ function setupButtons() {
 
 
     /*
-       如果手指離開按鍵，
-       或瀏覽器突然取消觸控，
-       全部方向都強制停止。
+       ★ 全域安全解除。
+
+       手指突然離開畫面、
+       系統取消觸控、
+       瀏覽器中斷 pointer，
+       都會把按鍵歸零。
     */
 
     window.addEventListener(
+
         "pointerup",
-        stopAllMovement
+
+        function() {
+
+            stopAllMovement();
+
+        }
+
     );
 
 
     window.addEventListener(
+
         "pointercancel",
-        stopAllMovement
+
+        function() {
+
+            stopAllMovement();
+
+        }
+
     );
 
 }
 
+
+/* ==================================================
+   停止所有移動
+================================================== */
 
 function stopAllMovement() {
 
@@ -2116,10 +2203,15 @@ function stopAllMovement() {
             ".control"
         )
         .forEach(
-            button =>
+
+            function(button) {
+
                 button.classList.remove(
                     "active"
-                )
+                );
+
+            }
+
         );
 
 }
@@ -2143,7 +2235,11 @@ function animate() {
     }
 
 
-    if (renderer) {
+    if (
+        renderer &&
+        scene &&
+        camera
+    ) {
 
         renderer.render(
             scene,
