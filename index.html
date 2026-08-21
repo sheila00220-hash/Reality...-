@@ -247,20 +247,20 @@ body {
 
 
 /* ==================================================
-   手機按鍵
+   虛擬搖桿區域
 ================================================== */
 
-#controls {
+#joystickArea {
 
     position: absolute;
 
-    left: 15px;
+    left: 18px;
 
-    bottom: 20px;
+    bottom: 22px;
 
-    width: 180px;
+    width: 150px;
 
-    height: 120px;
+    height: 150px;
 
     z-index: 50;
 
@@ -269,82 +269,160 @@ body {
 }
 
 
-.control {
+/* ==================================================
+   搖桿底座
+================================================== */
+
+#joystickBase {
 
     position: absolute;
 
-    width: 52px;
+    left: 50%;
 
-    height: 52px;
+    top: 50%;
 
-    display: flex;
+    width: 130px;
 
-    justify-content: center;
+    height: 130px;
 
-    align-items: center;
+    transform:
+        translate(-50%, -50%);
 
-    color: white;
+    border-radius: 50%;
 
     background:
-        rgba(0,0,0,.35);
+        rgba(0,0,0,.28);
 
     border:
         1px solid
-        rgba(255,255,255,.5);
+        rgba(255,255,255,.35);
 
-    border-radius: 8px;
-
-    font-size: 24px;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    touch-action: none;
+    box-shadow:
+        inset
+        0 0 20px
+        rgba(255,255,255,.04);
 
     pointer-events: auto;
 
-}
-
-.forward {
-
-    left: 64px;
-
-    top: 0;
+    touch-action: none;
 
 }
 
-.left {
 
-    left: 8px;
+/* ==================================================
+   搖桿內圈
+================================================== */
 
-    top: 58px;
+#joystickRing {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 86px;
+
+    height: 86px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(255,255,255,.16);
+
+    pointer-events: none;
 
 }
 
-.back {
 
-    left: 64px;
+/* ==================================================
+   搖桿球
+================================================== */
 
-    top: 58px;
+#joystickKnob {
 
-}
+    position: absolute;
 
-.right {
+    left: 50%;
 
-    left: 120px;
+    top: 50%;
 
-    top: 58px;
+    width: 56px;
 
-}
+    height: 56px;
 
-.control.active {
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
 
     background:
-        rgba(255,255,255,.25);
+        rgba(255,255,255,.22);
 
-    border-color:
-        rgba(255,255,255,.85);
+    border:
+        1px solid
+        rgba(255,255,255,.65);
+
+    box-shadow:
+        0 2px 12px
+        rgba(0,0,0,.25);
+
+    pointer-events: none;
+
+    will-change: transform;
+
+}
+
+
+/* ==================================================
+   搖桿啟動狀態
+================================================== */
+
+#joystickBase.active {
+
+    background:
+        rgba(0,0,0,.36);
+
+}
+
+#joystickBase.active
+#joystickKnob {
+
+    background:
+        rgba(255,255,255,.32);
+
+}
+
+
+/* ==================================================
+   手機小螢幕
+================================================== */
+
+@media (max-width: 420px) {
+
+    #joystickArea {
+
+        left: 12px;
+
+        bottom: 15px;
+
+        width: 140px;
+
+        height: 140px;
+
+    }
+
+    #joystickBase {
+
+        width: 120px;
+
+        height: 120px;
+
+    }
 
 }
 
@@ -433,45 +511,18 @@ body {
 
 
 <!-- ==================================================
-     移動按鍵
+     虛擬搖桿
 ================================================== -->
 
 <div
-    id="controls"
+    id="joystickArea"
     style="display:none;">
 
-    <div
-        class="control forward"
-        data-direction="forward">
+    <div id="joystickBase">
 
-        ↑
+        <div id="joystickRing"></div>
 
-    </div>
-
-
-    <div
-        class="control left"
-        data-direction="left">
-
-        ←
-
-    </div>
-
-
-    <div
-        class="control back"
-        data-direction="back">
-
-        ↓
-
-    </div>
-
-
-    <div
-        class="control right"
-        data-direction="right">
-
-        →
+        <div id="joystickKnob"></div>
 
     </div>
 
@@ -480,12 +531,17 @@ body {
 
 </div>
 
+
+<!-- ==================================================
+     Three.js
+================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
 
 
 <script>
+
 
 /* ==================================================
    Reality...? 標題動畫
@@ -496,8 +552,10 @@ const titleText =
         "titleText"
     );
 
+
 const titleWord =
     "Reality...?";
+
 
 let titleRunning =
     true;
@@ -556,18 +614,23 @@ function createTitleLetters() {
                 "span"
             );
 
+
         letter.className =
             "titleLetter";
+
 
         letter.textContent =
             titleWord[i];
 
+
         letter.style.opacity =
             "0";
+
 
         titleText.appendChild(
             letter
         );
+
 
         letters.push(
             letter
@@ -591,6 +654,7 @@ function fadeInLetter(letter) {
                     2400,
                     3000
                 );
+
 
             const start =
                 performance.now();
@@ -694,6 +758,7 @@ function startIrregularBreathing(letter) {
     let startOpacity =
         1;
 
+
     let targetOpacity =
         1;
 
@@ -711,14 +776,17 @@ function startIrregularBreathing(letter) {
             state =
                 "fadeDown";
 
+
             startOpacity =
                 1;
+
 
             targetOpacity =
                 random(
                     0.22,
                     0.38
                 );
+
 
             stateDuration =
                 random(
@@ -733,13 +801,16 @@ function startIrregularBreathing(letter) {
             state =
                 "fadeUp";
 
+
             startOpacity =
                 parseFloat(
                     letter.style.opacity
                 ) || 0.3;
 
+
             targetOpacity =
                 1;
+
 
             stateDuration =
                 random(
@@ -795,6 +866,7 @@ function startIrregularBreathing(letter) {
                     progress
                 );
 
+
             letter.style.opacity =
                 startOpacity +
                 (
@@ -824,6 +896,7 @@ function startIrregularBreathing(letter) {
                 smoothstep(
                     progress
                 );
+
 
             letter.style.opacity =
                 startOpacity +
@@ -857,8 +930,10 @@ function startIrregularBreathing(letter) {
                 state =
                     "holdDark";
 
+
                 stateStart =
                     performance.now();
+
 
                 stateDuration =
                     random(
@@ -876,16 +951,20 @@ function startIrregularBreathing(letter) {
                 state =
                     "fadeUp";
 
+
                 stateStart =
                     performance.now();
+
 
                 startOpacity =
                     parseFloat(
                         letter.style.opacity
                     );
 
+
                 targetOpacity =
                     1;
+
 
                 stateDuration =
                     random(
@@ -903,8 +982,10 @@ function startIrregularBreathing(letter) {
                 state =
                     "holdBright";
 
+
                 stateStart =
                     performance.now();
+
 
                 stateDuration =
                     random(
@@ -1061,18 +1142,13 @@ let pitch =
     0;
 
 
+const PITCH_LIMIT =
+    1.0;
+
+
 /* ==================================================
    FOV
 ================================================== */
-
-/*
-   原本是 75。
-
-   這個範圍：
-   55 = 比較近
-   75 = 原本
-   95 = 更廣
-*/
 
 const MIN_FOV =
     55;
@@ -1096,15 +1172,7 @@ const LOOK_SENSITIVITY_Y =
 
 
 /* ==================================================
-   上下視角
-================================================== */
-
-const PITCH_LIMIT =
-    1.0;
-
-
-/* ==================================================
-   移動
+   移動狀態
 ================================================== */
 
 const movement = {
@@ -1121,7 +1189,7 @@ const movement = {
 
 
 /* ==================================================
-   開始
+   開始遊戲
 ================================================== */
 
 document
@@ -1148,7 +1216,7 @@ function startGame() {
         false;
 
 
-    stopAllMovement();
+    stopJoystick();
 
 
     document
@@ -1169,7 +1237,7 @@ function startGame() {
 
     document
         .getElementById(
-            "controls"
+            "joystickArea"
         )
         .style.display =
         "block";
@@ -1274,7 +1342,7 @@ function createWorld() {
 
     setupTouch();
 
-    setupButtons();
+    setupJoystick();
 
     animate();
 
@@ -1296,6 +1364,8 @@ function createRoom() {
     const D =
         ROOM_DEPTH;
 
+
+    /* 地板 */
 
     const floor =
         new THREE.Mesh(
@@ -1331,6 +1401,8 @@ function createRoom() {
     );
 
 
+    /* 天花板 */
+
     const ceiling =
         new THREE.Mesh(
 
@@ -1365,6 +1437,8 @@ function createRoom() {
     );
 
 
+    /* 前牆 */
+
     const front =
         createWall(
             W,
@@ -1387,6 +1461,8 @@ function createRoom() {
     );
 
 
+    /* 後牆 */
+
     const back =
         createWall(
             W,
@@ -1408,6 +1484,8 @@ function createRoom() {
         back
     );
 
+
+    /* 左牆 */
 
     const left =
         createWall(
@@ -1434,6 +1512,8 @@ function createRoom() {
         left
     );
 
+
+    /* 右牆 */
 
     const right =
         createWall(
@@ -1471,7 +1551,7 @@ function createRoom() {
 
 
 /* ==================================================
-   牆
+   建立牆
 ================================================== */
 
 function createWall(
@@ -1580,6 +1660,10 @@ function updatePlayer() {
         -Math.cos(yaw);
 
 
+    /*
+       搖桿輸入
+    */
+
     let moveX =
         0;
 
@@ -1655,6 +1739,7 @@ function updatePlayer() {
             length *
             speed;
 
+
         moveZ =
             moveZ /
             length *
@@ -1664,12 +1749,13 @@ function updatePlayer() {
 
 
     /*
-       保留目前牆體系統。
+       目前先保留原本牆體限制。
     */
 
     const limitX =
         ROOM_WIDTH / 2 -
         0.08;
+
 
     const limitZ =
         ROOM_DEPTH / 2 -
@@ -1678,21 +1764,27 @@ function updatePlayer() {
 
     player.x =
         Math.max(
+
             -limitX,
+
             Math.min(
                 limitX,
                 player.x + moveX
             )
+
         );
 
 
     player.z =
         Math.max(
+
             -limitZ,
+
             Math.min(
                 limitZ,
                 player.z + moveZ
             )
+
         );
 
 
@@ -1708,8 +1800,10 @@ function updatePlayer() {
     camera.rotation.order =
         "YXZ";
 
+
     camera.rotation.y =
         yaw;
+
 
     camera.rotation.x =
         pitch;
@@ -1718,7 +1812,7 @@ function updatePlayer() {
 
 
 /* ==================================================
-   ★ 單指／雙指觸控系統
+   單指／雙指視角系統
 ================================================== */
 
 const activeTouches =
@@ -1745,8 +1839,12 @@ let previousPinchDistance =
     null;
 
 
+let looking =
+    false;
+
+
 /* ==================================================
-   計算兩指距離
+   雙指距離
 ================================================== */
 
 function getPinchDistance() {
@@ -1766,6 +1864,7 @@ function getPinchDistance() {
     const a =
         points[0];
 
+
     const b =
         points[1];
 
@@ -1773,6 +1872,7 @@ function getPinchDistance() {
     const dx =
         b.x -
         a.x;
+
 
     const dy =
         b.y -
@@ -1788,7 +1888,7 @@ function getPinchDistance() {
 
 
 /* ==================================================
-   進入雙指模式
+   進入雙指
 ================================================== */
 
 function enterPinchMode() {
@@ -1797,20 +1897,9 @@ function enterPinchMode() {
         "pinch";
 
 
-    /*
-       完全停止單指視角。
-    */
-
     lookPointerId =
         null;
 
-
-    /*
-       記錄目前兩指距離。
-
-       不在進入瞬間改 FOV，
-       避免突然跳一下。
-    */
 
     previousPinchDistance =
         getPinchDistance();
@@ -1819,7 +1908,7 @@ function enterPinchMode() {
 
 
 /* ==================================================
-   回到單指模式
+   回到單指
 ================================================== */
 
 function enterLookMode() {
@@ -1860,15 +1949,9 @@ function enterLookMode() {
         pointerId;
 
 
-    /*
-       ★ 重新建立座標。
-
-       不使用雙指期間的舊座標，
-       避免恢復單指時鏡頭突然跳動。
-    */
-
     lastLookX =
         point.x;
+
 
     lastLookY =
         point.y;
@@ -1881,7 +1964,7 @@ function enterLookMode() {
 
 
 /* ==================================================
-   Touch 系統
+   視角觸控
 ================================================== */
 
 function setupTouch() {
@@ -1901,10 +1984,8 @@ function setupTouch() {
         function(event) {
 
             /*
-               只接受觸控。
-
-               滑鼠仍然可以使用
-               左鍵拖動視角。
+               搖桿區域不會到這裡。
+               因為搖桿有自己的 pointer handler。
             */
 
             if (
@@ -1917,23 +1998,23 @@ function setupTouch() {
                 )
                     return;
 
+
                 looking =
                     true;
+
 
                 lastLookX =
                     event.clientX;
 
+
                 lastLookY =
                     event.clientY;
+
 
                 return;
 
             }
 
-
-            /*
-               手機觸控
-            */
 
             event.preventDefault();
 
@@ -1954,18 +2035,10 @@ function setupTouch() {
             );
 
 
-            const count =
-                activeTouches.size;
-
-
             if (
-                count === 1
+                activeTouches.size ===
+                1
             ) {
-
-                /*
-                   第一根手指：
-                   單指視角
-                */
 
                 touchMode =
                     "look";
@@ -1978,19 +2051,15 @@ function setupTouch() {
                 lastLookX =
                     event.clientX;
 
+
                 lastLookY =
                     event.clientY;
 
             }
 
             else if (
-                count >= 2
+                activeTouches.size >= 2
             ) {
-
-                /*
-                   第二根手指加入：
-                   立刻進入雙指
-                */
 
                 enterPinchMode();
 
@@ -2012,18 +2081,12 @@ function setupTouch() {
 
         function(event) {
 
-            /*
-               滑鼠視角
-            */
-
             if (
                 event.pointerType ===
                 "mouse"
             ) {
 
-                if (
-                    !looking
-                )
+                if (!looking)
                     return;
 
 
@@ -2049,11 +2112,14 @@ function setupTouch() {
 
                 pitch =
                     Math.max(
+
                         -PITCH_LIMIT,
+
                         Math.min(
                             PITCH_LIMIT,
                             pitch
                         )
+
                     );
 
 
@@ -2065,16 +2131,10 @@ function setupTouch() {
                     event.clientY;
 
 
-                event.preventDefault();
-
                 return;
 
             }
 
-
-            /*
-               手機觸控
-            */
 
             if (
                 !activeTouches.has(
@@ -2103,12 +2163,6 @@ function setupTouch() {
             );
 
 
-            /*
-               ==================================
-               雙指模式
-               ==================================
-            */
-
             if (
                 touchMode ===
                 "pinch"
@@ -2129,16 +2183,6 @@ function setupTouch() {
                         distance -
                         previousPinchDistance;
 
-
-                    /*
-                       手指距離增加
-                       → FOV 增加
-                       → 看得更廣
-
-                       手指距離減少
-                       → FOV 減少
-                       → 看得更近
-                    */
 
                     camera.fov +=
                         delta *
@@ -2171,12 +2215,6 @@ function setupTouch() {
 
             }
 
-
-            /*
-               ==================================
-               單指視角
-               ==================================
-            */
 
             if (
                 touchMode ===
@@ -2239,10 +2277,6 @@ function setupTouch() {
 
     function pointerEnd(event) {
 
-        /*
-           滑鼠
-        */
-
         if (
             event.pointerType ===
             "mouse"
@@ -2255,10 +2289,6 @@ function setupTouch() {
 
         }
 
-
-        /*
-           手機
-        */
 
         if (
             !activeTouches.has(
@@ -2277,10 +2307,6 @@ function setupTouch() {
             activeTouches.size;
 
 
-        /*
-           沒有手指
-        */
-
         if (
             count === 0
         ) {
@@ -2288,20 +2314,19 @@ function setupTouch() {
             touchMode =
                 "none";
 
+
             lookPointerId =
                 null;
 
+
             previousPinchDistance =
                 null;
+
 
             return;
 
         }
 
-
-        /*
-           雙指 → 單指
-        */
 
         if (
             count === 1
@@ -2329,189 +2354,441 @@ function setupTouch() {
 
 
 /* ==================================================
-   滑鼠狀態
+   🕹️ 虛擬搖桿
 ================================================== */
 
-let looking =
+const joystickBase =
+    document.getElementById(
+        "joystickBase"
+    );
+
+
+const joystickKnob =
+    document.getElementById(
+        "joystickKnob"
+    );
+
+
+let joystickPointerId =
+    null;
+
+
+let joystickActive =
     false;
 
 
+let joystickX =
+    0;
+
+
+let joystickY =
+    0;
+
+
+/*
+   搖桿最大移動半徑。
+
+   130px 底座
+   56px 搖桿球
+
+   所以實際可移動範圍
+   約為 37px。
+*/
+
+const JOYSTICK_RADIUS =
+    37;
+
+
 /* ==================================================
-   移動按鍵
+   搖桿位置
 ================================================== */
 
-function setupButtons() {
+function getJoystickCenter() {
 
-    const buttons =
-        document.querySelectorAll(
-            ".control"
-        );
+    const rect =
+        joystickBase.getBoundingClientRect();
 
 
-    buttons.forEach(
+    return {
 
-        function(button) {
+        x:
+            rect.left +
+            rect.width / 2,
 
-            const direction =
-                button.dataset.direction;
+        y:
+            rect.top +
+            rect.height / 2
 
-
-            button.addEventListener(
-
-                "pointerdown",
-
-                function(event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    movement[
-                        direction
-                    ] = true;
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                },
-
-                {
-                    passive:
-                        false
-                }
-
-            );
-
-
-            button.addEventListener(
-
-                "pointerup",
-
-                function(event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    movement[
-                        direction
-                    ] = false;
-
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-                },
-
-                {
-                    passive:
-                        false
-                }
-
-            );
-
-
-            button.addEventListener(
-
-                "pointercancel",
-
-                function(event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    movement[
-                        direction
-                    ] = false;
-
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-                },
-
-                {
-                    passive:
-                        false
-                }
-
-            );
-
-        }
-
-    );
-
-
-    window.addEventListener(
-
-        "pointerup",
-
-        function() {
-
-            stopAllMovement();
-
-        }
-
-    );
-
-
-    window.addEventListener(
-
-        "pointercancel",
-
-        function() {
-
-            stopAllMovement();
-
-        }
-
-    );
+    };
 
 }
 
 
 /* ==================================================
-   停止移動
+   更新搖桿
 ================================================== */
 
-function stopAllMovement() {
+function updateJoystick(
+    clientX,
+    clientY
+) {
+
+    const center =
+        getJoystickCenter();
+
+
+    let dx =
+        clientX -
+        center.x;
+
+
+    let dy =
+        clientY -
+        center.y;
+
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    if (
+        distance >
+        JOYSTICK_RADIUS
+    ) {
+
+        const ratio =
+            JOYSTICK_RADIUS /
+            distance;
+
+
+        dx *=
+            ratio;
+
+
+        dy *=
+            ratio;
+
+    }
+
+
+    joystickX =
+        dx /
+        JOYSTICK_RADIUS;
+
+
+    joystickY =
+        dy /
+        JOYSTICK_RADIUS;
+
+
+    joystickKnob.style.transform =
+        "translate(calc(-50% + " +
+        dx +
+        "px), calc(-50% + " +
+        dy +
+        "px))";
+
+
+    /*
+       Y：
+
+       手指向上
+       = dy 負
+       = forward
+
+       手指向下
+       = dy 正
+       = back
+    */
+
+    const DEAD_ZONE =
+        0.12;
+
+
+    movement.forward =
+        joystickY <
+        -DEAD_ZONE;
+
+
+    movement.back =
+        joystickY >
+        DEAD_ZONE;
+
+
+    movement.left =
+        joystickX <
+        -DEAD_ZONE;
+
+
+    movement.right =
+        joystickX >
+        DEAD_ZONE;
+
+}
+
+
+/* ==================================================
+   停止搖桿
+================================================== */
+
+function stopJoystick() {
+
+    joystickPointerId =
+        null;
+
+
+    joystickActive =
+        false;
+
+
+    joystickX =
+        0;
+
+
+    joystickY =
+        0;
+
 
     movement.forward =
         false;
 
+
     movement.back =
         false;
 
+
     movement.left =
         false;
+
 
     movement.right =
         false;
 
 
-    document
-        .querySelectorAll(
-            ".control"
-        )
-        .forEach(
+    joystickBase.classList.remove(
+        "active"
+    );
 
-            function(button) {
 
-                button.classList.remove(
-                    "active"
-                );
+    joystickKnob.style.transform =
+        "translate(-50%, -50%)";
+
+}
+
+
+/* ==================================================
+   搖桿 Pointer Down
+================================================== */
+
+function setupJoystick() {
+
+    joystickBase.addEventListener(
+
+        "pointerdown",
+
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            /*
+               一次只允許一根手指控制搖桿。
+            */
+
+            if (
+                joystickPointerId !==
+                null
+            )
+                return;
+
+
+            joystickPointerId =
+                event.pointerId;
+
+
+            joystickActive =
+                true;
+
+
+            joystickBase.classList.add(
+                "active"
+            );
+
+
+            if (
+                joystickBase.setPointerCapture
+            ) {
+
+                try {
+
+                    joystickBase.setPointerCapture(
+                        event.pointerId
+                    );
+
+                }
+
+                catch (error) {}
 
             }
 
-        );
+
+            updateJoystick(
+
+                event.clientX,
+                event.clientY
+
+            );
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+    /* ==================================================
+       搖桿 Pointer Move
+    ================================================== */
+
+    joystickBase.addEventListener(
+
+        "pointermove",
+
+        function(event) {
+
+            if (
+                !joystickActive
+            )
+                return;
+
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            updateJoystick(
+
+                event.clientX,
+                event.clientY
+
+            );
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+    /* ==================================================
+       搖桿 Pointer Up
+    ================================================== */
+
+    joystickBase.addEventListener(
+
+        "pointerup",
+
+        function(event) {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+    /* ==================================================
+       搖桿 Pointer Cancel
+    ================================================== */
+
+    joystickBase.addEventListener(
+
+        "pointercancel",
+
+        function(event) {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive:
+                false
+        }
+
+    );
+
+
+    /* ==================================================
+       搖桿失去 Capture
+    ================================================== */
+
+    joystickBase.addEventListener(
+
+        "lostpointercapture",
+
+        function() {
+
+            if (
+                joystickPointerId !==
+                null
+            ) {
+
+                stopJoystick();
+
+            }
+
+        }
+
+    );
 
 }
 
@@ -2583,6 +2860,38 @@ window.addEventListener(
             window.innerHeight
 
         );
+
+    }
+
+);
+
+
+/* ==================================================
+   頁面失去焦點
+================================================== */
+
+window.addEventListener(
+
+    "blur",
+
+    function() {
+
+        stopJoystick();
+
+
+        activeTouches.clear();
+
+
+        touchMode =
+            "none";
+
+
+        lookPointerId =
+            null;
+
+
+        looking =
+            false;
 
     }
 
