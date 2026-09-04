@@ -927,33 +927,22 @@ const ROOM_HEIGHT = 10;
    PLAYER
 ================================================== */
 
-/*
-   這次不再把玩家當成一個點。
-
-   PLAYER_RADIUS 是玩家在平面上的
-   實際碰撞半徑。
-*/
-
 const PLAYER_RADIUS = .28;
 
 
 /*
-   眼睛高度。
+   稍微降低安全距離。
 
-   先用比較自然的人類視角高度，
-   避免之前 Y=2 帶來的浮空感。
+   原本 .10 會讓玩家在視覺上
+   感覺比較早碰到牆。
+
+   現在改成 .04。
 */
+
+const WALL_BUFFER = .04;
+
 
 const PLAYER_EYE_HEIGHT = 1.65;
-
-
-/*
-   牆體安全距離。
-
-   不會讓玩家真的貼到視覺牆。
-*/
-
-const WALL_BUFFER = .10;
 
 
 const player = {
@@ -1019,19 +1008,6 @@ const movement = {
    COLLISION
 ================================================== */
 
-/*
-   真正可以站立的區域。
-
-   注意：
-
-   這裡不再用「厚空氣牆直接推玩家」。
-
-   而是把玩家本身當成有半徑的圓，
-   所以玩家中心只能進入安全範圍。
-
-   這能避免牆面把玩家卡成一個點。
-*/
-
 function getPlayableBounds() {
 
     const halfW =
@@ -1068,13 +1044,6 @@ function getPlayableBounds() {
 }
 
 
-/*
-   判斷玩家中心點是否可以位於
-   指定位置。
-
-   玩家碰撞半徑已經包含在 bounds 中。
-*/
-
 function canPlayerOccupy(
     x,
     z
@@ -1104,32 +1073,22 @@ function canPlayerOccupy(
 ================================================== */
 
 /*
-   這是這次最重要的修改。
+   牆壁碰撞：
 
-   不再：
+   X 與 Z 軸完全獨立。
 
-       X 判斷
-       ↓
-       改 X
-       ↓
-       Z 判斷
-       ↓
-       改 Z
+   撞到左右牆：
+   只限制 X。
 
-   而是：
+   撞到前後牆：
+   只限制 Z。
 
-       先算完整移動
-              ↓
-       完整移動可以？
-          ↙       ↘
-        可以       不可以
-         ↓          ↓
-       整體走     嘗試 X
-                    ↓
-                  嘗試 Z
+   不反彈。
+   不推向側面。
+   不重新改變玩家的移動方向。
 
-   這樣撞牆時自然產生
-   「沿牆滑動」效果。
+   這樣玩家靠牆斜走時，
+   會自然沿著牆面滑動。
 */
 
 function resolveMovement(
@@ -1137,96 +1096,46 @@ function resolveMovement(
     moveZ
 ) {
 
-    const currentX =
-        player.x;
-
-    const currentZ =
-        player.z;
+    const bounds =
+        getPlayableBounds();
 
 
     const targetX =
-        currentX +
+        player.x +
         moveX;
 
+
     const targetZ =
-        currentZ +
+        player.z +
         moveZ;
 
 
     /*
-       ① 整體移動
+       X 軸獨立限制
     */
 
-    if (
-        canPlayerOccupy(
-            targetX,
-            targetZ
-        )
-    ) {
-
-        player.x =
-            targetX;
-
-        player.z =
-            targetZ;
-
-        return;
-
-    }
-
-
-    /*
-       ② 只嘗試 X
-
-       如果前方被牆擋住，
-       但左右仍有空間，
-       玩家就能沿牆滑動。
-    */
-
-    const canMoveX =
-        canPlayerOccupy(
-            targetX,
-            currentZ
+    player.x =
+        Math.max(
+            bounds.minX,
+            Math.min(
+                bounds.maxX,
+                targetX
+            )
         );
 
 
     /*
-       ③ 只嘗試 Z
+       Z 軸獨立限制
     */
 
-    const canMoveZ =
-        canPlayerOccupy(
-            currentX,
-            targetZ
+    player.z =
+        Math.max(
+            bounds.minZ,
+            Math.min(
+                bounds.maxZ,
+                targetZ
+            )
         );
-
-
-    /*
-       X 可以、Z 不可以：
-
-       沿 X 滑。
-    */
-
-    if (canMoveX) {
-
-        player.x =
-            targetX;
-
-    }
-
-
-    /*
-       Z 可以、X 不可以：
-
-       沿 Z 滑。
-    */
-
-    if (canMoveZ) {
-
-        player.z =
-            targetZ;
-
-    }
 
 }
 
@@ -1243,10 +1152,6 @@ function updatePlayer() {
 
     const speed = .08;
 
-
-    /*
-       視角方向。
-    */
 
     const forwardX =
         Math.sin(yaw);
@@ -1515,10 +1420,6 @@ function createRoom() {
         ROOM_DEPTH;
 
 
-    /*
-       地板
-    */
-
     const floor =
         new THREE.Mesh(
 
@@ -1547,10 +1448,6 @@ function createRoom() {
         floor
     );
 
-
-    /*
-       天花板
-    */
 
     const ceiling =
         new THREE.Mesh(
@@ -1585,10 +1482,6 @@ function createRoom() {
     );
 
 
-    /*
-       前牆
-    */
-
     const front =
         createWall(
             W,
@@ -1613,10 +1506,6 @@ function createRoom() {
     );
 
 
-    /*
-       後牆
-    */
-
     const back =
         createWall(
             W,
@@ -1640,10 +1529,6 @@ function createRoom() {
         back
     );
 
-
-    /*
-       左牆
-    */
 
     const left =
         createWall(
@@ -1672,10 +1557,6 @@ function createRoom() {
         left
     );
 
-
-    /*
-       右牆
-    */
 
     const right =
         createWall(
@@ -1711,16 +1592,6 @@ function createRoom() {
         D
     );
 
-
-    /*
-       這裡仍然建立真正的
-       立體隱形碰撞體。
-
-       但「玩家移動」不再直接
-       依賴這些 Mesh。
-
-       避免兩套碰撞系統互相打架。
-    */
 
     createInvisibleCollisionWalls(
         W,
@@ -1784,10 +1655,6 @@ function createInvisibleCollisionWalls(
         .45;
 
 
-    /*
-       前
-    */
-
     const front =
         new THREE.Mesh(
 
@@ -1825,10 +1692,6 @@ function createInvisibleCollisionWalls(
         front
     );
 
-
-    /*
-       後
-    */
 
     const back =
         new THREE.Mesh(
@@ -1868,10 +1731,6 @@ function createInvisibleCollisionWalls(
     );
 
 
-    /*
-       左
-    */
-
     const left =
         new THREE.Mesh(
 
@@ -1909,10 +1768,6 @@ function createInvisibleCollisionWalls(
         left
     );
 
-
-    /*
-       右
-    */
 
     const right =
         new THREE.Mesh(
@@ -2386,7 +2241,6 @@ function setupTouch() {
 
                 previousPinchDistance =
                     distance;
-
 
                 return;
 
