@@ -993,32 +993,6 @@ const DEFAULT_FOV = 75;
    MOVEMENT
 ================================================== */
 
-/*
-   ★ 原本：
-
-       forward
-       back
-       left
-       right
-
-   是四個 boolean。
-
-   這會把搖桿的類比輸入直接切成
-   8 個方向。
-
-   現在改成真正的類比輸入。
-
-   joystickX：
-       -1 = 左
-        0 = 中
-       +1 = 右
-
-   joystickY：
-       -1 = 上
-        0 = 中
-       +1 = 下
-*/
-
 const movement = {
 
     x: 0,
@@ -1096,32 +1070,6 @@ function canPlayerOccupy(
    MOVEMENT RESOLUTION
 ================================================== */
 
-/*
-   ★ 修正牆壁黏住。
-
-   不把 X/Z 當成一個整體碰撞結果。
-
-   先嘗試 X：
-
-       如果 X 撞牆
-       → 只取消 X
-
-   再嘗試 Z：
-
-       如果 Z 沒撞牆
-       → Z 繼續移動
-
-   因此：
-
-       斜向撞牆
-             ↓
-       被牆擋住的方向停止
-             ↓
-       沿牆方向繼續
-
-   = wall sliding
-*/
-
 function resolveMovement(
     moveX,
     moveZ
@@ -1132,9 +1080,7 @@ function resolveMovement(
 
 
     /*
-       ==============================================
        X AXIS
-       ==============================================
     */
 
     const targetX =
@@ -1154,14 +1100,6 @@ function resolveMovement(
 
     else {
 
-        /*
-           撞到左右牆。
-
-           不動 X。
-
-           不修改 Z。
-        */
-
         player.x =
             Math.max(
                 bounds.minX,
@@ -1175,9 +1113,7 @@ function resolveMovement(
 
 
     /*
-       ==============================================
        Z AXIS
-       ==============================================
     */
 
     const targetZ =
@@ -1196,14 +1132,6 @@ function resolveMovement(
     }
 
     else {
-
-        /*
-           撞到前後牆。
-
-           不動 Z。
-
-           不修改 X。
-        */
 
         player.z =
             Math.max(
@@ -1232,12 +1160,6 @@ function updatePlayer() {
     const speed = .08;
 
 
-    /*
-       ==============================================
-       CAMERA RELATIVE DIRECTIONS
-       ==============================================
-    */
-
     const forwardX =
         Math.sin(yaw);
 
@@ -1251,24 +1173,6 @@ function updatePlayer() {
     const rightZ =
         Math.sin(yaw);
 
-
-    /*
-       ==============================================
-       ANALOG INPUT
-       ==============================================
-    */
-
-    /*
-       movement.y：
-
-           -1 = forward
-           +1 = back
-
-       movement.x：
-
-           -1 = left
-           +1 = right
-    */
 
     const inputForward =
         -movement.y;
@@ -1302,25 +1206,12 @@ function updatePlayer() {
         inputRight;
 
 
-    /*
-       ==============================================
-       SAFETY NORMALIZATION
-       ==============================================
-    */
-
     const length =
         Math.hypot(
             inputX,
             inputZ
         );
 
-
-    /*
-       搖桿本身已經限制在單位圓，
-       所以正常情況不會 > 1。
-
-       這裡只是防止浮點誤差。
-    */
 
     if (
         length > 1
@@ -2494,7 +2385,22 @@ const joystickKnob =
     );
 
 
-let joystickPointerId =
+/*
+   ★★★ 這裡改成 Touch Event ★★★
+
+   不再使用 pointer capture。
+
+   不再使用：
+
+       window.pointermove
+       window.pointerup
+       window.pointercancel
+
+   搖桿完全獨立於 Three.js 的
+   pointer 觸控系統。
+*/
+
+let joystickTouchId =
     null;
 
 
@@ -2540,22 +2446,6 @@ function getJoystickCenter() {
    JOYSTICK UPDATE
 ================================================== */
 
-/*
-   ★ 改成真正的類比輸入。
-
-   原本會：
-
-       x → left/right boolean
-       y → forward/back boolean
-
-   現在直接保存：
-
-       movement.x
-       movement.y
-
-   所以玩家能取得搖桿的實際幅度。
-*/
-
 function updateJoystick(
     clientX,
     clientY
@@ -2584,7 +2474,7 @@ function updateJoystick(
 
     /*
        ==============================================
-       限制在搖桿圓形範圍
+       LIMIT
        ==============================================
     */
 
@@ -2607,7 +2497,7 @@ function updateJoystick(
 
     /*
        ==============================================
-       正規化
+       NORMALIZE
        ==============================================
     */
 
@@ -2649,23 +2539,6 @@ function updateJoystick(
 
     else {
 
-        /*
-           把死區以外重新映射。
-
-           例如：
-
-           死區 .12
-
-           實際輸入 .12
-           → 0
-
-           實際輸入 1
-           → 1
-
-           這樣中心附近比較穩，
-           又不會犧牲完整行程。
-        */
-
         const remappedMagnitude =
             (
                 magnitude -
@@ -2694,7 +2567,7 @@ function updateJoystick(
 
     /*
        ==============================================
-       KNOB 視覺位置
+       KNOB
        ==============================================
     */
 
@@ -2714,17 +2587,13 @@ function updateJoystick(
 
 function stopJoystick() {
 
-    joystickPointerId =
+    joystickTouchId =
         null;
 
 
     joystickActive =
         false;
 
-
-    /*
-       ★ 類比輸入歸零
-    */
 
     movement.x =
         0;
@@ -2746,6 +2615,44 @@ function stopJoystick() {
 
 
 /* ==================================================
+   GET TOUCH BY ID
+================================================== */
+
+function getJoystickTouch(
+    touchList
+) {
+
+    if (
+        joystickTouchId ===
+        null
+    )
+        return null;
+
+
+    for (
+        let i = 0;
+        i < touchList.length;
+        i++
+    ) {
+
+        if (
+            touchList[i].identifier ===
+            joystickTouchId
+        ) {
+
+            return touchList[i];
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* ==================================================
    JOYSTICK SETUP
 ================================================== */
 
@@ -2753,13 +2660,13 @@ function setupJoystick() {
 
     /*
        ==============================================
-       POINTER DOWN
+       TOUCH START
        ==============================================
     */
 
     joystickBase.addEventListener(
 
-        "pointerdown",
+        "touchstart",
 
         event => {
 
@@ -2768,31 +2675,29 @@ function setupJoystick() {
             event.stopPropagation();
 
 
+            /*
+               已經有一根手指控制搖桿。
+
+               第二根手指不搶控制權。
+            */
+
             if (
-                joystickPointerId !==
+                joystickTouchId !==
                 null
             )
                 return;
 
 
-            /*
-               只接受觸控 / 手寫筆。
-            */
+            const touch =
+                event.changedTouches[0];
 
-            if (
 
-                event.pointerType !==
-                    "touch" &&
-
-                event.pointerType !==
-                    "pen"
-
-            )
+            if (!touch)
                 return;
 
 
-            joystickPointerId =
-                event.pointerId;
+            joystickTouchId =
+                touch.identifier;
 
 
             joystickActive =
@@ -2804,28 +2709,11 @@ function setupJoystick() {
             );
 
 
-            /*
-               保留 pointer capture。
-
-               但不再依賴它作為唯一追蹤方式。
-            */
-
-            try {
-
-                joystickBase.setPointerCapture(
-                    event.pointerId
-                );
-
-            }
-
-            catch (_) {}
-
-
             updateJoystick(
 
-                event.clientX,
+                touch.clientX,
 
-                event.clientY
+                touch.clientY
 
             );
 
@@ -2840,192 +2728,48 @@ function setupJoystick() {
 
     /*
        ==============================================
-       LOCAL POINTER MOVE
-       ==============================================
-    */
-
-    joystickBase.addEventListener(
-
-        "pointermove",
-
-        event => {
-
-            if (
-
-                !joystickActive ||
-
-                event.pointerId !==
-                    joystickPointerId
-
-            )
-                return;
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            updateJoystick(
-
-                event.clientX,
-
-                event.clientY
-
-            );
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       LOCAL POINTER UP
-       ==============================================
-    */
-
-    joystickBase.addEventListener(
-
-        "pointerup",
-
-        event => {
-
-            if (
-                event.pointerId !==
-                joystickPointerId
-            )
-                return;
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            stopJoystick();
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       LOCAL POINTER CANCEL
-       ==============================================
-    */
-
-    joystickBase.addEventListener(
-
-        "pointercancel",
-
-        event => {
-
-            if (
-                event.pointerId !==
-                joystickPointerId
-            )
-                return;
-
-
-            stopJoystick();
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       LOST POINTER CAPTURE
+       TOUCH MOVE
        ==============================================
     */
 
     /*
-       ★ 重要：
+       不只監聽 joystickBase。
 
-       原本這裡：
+       手指離開搖桿圓圈後，
+       window 仍然追蹤同一根手指。
 
-           lostpointercapture
-           → stopJoystick()
-
-       這就是其中一個容易造成
-       搖桿突然死掉的地方。
-
-       capture 丟失不代表使用者放手。
-
-       所以這裡故意不清除 joystick。
-    */
-
-    joystickBase.addEventListener(
-
-        "lostpointercapture",
-
-        () => {
-
-            /*
-               不做任何事情。
-            */
-
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       GLOBAL POINTER MOVE
-       ==============================================
-    */
-
-    /*
-       ★★★ 搖桿修復核心 ★★★
-
-       手指離開 joystickBase 之後，
-
-       window 仍然會收到 pointermove。
+       但只有 joystickTouchId
+       那根手指會被處理。
 
        所以：
 
-           手指在搖桿裡
-                ↓
-           正常更新
+           左手搖桿
+           +
+           右手視角
 
-           手指拖出搖桿
-                ↓
-           window 繼續更新
-
-           不會因為離開元素
-           就突然失靈。
+       可以同時存在。
     */
 
     window.addEventListener(
 
-        "pointermove",
+        "touchmove",
 
         event => {
 
             if (
-
                 !joystickActive ||
-
-                event.pointerId !==
-                    joystickPointerId
-
+                joystickTouchId === null
             )
+                return;
+
+
+            const touch =
+                getJoystickTouch(
+                    event.touches
+                );
+
+
+            if (!touch)
                 return;
 
 
@@ -3034,9 +2778,9 @@ function setupJoystick() {
 
             updateJoystick(
 
-                event.clientX,
+                touch.clientX,
 
-                event.clientY
+                touch.clientY
 
             );
 
@@ -3051,20 +2795,30 @@ function setupJoystick() {
 
     /*
        ==============================================
-       GLOBAL POINTER UP
+       TOUCH END
        ==============================================
     */
 
     window.addEventListener(
 
-        "pointerup",
+        "touchend",
 
         event => {
 
             if (
-                event.pointerId !==
-                joystickPointerId
+                !joystickActive ||
+                joystickTouchId === null
             )
+                return;
+
+
+            const touch =
+                getJoystickTouch(
+                    event.changedTouches
+                );
+
+
+            if (!touch)
                 return;
 
 
@@ -3084,31 +2838,67 @@ function setupJoystick() {
 
     /*
        ==============================================
-       GLOBAL POINTER CANCEL
+       TOUCH CANCEL
        ==============================================
     */
 
     window.addEventListener(
 
-        "pointercancel",
+        "touchcancel",
 
         event => {
 
             if (
-                event.pointerId !==
-                joystickPointerId
+                !joystickActive ||
+                joystickTouchId === null
             )
                 return;
 
 
-            /*
-               pointercancel 真正代表
-               這根 pointer 已經結束。
+            const touch =
+                getJoystickTouch(
+                    event.changedTouches
+                );
 
-               所以這裡才停止。
-            */
+
+            if (!touch)
+                return;
+
 
             stopJoystick();
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    /*
+       ==============================================
+       TOUCH START：保護搖桿區
+       ==============================================
+    */
+
+    joystickBase.addEventListener(
+
+        "touchmove",
+
+        event => {
+
+            /*
+               這裡主要是阻止瀏覽器
+               對搖桿區做額外手勢處理。
+
+               實際座標更新由 window.touchmove
+               統一處理。
+            */
+
+            event.preventDefault();
+
+            event.stopPropagation();
 
         },
 
