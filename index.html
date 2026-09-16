@@ -929,20 +929,7 @@ const ROOM_HEIGHT = 10;
 
 const PLAYER_RADIUS = .28;
 
-
-/*
-   ★ 只把原本 .04 再縮成非常小的
-   collision skin。
-
-   玩家真正的碰撞半徑仍然是
-   PLAYER_RADIUS。
-
-   這個值不是用來讓玩家提早撞牆，
-   只負責避免浮點誤差。
-*/
-
 const WALL_BUFFER = .01;
-
 
 const PLAYER_EYE_HEIGHT = 1.65;
 
@@ -1079,10 +1066,6 @@ function resolveMovement(
         getPlayableBounds();
 
 
-    /*
-       X AXIS
-    */
-
     const targetX =
         player.x +
         moveX;
@@ -1111,10 +1094,6 @@ function resolveMovement(
 
     }
 
-
-    /*
-       Z AXIS
-    */
 
     const targetZ =
         player.z +
@@ -2385,22 +2364,7 @@ const joystickKnob =
     );
 
 
-/*
-   ★★★ 這裡改成 Touch Event ★★★
-
-   不再使用 pointer capture。
-
-   不再使用：
-
-       window.pointermove
-       window.pointerup
-       window.pointercancel
-
-   搖桿完全獨立於 Three.js 的
-   pointer 觸控系統。
-*/
-
-let joystickTouchId =
+let joystickPointerId =
     null;
 
 
@@ -2472,12 +2436,6 @@ function updateJoystick(
         );
 
 
-    /*
-       ==============================================
-       LIMIT
-       ==============================================
-    */
-
     if (
         distance >
         JOYSTICK_RADIUS
@@ -2495,12 +2453,6 @@ function updateJoystick(
     }
 
 
-    /*
-       ==============================================
-       NORMALIZE
-       ==============================================
-    */
-
     const x =
         dx /
         JOYSTICK_RADIUS;
@@ -2510,12 +2462,6 @@ function updateJoystick(
         dy /
         JOYSTICK_RADIUS;
 
-
-    /*
-       ==============================================
-       DEAD ZONE
-       ==============================================
-    */
 
     const magnitude =
         Math.hypot(
@@ -2565,12 +2511,6 @@ function updateJoystick(
     }
 
 
-    /*
-       ==============================================
-       KNOB
-       ==============================================
-    */
-
     joystickKnob.style.transform =
 
         `translate(
@@ -2587,7 +2527,7 @@ function updateJoystick(
 
 function stopJoystick() {
 
-    joystickTouchId =
+    joystickPointerId =
         null;
 
 
@@ -2615,58 +2555,14 @@ function stopJoystick() {
 
 
 /* ==================================================
-   GET TOUCH BY ID
-================================================== */
-
-function getJoystickTouch(
-    touchList
-) {
-
-    if (
-        joystickTouchId ===
-        null
-    )
-        return null;
-
-
-    for (
-        let i = 0;
-        i < touchList.length;
-        i++
-    ) {
-
-        if (
-            touchList[i].identifier ===
-            joystickTouchId
-        ) {
-
-            return touchList[i];
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* ==================================================
    JOYSTICK SETUP
 ================================================== */
 
 function setupJoystick() {
 
-    /*
-       ==============================================
-       TOUCH START
-       ==============================================
-    */
-
     joystickBase.addEventListener(
 
-        "touchstart",
+        "pointerdown",
 
         event => {
 
@@ -2675,29 +2571,27 @@ function setupJoystick() {
             event.stopPropagation();
 
 
-            /*
-               已經有一根手指控制搖桿。
-
-               第二根手指不搶控制權。
-            */
-
             if (
-                joystickTouchId !==
+                joystickPointerId !==
                 null
             )
                 return;
 
 
-            const touch =
-                event.changedTouches[0];
+            if (
 
+                event.pointerType !==
+                    "touch" &&
 
-            if (!touch)
+                event.pointerType !==
+                    "pen"
+
+            )
                 return;
 
 
-            joystickTouchId =
-                touch.identifier;
+            joystickPointerId =
+                event.pointerId;
 
 
             joystickActive =
@@ -2709,11 +2603,22 @@ function setupJoystick() {
             );
 
 
+            try {
+
+                joystickBase.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+
+            catch (_) {}
+
+
             updateJoystick(
 
-                touch.clientX,
+                event.clientX,
 
-                touch.clientY
+                event.clientY
 
             );
 
@@ -2725,185 +2630,110 @@ function setupJoystick() {
 
     );
 
-
-    /*
-       ==============================================
-       TOUCH MOVE
-       ==============================================
-    */
-
-    /*
-       不只監聽 joystickBase。
-
-       手指離開搖桿圓圈後，
-       window 仍然追蹤同一根手指。
-
-       但只有 joystickTouchId
-       那根手指會被處理。
-
-       所以：
-
-           左手搖桿
-           +
-           右手視角
-
-       可以同時存在。
-    */
-
-    window.addEventListener(
-
-        "touchmove",
-
-        event => {
-
-            if (
-                !joystickActive ||
-                joystickTouchId === null
-            )
-                return;
-
-
-            const touch =
-                getJoystickTouch(
-                    event.touches
-                );
-
-
-            if (!touch)
-                return;
-
-
-            event.preventDefault();
-
-
-            updateJoystick(
-
-                touch.clientX,
-
-                touch.clientY
-
-            );
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       TOUCH END
-       ==============================================
-    */
-
-    window.addEventListener(
-
-        "touchend",
-
-        event => {
-
-            if (
-                !joystickActive ||
-                joystickTouchId === null
-            )
-                return;
-
-
-            const touch =
-                getJoystickTouch(
-                    event.changedTouches
-                );
-
-
-            if (!touch)
-                return;
-
-
-            event.preventDefault();
-
-
-            stopJoystick();
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       TOUCH CANCEL
-       ==============================================
-    */
-
-    window.addEventListener(
-
-        "touchcancel",
-
-        event => {
-
-            if (
-                !joystickActive ||
-                joystickTouchId === null
-            )
-                return;
-
-
-            const touch =
-                getJoystickTouch(
-                    event.changedTouches
-                );
-
-
-            if (!touch)
-                return;
-
-
-            stopJoystick();
-
-        },
-
-        {
-            passive: false
-        }
-
-    );
-
-
-    /*
-       ==============================================
-       TOUCH START：保護搖桿區
-       ==============================================
-    */
 
     joystickBase.addEventListener(
 
-        "touchmove",
+        "pointermove",
 
         event => {
 
-            /*
-               這裡主要是阻止瀏覽器
-               對搖桿區做額外手勢處理。
+            if (
 
-               實際座標更新由 window.touchmove
-               統一處理。
-            */
+                !joystickActive ||
+
+                event.pointerId !==
+                    joystickPointerId
+
+            )
+                return;
+
 
             event.preventDefault();
 
             event.stopPropagation();
 
+
+            updateJoystick(
+
+                event.clientX,
+
+                event.clientY
+
+            );
+
         },
 
         {
             passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "pointerup",
+
+        event => {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "pointercancel",
+
+        event => {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    /*
+       不因 lostpointercapture
+       自動停止搖桿。
+    */
+
+    joystickBase.addEventListener(
+
+        "lostpointercapture",
+
+        () => {
+
         }
 
     );
