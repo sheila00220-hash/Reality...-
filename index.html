@@ -1139,18 +1139,60 @@ function updatePlayer() {
     const speed = .08;
 
 
+    /*
+       ==================================================
+       唯一修改的地方
+
+       不再自己用 yaw 推算前方。
+
+       直接讀取相機目前真正面向的方向，
+       並把上下俯仰去掉，只保留水平方向。
+
+       這樣搖桿「向前」會跟相機真正看的方向一致。
+       ==================================================
+    */
+
+    const cameraDirection =
+        new THREE.Vector3();
+
+    camera.getWorldDirection(
+        cameraDirection
+    );
+
+
+    cameraDirection.y = 0;
+
+
+    if (
+        cameraDirection.lengthSq() >
+        0
+    ) {
+
+        cameraDirection.normalize();
+
+    }
+
+
     const forwardX =
-        Math.sin(yaw);
+        cameraDirection.x;
 
     const forwardZ =
-        -Math.cos(yaw);
+        cameraDirection.z;
 
+
+    /*
+       水平右方向：
+
+       forward = (x, z)
+
+       right = (-z, x)
+    */
 
     const rightX =
-        Math.cos(yaw);
+        -forwardZ;
 
     const rightZ =
-        Math.sin(yaw);
+        forwardX;
 
 
     const inputForward =
@@ -2722,11 +2764,6 @@ function setupJoystick() {
 
     );
 
-
-    /*
-       不因 lostpointercapture
-       自動停止搖桿。
-    */
 
     joystickBase.addEventListener(
 
