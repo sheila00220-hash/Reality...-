@@ -1,398 +1,921 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no"
+>
+
 <title>Reality...?</title>
 
 <style>
+
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-    margin: 0;
+
     width: 100%;
     height: 100%;
+
+    margin: 0;
+
     overflow: hidden;
+
     background: #000;
-    color: #fff;
-    font-family: Arial, "Noto Sans TC", sans-serif;
+
     touch-action: none;
+
+    font-family:
+        Arial,
+        "Noto Sans TC",
+        sans-serif;
 }
 
 #game {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    background: #000;
-}
 
-#threeContainer {
-    position: absolute;
-    inset: 0;
+    position: relative;
+
+    width: 100vw;
+
+    height: 100dvh; /* ← 這次唯一修改：100vh → 100dvh */
+
     overflow: hidden;
 }
 
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
 
-
-/* =========================
-   標題畫面
-========================= */
-
-#titleScreen {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    background: #000;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    padding: 24px;
-    text-align: center;
-}
+/* ==================================================
+   TITLE
+================================================== */
 
 #title {
-    font-size: clamp(34px, 9vw, 72px);
-    font-weight: 300;
-    letter-spacing: .08em;
 
-    margin: 0 0 34px;
-
-    animation: titleBreath 5.5s ease-in-out infinite;
-}
-
-@keyframes titleBreath {
-
-    0%,
-    100% {
-        opacity: .34;
-        transform: scale(.985);
-    }
-
-    45% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    62% {
-        opacity: .62;
-        transform: scale(.995);
-    }
-}
-
-#warning {
-    max-width: 620px;
-
-    color: rgba(255,255,255,.72);
-
-    font-size: 13px;
-    line-height: 1.9;
-
-    margin-bottom: 28px;
-}
-
-#warning .head {
-    color: #fff;
-    font-size: 15px;
-    margin-bottom: 8px;
-}
-
-#startButton {
-    border: 1px solid rgba(255,255,255,.55);
-
-    background: rgba(255,255,255,.05);
-    color: #fff;
-
-    padding: 13px 28px;
-
-    font-size: 15px;
-    letter-spacing: .08em;
-
-    border-radius: 3px;
-
-    cursor: pointer;
-    touch-action: manipulation;
-}
-
-#startButton:active {
-    background: rgba(255,255,255,.16);
-}
-
-
-/* =========================
-   提示
-========================= */
-
-#hint {
     position: absolute;
 
-    top: 18px;
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #000;
+
+    color: #fff;
+
+    text-align: center;
+
+}
+
+.titleWrapper {
+
+    width: 100vw;
+
+    height: 1.2em;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+#titleText {
+
+    margin: 0;
+
+    padding: 0;
+
+    font-size:
+        clamp(48px, 11vw, 104px);
+
+    font-weight: 300;
+
+    line-height: 1;
+
+    letter-spacing: 0;
+
+    white-space: nowrap;
+
+    color: #f5f5f5;
+
+}
+
+.titleLetter {
+
+    display: inline;
+
+    opacity: 0;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+.warning {
+
+    width: 88%;
+
+    max-width: 600px;
+
+    margin-top: 55px;
+
+    color: #cfcfcf;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+
+}
+
+.startButton {
+
+    margin-top: 25px;
+
+    padding: 14px 30px;
+
+    border: 1px solid #aaa;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 17px;
+
+    letter-spacing: 2px;
+
+    touch-action: manipulation;
+
+}
+
+
+/* ==================================================
+   THREE
+================================================== */
+
+#threeContainer {
+
+    position: absolute;
+
+    inset: 0;
+
+}
+
+
+/* ==================================================
+   HINT
+================================================== */
+
+#hint {
+
+    position: absolute;
+
+    top: 15px;
+
     left: 50%;
 
     transform: translateX(-50%);
 
-    z-index: 40;
+    z-index: 20;
 
-    color: rgba(255,255,255,.62);
+    padding: 7px 12px;
 
-    font-size: 12px;
+    border-radius: 5px;
+
+    background:
+        rgba(0,0,0,.35);
+
+    color: white;
+
+    font-size: 13px;
 
     pointer-events: none;
 
-    opacity: 0;
-
-    transition: opacity .8s;
-
-    white-space: nowrap;
 }
 
 
-/* =========================
-   搖桿
-   保留原本位置
-========================= */
+/* ==================================================
+   JOYSTICK
+================================================== */
 
 #joystickArea {
+
     position: absolute;
 
     left: 18px;
+
     bottom: 22px;
 
     width: 150px;
+
     height: 150px;
 
     z-index: 50;
 
     pointer-events: none;
+
 }
 
 #joystickBase {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 130px;
+
     height: 130px;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
-    background: rgba(0,0,0,.28);
+    background:
+        rgba(0,0,0,.28);
 
-    border: 1px solid rgba(255,255,255,.35);
+    border:
+        1px solid
+        rgba(255,255,255,.35);
 
     pointer-events: auto;
 
     touch-action: none;
+
 }
 
 #joystickRing {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 86px;
+
     height: 86px;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
-    border: 1px solid rgba(255,255,255,.16);
+    border:
+        1px solid
+        rgba(255,255,255,.16);
 
     pointer-events: none;
+
 }
 
 #joystickKnob {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 56px;
+
     height: 56px;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
-    background: rgba(255,255,255,.22);
+    background:
+        rgba(255,255,255,.22);
 
-    border: 1px solid rgba(255,255,255,.65);
+    border:
+        1px solid
+        rgba(255,255,255,.65);
 
     pointer-events: none;
+
 }
 
 #joystickBase.active {
-    background: rgba(0,0,0,.36);
+
+    background:
+        rgba(0,0,0,.36);
+
 }
 
-#joystickBase.active #joystickKnob {
-    background: rgba(255,255,255,.32);
+#joystickBase.active
+#joystickKnob {
+
+    background:
+        rgba(255,255,255,.32);
+
 }
-
-
-/* =========================
-   黑幕
-========================= */
-
-#blackout {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 80;
-
-    background: #000;
-
-    pointer-events: none;
-
-    opacity: 0;
-}
-
-
-/* =========================
-   手機
-========================= */
 
 @media (max-width:420px) {
 
     #joystickArea {
+
         left: 12px;
+
         bottom: 15px;
 
         width: 140px;
+
         height: 140px;
+
     }
 
     #joystickBase {
+
         width: 120px;
+
         height: 120px;
+
     }
+
 }
+
 </style>
+
 </head>
 
 
 <body>
 
+
 <div id="game">
 
-    <div id="threeContainer"></div>
+
+<!-- ==================================================
+     TITLE
+================================================== -->
+
+<div id="title">
+
+    <div class="titleWrapper">
+
+        <h1 id="titleText"></h1>
+
+    </div>
 
 
-    <!-- =========================
-         標題
-    ========================== -->
+    <div class="warning">
 
-    <div id="titleScreen">
+        <p>內容提示</p>
 
-        <div id="title">
-            Reality...?
-        </div>
+        <p>
+            本作品包含心理恐怖、
+            令人不安的聲音與視覺表現，
+            以及可能引起部分玩家不適的成人向主題。
+        </p>
 
+        <p>
+            部分內容可能涉及敏感議題。
+        </p>
 
-        <div id="warning">
+        <p>
+            若你容易受到心理壓迫、
+            強烈聲音或失真畫面的影響，
+            請自行斟酌是否遊玩。
+        </p>
 
-            <div class="head">
-                內容提示
-            </div>
-
-            本作品包含心理恐怖、令人不安的聲音與視覺表現，以及可能引起部分玩家不適的成人向主題。<br>
-
-            部分內容可能涉及敏感議題。<br>
-
-            若你容易受到心理壓迫、強烈聲音或失真畫面的影響，請自行斟酌是否遊玩。<br>
-
+        <p>
             你可以隨時離開遊戲。
-
-        </div>
-
-
-        <button id="startButton">
-            開始你的旅程
-        </button>
+        </p>
 
     </div>
 
 
-    <div id="hint">
-        滑動畫面轉動視角
-    </div>
+    <button
+        id="startButton"
+        class="startButton">
 
+        開始你的旅程
 
-    <!-- =========================
-         搖桿
-    ========================== -->
-
-    <div id="joystickArea">
-
-        <div id="joystickBase">
-
-            <div id="joystickRing"></div>
-
-            <div id="joystickKnob"></div>
-
-        </div>
-
-    </div>
-
-
-    <div id="blackout"></div>
+    </button>
 
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+<div id="threeContainer"></div>
+
+
+<div
+    id="hint"
+    style="display:none;">
+
+    滑動畫面轉動視角
+
+</div>
+
+
+<div
+    id="joystickArea"
+    style="display:none;">
+
+    <div id="joystickBase">
+
+        <div id="joystickRing"></div>
+
+        <div id="joystickKnob"></div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 
 <script>
 
-/* =========================================================
-   Reality...?
-   Chapter 1
-========================================================= */
+/* ==================================================
+   TITLE
+================================================== */
+
+const titleText =
+    document.getElementById(
+        "titleText"
+    );
+
+const titleWord =
+    "Reality...?";
+
+let titleRunning = true;
 
 
-/* =========================
-   眼睛圖片
-========================= */
+function wait(ms) {
 
-const EYE_FRAME_IMAGE =
-    "Screenshot_20260819_221148_Google-removebg-preview.png";
+    return new Promise(
+        resolve =>
+            setTimeout(resolve, ms)
+    );
 
-const EYE_BALL_IMAGE =
-    "Screenshot_20260819_221235_Google-removebg-preview.png";
-
-
-/* =========================
-   Three.js
-========================= */
-
-let scene;
-
-let camera;
-
-let renderer;
+}
 
 
-/* =========================
-   房間尺寸
-========================= */
+function random(min, max) {
+
+    return min +
+        Math.random() *
+        (max - min);
+
+}
+
+
+function smoothstep(t) {
+
+    return t * t * (3 - 2 * t);
+
+}
+
+
+function createTitleLetters() {
+
+    titleText.innerHTML = "";
+
+    const letters = [];
+
+    for (
+        let i = 0;
+        i < titleWord.length;
+        i++
+    ) {
+
+        const letter =
+            document.createElement(
+                "span"
+            );
+
+        letter.className =
+            "titleLetter";
+
+        letter.textContent =
+            titleWord[i];
+
+        titleText.appendChild(
+            letter
+        );
+
+        letters.push(letter);
+
+    }
+
+    return letters;
+
+}
+
+
+function fadeInLetter(letter) {
+
+    return new Promise(resolve => {
+
+        const duration =
+            random(2400, 3000);
+
+        const start =
+            performance.now();
+
+
+        function animate(now) {
+
+            if (!titleRunning) {
+
+                resolve();
+
+                return;
+
+            }
+
+
+            const progress =
+                Math.min(
+                    (now - start) /
+                    duration,
+                    1
+                );
+
+
+            letter.style.opacity =
+                smoothstep(progress);
+
+
+            if (
+                progress < 1
+            ) {
+
+                requestAnimationFrame(
+                    animate
+                );
+
+            }
+
+            else {
+
+                letter.style.opacity =
+                    "1";
+
+                resolve();
+
+            }
+
+        }
+
+
+        requestAnimationFrame(
+            animate
+        );
+
+    });
+
+}
+
+
+function startIrregularBreathing(letter) {
+
+    if (
+        letter.dataset.breathing ===
+        "true"
+    )
+        return;
+
+
+    letter.dataset.breathing =
+        "true";
+
+
+    let state =
+        "holdBright";
+
+
+    let stateStart =
+        performance.now();
+
+
+    let stateDuration =
+        random(1200, 2600);
+
+
+    let startOpacity = 1;
+
+    let targetOpacity = 1;
+
+
+    function chooseNextState() {
+
+        if (
+            Math.random() < .55
+        ) {
+
+            state =
+                "fadeDown";
+
+            startOpacity = 1;
+
+            targetOpacity =
+                random(.22, .38);
+
+            stateDuration =
+                random(
+                    2600,
+                    4200
+                );
+
+        }
+
+        else {
+
+            state =
+                "fadeUp";
+
+            startOpacity =
+                parseFloat(
+                    letter.style.opacity
+                ) || .3;
+
+            targetOpacity = 1;
+
+            stateDuration =
+                random(
+                    2800,
+                    4500
+                );
+
+        }
+
+
+        stateStart =
+            performance.now();
+
+    }
+
+
+    function animate(now) {
+
+        if (!titleRunning)
+            return;
+
+
+        const elapsed =
+            now - stateStart;
+
+
+        const progress =
+            Math.min(
+                elapsed /
+                stateDuration,
+                1
+            );
+
+
+        if (
+            state ===
+            "holdBright"
+        ) {
+
+            letter.style.opacity =
+                "1";
+
+        }
+
+        else if (
+            state ===
+            "fadeDown"
+        ) {
+
+            letter.style.opacity =
+                startOpacity +
+                (
+                    targetOpacity -
+                    startOpacity
+                ) *
+                smoothstep(progress);
+
+        }
+
+        else if (
+            state ===
+            "holdDark"
+        ) {
+
+            letter.style.opacity =
+                targetOpacity;
+
+        }
+
+        else if (
+            state ===
+            "fadeUp"
+        ) {
+
+            letter.style.opacity =
+                startOpacity +
+                (
+                    targetOpacity -
+                    startOpacity
+                ) *
+                smoothstep(progress);
+
+        }
+
+
+        if (
+            progress >= 1
+        ) {
+
+            if (
+                state ===
+                "holdBright"
+            ) {
+
+                chooseNextState();
+
+            }
+
+            else if (
+                state ===
+                "fadeDown"
+            ) {
+
+                state =
+                    "holdDark";
+
+                stateStart =
+                    performance.now();
+
+                stateDuration =
+                    random(
+                        700,
+                        2200
+                    );
+
+            }
+
+            else if (
+                state ===
+                "holdDark"
+            ) {
+
+                state =
+                    "fadeUp";
+
+                stateStart =
+                    performance.now();
+
+                startOpacity =
+                    parseFloat(
+                        letter.style.opacity
+                    );
+
+                targetOpacity = 1;
+
+                stateDuration =
+                    random(
+                        2800,
+                        4500
+                    );
+
+            }
+
+            else {
+
+                state =
+                    "holdBright";
+
+                stateStart =
+                    performance.now();
+
+                stateDuration =
+                    random(
+                        900,
+                        3000
+                    );
+
+            }
+
+        }
+
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+async function playTitleAnimation() {
+
+    while (titleRunning) {
+
+        const letters =
+            createTitleLetters();
+
+
+        for (
+            let i = 0;
+            i < letters.length;
+            i++
+        ) {
+
+            if (!titleRunning)
+                return;
+
+
+            await fadeInLetter(
+                letters[i]
+            );
+
+
+            startIrregularBreathing(
+                letters[i]
+            );
+
+
+            await wait(
+                random(
+                    500,
+                    800
+                )
+            );
+
+        }
+
+
+        await wait(
+            random(
+                2900,
+                3700
+            )
+        );
+
+
+        if (!titleRunning)
+            return;
+
+
+        titleText.innerHTML = "";
+
+
+        await wait(
+            random(
+                2800,
+                4800
+            )
+        );
+
+    }
+
+}
+
+
+playTitleAnimation();
+
+
+/* ==================================================
+   THREE
+================================================== */
+
+let scene = null;
+
+let camera = null;
+
+let renderer = null;
+
+let started = false;
+
+
+/* ==================================================
+   ROOM
+================================================== */
 
 const ROOM_WIDTH = 14;
 
@@ -401,48 +924,64 @@ const ROOM_DEPTH = 14;
 const ROOM_HEIGHT = 10;
 
 
-/* =========================
-   玩家
-========================= */
+/* ==================================================
+   PLAYER
+================================================== */
 
 const PLAYER_RADIUS = .28;
 
 const WALL_BUFFER = .01;
 
-const EYE_HEIGHT = 1.65;
+const PLAYER_EYE_HEIGHT = 1.65;
 
 
-let player = {
+const player = {
 
     x: 0,
 
-    y: EYE_HEIGHT,
+    y: PLAYER_EYE_HEIGHT,
 
     z: 4
 
 };
 
 
-/* =========================
-   視角
-========================= */
+/* ==================================================
+   CAMERA
+================================================== */
 
 let yaw = 0;
 
 let pitch = 0;
 
-const PITCH_LIMIT = 1;
 
-const LOOK_SENSITIVITY_X = .0022;
-
-const LOOK_SENSITIVITY_Y = .0022;
+const PITCH_LIMIT = 1.0;
 
 
-/* =========================
-   移動
-========================= */
+const LOOK_SENSITIVITY_X =
+    .0022;
 
-let movement = {
+
+const LOOK_SENSITIVITY_Y =
+    .0022;
+
+
+/* ==================================================
+   FOV
+================================================== */
+
+const MIN_FOV = 55;
+
+const MAX_FOV = 95;
+
+const DEFAULT_FOV = 75;
+
+
+/* ==================================================
+   MOVEMENT
+================================================== */
+
+const movement = {
 
     x: 0,
 
@@ -451,1132 +990,178 @@ let movement = {
 };
 
 
-/* =========================
-   狀態
-========================= */
+/* ==================================================
+   COLLISION
+================================================== */
 
-let worldStarted = false;
+function getPlayableBounds() {
 
-let chapter1Started = false;
+    const halfW =
+        ROOM_WIDTH / 2;
 
-let falling = false;
+    const halfD =
+        ROOM_DEPTH / 2;
 
-let fallProgress = 0;
 
-let chapter1Finished = false;
+    return {
 
+        minX:
+            -halfW +
+            PLAYER_RADIUS +
+            WALL_BUFFER,
 
-/* =========================
-   時間
-========================= */
+        maxX:
+            halfW -
+            PLAYER_RADIUS -
+            WALL_BUFFER,
 
-const clock =
-    new THREE.Clock();
+        minZ:
+            -halfD +
+            PLAYER_RADIUS +
+            WALL_BUFFER,
 
-
-/* =========================
-   眼睛
-========================= */
-
-const eyeObjects = [];
-
-let holeEye = null;
-
-let blackHole = null;
-
-
-/* =========================
-   暫存 Vector
-========================= */
-
-const tempTarget =
-    new THREE.Vector3();
-
-const tempLocal =
-    new THREE.Vector3();
-
-
-/* =========================
-   DOM
-========================= */
-
-const titleScreen =
-    document.getElementById(
-        "titleScreen"
-    );
-
-const startButton =
-    document.getElementById(
-        "startButton"
-    );
-
-const hint =
-    document.getElementById(
-        "hint"
-    );
-
-const joystickBase =
-    document.getElementById(
-        "joystickBase"
-    );
-
-const joystickKnob =
-    document.getElementById(
-        "joystickKnob"
-    );
-
-const blackout =
-    document.getElementById(
-        "blackout"
-    );
-
-
-/* =========================
-   圖片載入
-========================= */
-
-const textureLoader =
-    new THREE.TextureLoader();
-
-
-const eyeFrameTexture =
-    textureLoader.load(
-        EYE_FRAME_IMAGE
-    );
-
-
-const eyeBallTexture =
-    textureLoader.load(
-        EYE_BALL_IMAGE
-    );
-
-
-eyeFrameTexture.colorSpace =
-    THREE.SRGBColorSpace;
-
-eyeBallTexture.colorSpace =
-    THREE.SRGBColorSpace;
-
-
-/* =========================================================
-   開始遊戲
-========================================================= */
-
-startButton.addEventListener(
-    "click",
-    () => {
-
-        if (worldStarted)
-            return;
-
-
-        worldStarted = true;
-
-
-        titleScreen.style.display =
-            "none";
-
-
-        hint.style.opacity =
-            "1";
-
-
-        setTimeout(
-            () => {
-
-                hint.style.opacity =
-                    "0";
-
-            },
-            3500
-        );
-
-
-        initWorld();
-
-    }
-);
-
-
-/* =========================================================
-   建立世界
-========================================================= */
-
-function initWorld() {
-
-    scene =
-        new THREE.Scene();
-
-
-    scene.background =
-        new THREE.Color(
-            0x858585
-        );
-
-
-    camera =
-        new THREE.PerspectiveCamera(
-
-            75,
-
-            window.innerWidth /
-            window.innerHeight,
-
-            .03,
-
-            100
-
-        );
-
-
-    renderer =
-        new THREE.WebGLRenderer({
-
-            antialias: true,
-
-            alpha: false
-
-        });
-
-
-    renderer.setPixelRatio(
-
-        Math.min(
-            window.devicePixelRatio,
-            2
-        )
-
-    );
-
-
-    renderer.setSize(
-
-        window.innerWidth,
-
-        window.innerHeight
-
-    );
-
-
-    renderer.outputColorSpace =
-        THREE.SRGBColorSpace;
-
-
-    document
-        .getElementById(
-            "threeContainer"
-        )
-        .appendChild(
-            renderer.domElement
-        );
-
-
-    createRoom();
-
-
-    createEyes();
-
-
-    updateCamera();
-
-
-    chapter1Started =
-        true;
-
-
-    window.addEventListener(
-        "resize",
-        onResize
-    );
-
-
-    setupLookControls();
-
-
-    setupJoystick();
-
-
-    animate();
-
-}
-
-
-/* =========================================================
-   房間
-========================================================= */
-
-function createRoom() {
-
-    const roomMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0xbdbdbd,
-
-            side: THREE.BackSide
-
-        });
-
-
-    const roomGeometry =
-        new THREE.BoxGeometry(
-
-            ROOM_WIDTH,
-
-            ROOM_HEIGHT,
-
-            ROOM_DEPTH
-
-        );
-
-
-    const room =
-        new THREE.Mesh(
-
-            roomGeometry,
-
-            roomMaterial
-
-        );
-
-
-    room.position.y =
-        ROOM_HEIGHT / 2;
-
-
-    scene.add(
-        room
-    );
-
-
-    /*
-      地面
-    */
-
-    const floorMaterial =
-        new THREE.MeshBasicMaterial({
-
-            color: 0xc7c7c7
-
-        });
-
-
-    const floor =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                ROOM_WIDTH,
-
-                ROOM_DEPTH
-
-            ),
-
-            floorMaterial
-
-        );
-
-
-    floor.rotation.x =
-        -Math.PI / 2;
-
-
-    floor.position.y =
-        .002;
-
-
-    scene.add(
-        floor
-    );
-
-}
-
-
-/* =========================================================
-   建立一隻眼睛
-========================================================= */
-
-function createEye(
-    position,
-    rotation,
-    scale,
-    isHoleEye = false
-) {
-
-    const group =
-        new THREE.Group();
-
-
-    group.position.copy(
-        position
-    );
-
-
-    group.rotation.set(
-
-        rotation.x,
-
-        rotation.y,
-
-        rotation.z
-
-    );
-
-
-    /*
-      第一層：
-
-      眼框＋眼白
-    */
-
-    const frameMaterial =
-        new THREE.MeshBasicMaterial({
-
-            map:
-                eyeFrameTexture,
-
-            transparent:
-                true,
-
-            depthWrite:
-                false,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const frame =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-                1,
-                1
-            ),
-
-            frameMaterial
-
-        );
-
-
-    /*
-      第二層：
-
-      眼球
-    */
-
-    const ballMaterial =
-        new THREE.MeshBasicMaterial({
-
-            map:
-                eyeBallTexture,
-
-            transparent:
-                true,
-
-            depthWrite:
-                false,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const ball =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-                1,
-                1
-            ),
-
-            ballMaterial
-
-        );
-
-
-    /*
-      讓眼球浮在眼白上面
-    */
-
-    ball.position.z =
-        .018;
-
-
-    /*
-      眼框比例
-    */
-
-    frame.scale.set(
-
-        2.0,
-
-        1.45,
-
-        1
-
-    );
-
-
-    /*
-      眼球比例
-    */
-
-    ball.scale.set(
-
-        .68,
-
-        .68,
-
-        1
-
-    );
-
-
-    group.add(
-        frame
-    );
-
-
-    group.add(
-        ball
-    );
-
-
-    group.userData = {
-
-        frame,
-
-        ball,
-
-        baseScale:
-            scale,
-
-        currentScale:
-            scale,
-
-        growth:
-            0.0009 +
-            Math.random() *
-            0.00045,
-
-        phase:
-            Math.random() *
-            Math.PI *
-            2,
-
-        maxBallOffset:
-            .18 +
-            Math.random() *
-            .045,
-
-        isHoleEye
+        maxZ:
+            halfD -
+            PLAYER_RADIUS -
+            WALL_BUFFER
 
     };
 
-
-    group.scale.setScalar(
-        scale
-    );
-
-
-    scene.add(
-        group
-    );
-
-
-    eyeObjects.push(
-        group
-    );
-
-
-    if (isHoleEye) {
-
-        holeEye =
-            group;
-
-    }
-
-
-    return group;
-
 }
 
 
-/* =========================================================
-   建立所有眼睛
-========================================================= */
+function canPlayerOccupy(
+    x,
+    z
+) {
 
-function createEyes() {
+    const bounds =
+        getPlayableBounds();
 
-    const wallHalfW =
-        ROOM_WIDTH / 2 -
-        .08;
 
+    return (
 
-    const wallHalfD =
-        ROOM_DEPTH / 2 -
-        .08;
+        x >= bounds.minX &&
 
+        x <= bounds.maxX &&
 
-    /* =========================
-       北牆
-    ========================== */
+        z >= bounds.minZ &&
 
-    const northZ =
-        -ROOM_DEPTH / 2 +
-        .035;
+        z <= bounds.maxZ
 
-
-    for (
-        let i = 0;
-        i < 15;
-        i++
-    ) {
-
-        const x =
-            -wallHalfW +
-            (i / 14) *
-            (wallHalfW * 2);
-
-
-        const y =
-            1.1 +
-            (
-                (i * 1.73) %
-                6.7
-            );
-
-
-        createEye(
-
-            new THREE.Vector3(
-                x,
-                y,
-                northZ
-            ),
-
-            new THREE.Euler(
-                0,
-                0,
-                0
-            ),
-
-            .62 +
-            ((i * 7) % 5) *
-            .025
-
-        );
-
-    }
-
-
-    /* =========================
-       南牆
-    ========================== */
-
-    const southZ =
-        ROOM_DEPTH / 2 -
-        .035;
-
-
-    for (
-        let i = 0;
-        i < 15;
-        i++
-    ) {
-
-        const x =
-            -wallHalfW +
-            (i / 14) *
-            (wallHalfW * 2);
-
-
-        const y =
-            1.0 +
-            (
-                (i * 2.11) %
-                6.9
-            );
-
-
-        createEye(
-
-            new THREE.Vector3(
-                x,
-                y,
-                southZ
-            ),
-
-            new THREE.Euler(
-                0,
-                Math.PI,
-                0
-            ),
-
-            .61 +
-            ((i * 5) % 6) *
-            .025
-
-        );
-
-    }
-
-
-    /* =========================
-       西牆
-    ========================== */
-
-    const westX =
-        -ROOM_WIDTH / 2 +
-        .035;
-
-
-    for (
-        let i = 0;
-        i < 13;
-        i++
-    ) {
-
-        const z =
-            -wallHalfD +
-            (i / 12) *
-            (wallHalfD * 2);
-
-
-        const y =
-            1.2 +
-            (
-                (i * 1.91) %
-                6.5
-            );
-
-
-        createEye(
-
-            new THREE.Vector3(
-                westX,
-                y,
-                z
-            ),
-
-            new THREE.Euler(
-                0,
-                -Math.PI / 2,
-                0
-            ),
-
-            .60 +
-            ((i * 3) % 6) *
-            .028
-
-        );
-
-    }
-
-
-    /* =========================
-       東牆
-    ========================== */
-
-    const eastX =
-        ROOM_WIDTH / 2 -
-        .035;
-
-
-    for (
-        let i = 0;
-        i < 13;
-        i++
-    ) {
-
-        const z =
-            -wallHalfD +
-            (i / 12) *
-            (wallHalfD * 2);
-
-
-        const y =
-            1.0 +
-            (
-                (i * 2.37) %
-                6.8
-            );
-
-
-        createEye(
-
-            new THREE.Vector3(
-                eastX,
-                y,
-                z
-            ),
-
-            new THREE.Euler(
-                0,
-                Math.PI / 2,
-                0
-            ),
-
-            .63 +
-            ((i * 4) % 5) *
-            .025
-
-        );
-
-    }
-
-
-    /* =========================
-       天花板
-    ========================== */
-
-    for (
-        let i = 0;
-        i < 10;
-        i++
-    ) {
-
-        const x =
-            -5.4 +
-            (i % 5) *
-            2.7;
-
-
-        const z =
-            -5.0 +
-            Math.floor(i / 5) *
-            5.0;
-
-
-        createEye(
-
-            new THREE.Vector3(
-                x,
-                ROOM_HEIGHT - .035,
-                z
-            ),
-
-            new THREE.Euler(
-                Math.PI / 2,
-                0,
-                0
-            ),
-
-            .65 +
-            (i % 4) *
-            .03
-
-        );
-
-    }
-
-
-    /* =========================
-       地板
-    ========================== */
-
-    for (
-        let i = 0;
-        i < 13;
-        i++
-    ) {
-
-        let x =
-            -5.4 +
-            (i % 5) *
-            2.7;
-
-
-        let z =
-            -5.2 +
-            Math.floor(i / 5) *
-            2.6;
-
-
-        /*
-          第 7 隻就是黑洞眼睛
-        */
-
-        if (i === 7) {
-
-            x = 0;
-
-            z = -1.5;
-
-        }
-
-
-        const eye =
-            createEye(
-
-                new THREE.Vector3(
-                    x,
-                    .018,
-                    z
-                ),
-
-                new THREE.Euler(
-                    -Math.PI / 2,
-                    0,
-                    0
-                ),
-
-                .72 +
-                (i % 4) *
-                .035,
-
-                i === 7
-
-            );
-
-
-        eye.position.y =
-            .025;
-
-    }
-
-
-    createBlackHole();
-
-}
-
-
-/* =========================================================
-   黑洞
-========================================================= */
-
-function createBlackHole() {
-
-    const material =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x000000,
-
-            transparent: true,
-
-            opacity: 0,
-
-            side: THREE.DoubleSide
-
-        });
-
-
-    blackHole =
-        new THREE.Mesh(
-
-            new THREE.CircleGeometry(
-                .82,
-                48
-            ),
-
-            material
-
-        );
-
-
-    blackHole.rotation.x =
-        -Math.PI / 2;
-
-
-    blackHole.position.set(
-
-        holeEye.position.x,
-
-        .012,
-
-        holeEye.position.z
-
-    );
-
-
-    scene.add(
-        blackHole
     );
 
 }
 
 
-/* =========================================================
-   眼睛追蹤玩家
-========================================================= */
+/* ==================================================
+   MOVEMENT RESOLUTION
+================================================== */
 
-function updateEyes(delta) {
+function resolveMovement(
+    moveX,
+    moveZ
+) {
+
+    const bounds =
+        getPlayableBounds();
+
+
+    const targetX =
+        player.x +
+        moveX;
+
+
+    if (
+        targetX >= bounds.minX &&
+        targetX <= bounds.maxX
+    ) {
+
+        player.x =
+            targetX;
+
+    }
+
+    else {
+
+        player.x =
+            Math.max(
+                bounds.minX,
+                Math.min(
+                    bounds.maxX,
+                    player.x
+                )
+            );
+
+    }
+
+
+    const targetZ =
+        player.z +
+        moveZ;
+
+
+    if (
+        targetZ >= bounds.minZ &&
+        targetZ <= bounds.maxZ
+    ) {
+
+        player.z =
+            targetZ;
+
+    }
+
+    else {
+
+        player.z =
+            Math.max(
+                bounds.minZ,
+                Math.min(
+                    bounds.maxZ,
+                    player.z
+                )
+            );
+
+    }
+
+}
+
+
+/* ==================================================
+   PLAYER MOVEMENT
+================================================== */
+
+function updatePlayer() {
 
     if (!camera)
         return;
 
 
-    const elapsed =
-        performance.now() *
-        .001;
-
-
-    for (
-        const eye of eyeObjects
-    ) {
-
-        if (!eye.visible)
-            continue;
-
-
-        const data =
-            eye.userData;
-
-
-        /*
-          眼睛慢慢放大
-        */
-
-        if (!data.isHoleEye) {
-
-            data.currentScale +=
-                data.growth *
-                delta *
-                60;
-
-
-            data.currentScale =
-                Math.min(
-
-                    data.currentScale,
-
-                    data.baseScale *
-                    2.15
-
-                );
-
-
-            eye.scale.setScalar(
-                data.currentScale
-            );
-
-        }
-
-
-        /*
-          玩家位置
-        */
-
-        tempTarget.set(
-
-            player.x,
-
-            player.y,
-
-            player.z
-
-        );
-
-
-        tempLocal.copy(
-            tempTarget
-        );
-
-
-        /*
-          把玩家座標轉到
-          這隻眼睛自己的座標
-        */
-
-        eye.worldToLocal(
-            tempLocal
-        );
-
-
-        let tx =
-            tempLocal.x;
-
-
-        let ty =
-            tempLocal.y;
-
-
-        /*
-          限制眼球移動
-        */
-
-        const len =
-            Math.hypot(
-                tx,
-                ty
-            );
-
-
-        if (len > 1) {
-
-            tx /= len;
-
-            ty /= len;
-
-        }
-
-
-        const offset =
-            data.maxBallOffset;
-
-
-        /*
-          一點點不規則感
-        */
-
-        const wobble =
-            Math.sin(
-
-                elapsed *
-                1.15 +
-                data.phase
-
-            ) * .012;
-
-
-        data.ball.position.x =
-            tx * offset;
-
-
-        data.ball.position.y =
-            ty * offset +
-            wobble;
-
-    }
-
-}
-
-
-/* =========================================================
-   玩家移動
-========================================================= */
-
-function updatePlayer() {
-
-    if (
-        !camera ||
-        falling
-    )
-        return;
-
-
-    const speed =
-        .08;
+    const speed = .08;
 
 
     /*
-      使用 camera 的實際世界方向。
-      這就是之前修好的版本。
+       ==================================================
+       唯一修改的地方
+
+       不再自己用 yaw 推算前方。
+
+       直接讀取相機目前真正面向的方向，
+       並把上下俯仰去掉，只保留水平方向。
+
+       這樣搖桿「向前」會跟相機真正看的方向一致。
+       ==================================================
     */
 
     const cameraDirection =
         new THREE.Vector3();
-
 
     camera.getWorldDirection(
         cameraDirection
     );
 
 
-    cameraDirection.y =
-        0;
+    cameraDirection.y = 0;
 
 
     if (
@@ -1592,14 +1177,20 @@ function updatePlayer() {
     const forwardX =
         cameraDirection.x;
 
-
     const forwardZ =
         cameraDirection.z;
 
 
+    /*
+       水平右方向：
+
+       forward = (x, z)
+
+       right = (-z, x)
+    */
+
     const rightX =
         -forwardZ;
-
 
     const rightZ =
         forwardX;
@@ -1607,7 +1198,6 @@ function updatePlayer() {
 
     const inputForward =
         -movement.y;
-
 
     const inputRight =
         movement.x;
@@ -1652,7 +1242,6 @@ function updatePlayer() {
         inputX /=
             length;
 
-
         inputZ /=
             length;
 
@@ -1681,266 +1270,16 @@ function updatePlayer() {
     }
 
 
-    checkHole();
-
-
     updateCamera();
 
 }
 
 
-/* =========================================================
-   碰撞
-========================================================= */
-
-function resolveMovement(
-    moveX,
-    moveZ
-) {
-
-    const halfW =
-        ROOM_WIDTH / 2 -
-        PLAYER_RADIUS -
-        WALL_BUFFER;
-
-
-    const halfD =
-        ROOM_DEPTH / 2 -
-        PLAYER_RADIUS -
-        WALL_BUFFER;
-
-
-    /*
-      X / Z 分開處理
-      保留滑牆效果
-    */
-
-    const nextX =
-        player.x +
-        moveX;
-
-
-    if (
-        nextX >= -halfW &&
-        nextX <= halfW
-    ) {
-
-        player.x =
-            nextX;
-
-    }
-
-
-    const nextZ =
-        player.z +
-        moveZ;
-
-
-    if (
-        nextZ >= -halfD &&
-        nextZ <= halfD
-    ) {
-
-        player.z =
-            nextZ;
-
-    }
-
-}
-
-
-/* =========================================================
-   黑洞檢查
-========================================================= */
-
-function checkHole() {
-
-    if (
-        !holeEye ||
-        falling ||
-        chapter1Finished
-    )
-        return;
-
-
-    const dx =
-        player.x -
-        holeEye.position.x;
-
-
-    const dz =
-        player.z -
-        holeEye.position.z;
-
-
-    const distance =
-        Math.hypot(
-            dx,
-            dz
-        );
-
-
-    if (
-        distance < .72
-    ) {
-
-        startFall();
-
-    }
-
-}
-
-
-/* =========================================================
-   掉進黑洞
-========================================================= */
-
-function startFall() {
-
-    falling =
-        true;
-
-
-    fallProgress =
-        0;
-
-
-    movement.x =
-        0;
-
-
-    movement.y =
-        0;
-
-
-    resetJoystick();
-
-
-    joystickBase.style.pointerEvents =
-        "none";
-
-
-    /*
-      眼睛突然消失
-    */
-
-    holeEye.visible =
-        false;
-
-
-    /*
-      黑洞出現
-    */
-
-    if (blackHole) {
-
-        blackHole.material.opacity =
-            1;
-
-    }
-
-
-    blackout.style.opacity =
-        "0";
-
-}
-
-
-/* =========================================================
-   掉落動畫
-========================================================= */
-
-function updateFall(delta) {
-
-    if (!falling)
-        return;
-
-
-    fallProgress +=
-        delta *
-        .72;
-
-
-    const t =
-        Math.min(
-            fallProgress,
-            1
-        );
-
-
-    /*
-      玩家往下掉
-    */
-
-    player.y =
-        EYE_HEIGHT -
-        Math.pow(
-            t,
-            1.65
-        ) *
-        7.5;
-
-
-    /*
-      慢慢變黑
-    */
-
-    const fade =
-        Math.max(
-
-            0,
-
-            (t - .35) /
-            .65
-
-        );
-
-
-    blackout.style.opacity =
-        String(fade);
-
-
-    updateCamera();
-
-
-    if (
-        fallProgress >= 1
-    ) {
-
-        chapter1Finished =
-            true;
-
-
-        falling =
-            false;
-
-
-        player.y =
-            EYE_HEIGHT;
-
-
-        /*
-          第一章結束
-          暫時停在黑畫面
-        */
-
-        blackout.style.opacity =
-            "1";
-
-    }
-
-}
-
-
-/* =========================================================
-   相機
-========================================================= */
+/* ==================================================
+   CAMERA
+================================================== */
 
 function updateCamera() {
-
-    if (!camera)
-        return;
-
 
     camera.position.set(
 
@@ -1967,324 +1306,1170 @@ function updateCamera() {
 }
 
 
-/* =========================================================
-   視角控制
-========================================================= */
+/* ==================================================
+   CREATE WORLD
+================================================== */
 
-function setupLookControls() {
+function createWorld() {
+
+    scene =
+        new THREE.Scene();
+
+
+    scene.background =
+        new THREE.Color(
+            0xb0b0b0
+        );
+
+
+    camera =
+        new THREE.PerspectiveCamera(
+
+            DEFAULT_FOV,
+
+            window.innerWidth /
+            window.innerHeight,
+
+            .1,
+
+            100
+
+        );
+
+
+    camera.position.set(
+
+        player.x,
+
+        player.y,
+
+        player.z
+
+    );
+
+
+    renderer =
+        new THREE.WebGLRenderer({
+
+            antialias: true
+
+        });
+
+
+    renderer.setPixelRatio(
+
+        Math.min(
+
+            window.devicePixelRatio,
+
+            2
+
+        )
+
+    );
+
+
+    renderer.setSize(
+
+        window.innerWidth,
+
+        window.innerHeight
+
+    );
+
+
+    document
+        .getElementById(
+            "threeContainer"
+        )
+        .appendChild(
+            renderer.domElement
+        );
+
+
+    scene.add(
+
+        new THREE.AmbientLight(
+
+            0xffffff,
+
+            2
+
+        )
+
+    );
+
+
+    createRoom();
+
+
+    setupTouch();
+
+
+    setupJoystick();
+
+
+    animate();
+
+}
+
+
+/* ==================================================
+   ROOM
+================================================== */
+
+function createRoom() {
+
+    const W =
+        ROOM_WIDTH;
+
+    const H =
+        ROOM_HEIGHT;
+
+    const D =
+        ROOM_DEPTH;
+
+
+    const floor =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                W,
+                D
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color: 0x707070,
+
+                side:
+                    THREE.DoubleSide
+
+            })
+
+        );
+
+
+    floor.rotation.x =
+        -Math.PI / 2;
+
+
+    scene.add(
+        floor
+    );
+
+
+    const ceiling =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                W,
+                D
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color: 0xd8d8d8,
+
+                side:
+                    THREE.DoubleSide
+
+            })
+
+        );
+
+
+    ceiling.rotation.x =
+        Math.PI / 2;
+
+
+    ceiling.position.y =
+        H;
+
+
+    scene.add(
+        ceiling
+    );
+
+
+    const front =
+        createWall(
+            W,
+            H,
+            0xc2c2c2
+        );
+
+
+    front.position.set(
+
+        0,
+
+        H / 2,
+
+        -D / 2
+
+    );
+
+
+    scene.add(
+        front
+    );
+
+
+    const back =
+        createWall(
+            W,
+            H,
+            0xb7b7b7
+        );
+
+
+    back.position.set(
+
+        0,
+
+        H / 2,
+
+        D / 2
+
+    );
+
+
+    scene.add(
+        back
+    );
+
+
+    const left =
+        createWall(
+            D,
+            H,
+            0xaeaeae
+        );
+
+
+    left.rotation.y =
+        Math.PI / 2;
+
+
+    left.position.set(
+
+        -W / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    scene.add(
+        left
+    );
+
+
+    const right =
+        createWall(
+            D,
+            H,
+            0xa6a6a6
+        );
+
+
+    right.rotation.y =
+        Math.PI / 2;
+
+
+    right.position.set(
+
+        W / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    scene.add(
+        right
+    );
+
+
+    createRoomEdges(
+        W,
+        H,
+        D
+    );
+
+
+    createInvisibleCollisionWalls(
+        W,
+        H,
+        D
+    );
+
+}
+
+
+function createWall(
+    width,
+    height,
+    color
+) {
+
+    return new THREE.Mesh(
+
+        new THREE.PlaneGeometry(
+            width,
+            height
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color: color,
+
+            side:
+                THREE.DoubleSide
+
+        })
+
+    );
+
+}
+
+
+/* ==================================================
+   INVISIBLE 3D WALLS
+================================================== */
+
+function createInvisibleCollisionWalls(
+    W,
+    H,
+    D
+) {
+
+    const material =
+        new THREE.MeshBasicMaterial({
+
+            transparent: true,
+
+            opacity: 0,
+
+            depthWrite: false
+
+        });
+
+
+    const thickness =
+        .45;
+
+
+    const front =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                W + thickness * 2,
+
+                H,
+
+                thickness
+
+            ),
+
+            material
+
+        );
+
+
+    front.position.set(
+
+        0,
+
+        H / 2,
+
+        -D / 2 +
+        thickness / 2
+
+    );
+
+
+    front.visible = false;
+
+
+    scene.add(
+        front
+    );
+
+
+    const back =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                W + thickness * 2,
+
+                H,
+
+                thickness
+
+            ),
+
+            material
+
+        );
+
+
+    back.position.set(
+
+        0,
+
+        H / 2,
+
+        D / 2 -
+        thickness / 2
+
+    );
+
+
+    back.visible = false;
+
+
+    scene.add(
+        back
+    );
+
+
+    const left =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                thickness,
+
+                H,
+
+                D
+
+            ),
+
+            material
+
+        );
+
+
+    left.position.set(
+
+        -W / 2 +
+        thickness / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    left.visible = false;
+
+
+    scene.add(
+        left
+    );
+
+
+    const right =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                thickness,
+
+                H,
+
+                D
+
+            ),
+
+            material
+
+        );
+
+
+    right.position.set(
+
+        W / 2 -
+        thickness / 2,
+
+        H / 2,
+
+        0
+
+    );
+
+
+    right.visible = false;
+
+
+    scene.add(
+        right
+    );
+
+}
+
+
+/* ==================================================
+   ROOM EDGES
+================================================== */
+
+function createRoomEdges(
+    W,
+    H,
+    D
+) {
+
+    const geometry =
+        new THREE.BoxGeometry(
+            W,
+            H,
+            D
+        );
+
+
+    const edges =
+        new THREE.EdgesGeometry(
+            geometry
+        );
+
+
+    const material =
+        new THREE.LineBasicMaterial({
+
+            color: 0x666666,
+
+            transparent: true,
+
+            opacity: .45
+
+        });
+
+
+    const lines =
+        new THREE.LineSegments(
+
+            edges,
+
+            material
+
+        );
+
+
+    lines.position.y =
+        H / 2;
+
+
+    scene.add(
+        lines
+    );
+
+}
+
+
+/* ==================================================
+   TOUCH
+================================================== */
+
+const activeTouches =
+    new Map();
+
+
+let touchMode =
+    "none";
+
+
+let lookPointerId =
+    null;
+
+
+let lastLookX = 0;
+
+let lastLookY = 0;
+
+
+let previousPinchDistance =
+    null;
+
+
+let mouseLooking =
+    false;
+
+
+function getPinchDistance() {
+
+    const points =
+        Array.from(
+            activeTouches.values()
+        );
+
+
+    if (
+        points.length < 2
+    )
+        return null;
+
+
+    const a =
+        points[0];
+
+    const b =
+        points[1];
+
+
+    return Math.hypot(
+
+        b.x - a.x,
+
+        b.y - a.y
+
+    );
+
+}
+
+
+function enterPinchMode() {
+
+    touchMode =
+        "pinch";
+
+
+    lookPointerId =
+        null;
+
+
+    previousPinchDistance =
+        getPinchDistance();
+
+}
+
+
+function enterLookMode() {
+
+    const entries =
+        Array.from(
+            activeTouches.entries()
+        );
+
+
+    if (
+        entries.length !== 1
+    ) {
+
+        touchMode =
+            "none";
+
+        lookPointerId =
+            null;
+
+        return;
+
+    }
+
+
+    const [
+        id,
+        point
+    ] = entries[0];
+
+
+    touchMode =
+        "look";
+
+
+    lookPointerId =
+        id;
+
+
+    lastLookX =
+        point.x;
+
+
+    lastLookY =
+        point.y;
+
+
+    previousPinchDistance =
+        null;
+
+}
+
+
+/* ==================================================
+   TOUCH SETUP
+================================================== */
+
+function setupTouch() {
 
     const canvas =
         renderer.domElement;
 
 
-    let looking =
-        false;
-
-
-    let lastX =
-        0;
-
-
-    let lastY =
-        0;
+    canvas.style.touchAction =
+        "none";
 
 
     canvas.addEventListener(
+
         "pointerdown",
-        e => {
 
-            if (falling)
-                return;
-
-
-            /*
-              避免搶走搖桿
-            */
+        event => {
 
             if (
-
-                e.clientX < 190 &&
-
-                e.clientY >
-                window.innerHeight - 190
-
+                event.pointerType ===
+                "mouse"
             ) {
+
+                if (
+                    event.button !== 0
+                )
+                    return;
+
+
+                mouseLooking =
+                    true;
+
+
+                lastLookX =
+                    event.clientX;
+
+
+                lastLookY =
+                    event.clientY;
+
 
                 return;
 
             }
 
 
-            looking =
-                true;
+            event.preventDefault();
 
 
-            lastX =
-                e.clientX;
+            activeTouches.set(
+
+                event.pointerId,
+
+                {
+
+                    x:
+                        event.clientX,
+
+                    y:
+                        event.clientY
+
+                }
+
+            );
 
 
-            lastY =
-                e.clientY;
+            if (
+                activeTouches.size ===
+                1
+            ) {
+
+                touchMode =
+                    "look";
 
 
-            try {
+                lookPointerId =
+                    event.pointerId;
 
-                canvas.setPointerCapture(
-                    e.pointerId
-                );
 
-            } catch (_) {}
+                lastLookX =
+                    event.clientX;
 
+
+                lastLookY =
+                    event.clientY;
+
+            }
+
+            else {
+
+                enterPinchMode();
+
+            }
+
+        },
+
+        {
+            passive: false
         }
+
     );
 
 
     canvas.addEventListener(
+
         "pointermove",
-        e => {
+
+        event => {
 
             if (
-                !looking ||
-                falling
+                event.pointerType ===
+                "mouse"
+            ) {
+
+                if (!mouseLooking)
+                    return;
+
+
+                const dx =
+                    event.clientX -
+                    lastLookX;
+
+
+                const dy =
+                    event.clientY -
+                    lastLookY;
+
+
+                yaw -=
+                    dx *
+                    LOOK_SENSITIVITY_X;
+
+
+                pitch -=
+                    dy *
+                    LOOK_SENSITIVITY_Y;
+
+
+                pitch =
+                    Math.max(
+
+                        -PITCH_LIMIT,
+
+                        Math.min(
+
+                            PITCH_LIMIT,
+
+                            pitch
+
+                        )
+
+                    );
+
+
+                lastLookX =
+                    event.clientX;
+
+
+                lastLookY =
+                    event.clientY;
+
+
+                return;
+
+            }
+
+
+            if (
+                !activeTouches.has(
+                    event.pointerId
+                )
             )
                 return;
 
 
-            const dx =
-                e.clientX -
-                lastX;
+            event.preventDefault();
 
 
-            const dy =
-                e.clientY -
-                lastY;
+            activeTouches.set(
+
+                event.pointerId,
+
+                {
+
+                    x:
+                        event.clientX,
+
+                    y:
+                        event.clientY
+
+                }
+
+            );
 
 
-            lastX =
-                e.clientX;
+            if (
+                touchMode ===
+                "pinch"
+            ) {
+
+                const distance =
+                    getPinchDistance();
 
 
-            lastY =
-                e.clientY;
+                if (
+
+                    distance !== null &&
+
+                    previousPinchDistance !== null
+
+                ) {
+
+                    const delta =
+                        distance -
+                        previousPinchDistance;
 
 
-            yaw -=
-                dx *
-                LOOK_SENSITIVITY_X;
+                    camera.fov +=
+                        delta *
+                        .08;
 
 
-            pitch -=
-                dy *
-                LOOK_SENSITIVITY_Y;
+                    camera.fov =
+                        Math.max(
+
+                            MIN_FOV,
+
+                            Math.min(
+
+                                MAX_FOV,
+
+                                camera.fov
+
+                            )
+
+                        );
 
 
-            pitch =
-                Math.max(
+                    camera.updateProjectionMatrix();
 
-                    -PITCH_LIMIT,
-
-                    Math.min(
-                        PITCH_LIMIT,
-                        pitch
-                    )
-
-                );
+                }
 
 
-            updateCamera();
+                previousPinchDistance =
+                    distance;
 
+                return;
+
+            }
+
+
+            if (
+
+                touchMode ===
+                    "look" &&
+
+                event.pointerId ===
+                    lookPointerId
+
+            ) {
+
+                const dx =
+                    event.clientX -
+                    lastLookX;
+
+
+                const dy =
+                    event.clientY -
+                    lastLookY;
+
+
+                yaw -=
+                    dx *
+                    LOOK_SENSITIVITY_X;
+
+
+                pitch -=
+                    dy *
+                    LOOK_SENSITIVITY_Y;
+
+
+                pitch =
+                    Math.max(
+
+                        -PITCH_LIMIT,
+
+                        Math.min(
+
+                            PITCH_LIMIT,
+
+                            pitch
+
+                        )
+
+                    );
+
+
+                lastLookX =
+                    event.clientX;
+
+
+                lastLookY =
+                    event.clientY;
+
+            }
+
+        },
+
+        {
+            passive: false
         }
+
     );
 
 
-    const stopLooking =
-        e => {
+    function endTouch(event) {
 
-            looking =
+        if (
+            event.pointerType ===
+            "mouse"
+        ) {
+
+            mouseLooking =
                 false;
 
+            return;
 
-            try {
+        }
 
-                canvas.releasePointerCapture(
-                    e.pointerId
-                );
 
-            } catch (_) {}
+        if (
+            !activeTouches.has(
+                event.pointerId
+            )
+        )
+            return;
 
-        };
+
+        activeTouches.delete(
+            event.pointerId
+        );
+
+
+        if (
+            activeTouches.size === 0
+        ) {
+
+            touchMode =
+                "none";
+
+
+            lookPointerId =
+                null;
+
+
+            previousPinchDistance =
+                null;
+
+        }
+
+        else if (
+            activeTouches.size === 1
+        ) {
+
+            enterLookMode();
+
+        }
+
+    }
 
 
     canvas.addEventListener(
         "pointerup",
-        stopLooking
+        endTouch
     );
 
 
     canvas.addEventListener(
         "pointercancel",
-        stopLooking
-    );
-
-
-    canvas.addEventListener(
-        "lostpointercapture",
-        () => {
-
-            looking =
-                false;
-
-        }
+        endTouch
     );
 
 }
 
 
-/* =========================================================
-   搖桿
-========================================================= */
+/* ==================================================
+   JOYSTICK
+================================================== */
+
+const joystickBase =
+    document.getElementById(
+        "joystickBase"
+    );
+
+
+const joystickKnob =
+    document.getElementById(
+        "joystickKnob"
+    );
+
 
 let joystickPointerId =
     null;
 
 
-function setupJoystick() {
-
-    joystickBase.addEventListener(
-        "pointerdown",
-        e => {
-
-            if (falling)
-                return;
+let joystickActive =
+    false;
 
 
-            joystickPointerId =
-                e.pointerId;
+const JOYSTICK_RADIUS =
+    37;
 
 
-            joystickBase.classList.add(
-                "active"
-            );
+const JOYSTICK_DEAD_ZONE =
+    .12;
 
 
-            try {
+/* ==================================================
+   JOYSTICK CENTER
+================================================== */
 
-                joystickBase.setPointerCapture(
-                    e.pointerId
-                );
+function getJoystickCenter() {
 
-            } catch (_) {}
-
-
-            updateJoystick(
-
-                e.clientX,
-
-                e.clientY
-
-            );
-
-        }
-    );
+    const rect =
+        joystickBase
+            .getBoundingClientRect();
 
 
-    joystickBase.addEventListener(
-        "pointermove",
-        e => {
+    return {
 
-            if (
-                e.pointerId !==
-                joystickPointerId
-            )
-                return;
+        x:
+            rect.left +
+            rect.width / 2,
 
+        y:
+            rect.top +
+            rect.height / 2
 
-            updateJoystick(
-
-                e.clientX,
-
-                e.clientY
-
-            );
-
-        }
-    );
-
-
-    const endJoystick =
-        e => {
-
-            if (
-                e.pointerId !==
-                joystickPointerId
-            )
-                return;
-
-
-            resetJoystick();
-
-        };
-
-
-    joystickBase.addEventListener(
-        "pointerup",
-        endJoystick
-    );
-
-
-    joystickBase.addEventListener(
-        "pointercancel",
-        endJoystick
-    );
-
-
-    /*
-      不改變搖桿位置
-    */
-
-    joystickBase.addEventListener(
-        "lostpointercapture",
-        () => {}
-    );
+    };
 
 }
 
 
-/* =========================================================
-   更新搖桿
-========================================================= */
+/* ==================================================
+   JOYSTICK UPDATE
+================================================== */
 
 function updateJoystick(
     clientX,
     clientY
 ) {
 
-    const rect =
-        joystickBase.getBoundingClientRect();
-
-
-    const centerX =
-        rect.left +
-        rect.width / 2;
-
-
-    const centerY =
-        rect.top +
-        rect.height / 2;
+    const center =
+        getJoystickCenter();
 
 
     let dx =
         clientX -
-        centerX;
+        center.x;
 
 
     let dy =
         clientY -
-        centerY;
-
-
-    const maxDistance =
-        37;
+        center.y;
 
 
     const distance =
@@ -2296,73 +2481,109 @@ function updateJoystick(
 
     if (
         distance >
-        maxDistance
+        JOYSTICK_RADIUS
     ) {
 
-        dx =
-            dx / distance *
-            maxDistance;
+        const scale =
+            JOYSTICK_RADIUS /
+            distance;
 
 
-        dy =
-            dy / distance *
-            maxDistance;
+        dx *= scale;
+
+        dy *= scale;
 
     }
 
 
-    joystickKnob.style.left =
-        `calc(50% + ${dx}px)`;
-
-
-    joystickKnob.style.top =
-        `calc(50% + ${dy}px)`;
-
-
-    movement.x =
+    const x =
         dx /
-        maxDistance;
+        JOYSTICK_RADIUS;
 
 
-    movement.y =
+    const y =
         dy /
-        maxDistance;
+        JOYSTICK_RADIUS;
 
 
     const magnitude =
         Math.hypot(
-
-            movement.x,
-
-            movement.y
-
+            x,
+            y
         );
 
 
     if (
-        magnitude < .12
+        magnitude <
+        JOYSTICK_DEAD_ZONE
     ) {
 
         movement.x =
             0;
-
 
         movement.y =
             0;
 
     }
 
+    else {
+
+        const remappedMagnitude =
+            (
+                magnitude -
+                JOYSTICK_DEAD_ZONE
+            ) /
+            (
+                1 -
+                JOYSTICK_DEAD_ZONE
+            );
+
+
+        const scale =
+            remappedMagnitude /
+            magnitude;
+
+
+        movement.x =
+            x * scale;
+
+
+        movement.y =
+            y * scale;
+
+    }
+
+
+    joystickKnob.style.transform =
+
+        `translate(
+            calc(-50% + ${dx}px),
+            calc(-50% + ${dy}px)
+        )`;
+
 }
 
 
-/* =========================================================
-   重置搖桿
-========================================================= */
+/* ==================================================
+   STOP JOYSTICK
+================================================== */
 
-function resetJoystick() {
+function stopJoystick() {
 
     joystickPointerId =
         null;
+
+
+    joystickActive =
+        false;
+
+
+    movement.x =
+        0;
+
+
+    movement.y =
+        0;
 
 
     joystickBase.classList.remove(
@@ -2370,73 +2591,256 @@ function resetJoystick() {
     );
 
 
-    joystickKnob.style.left =
-        "50%";
-
-
-    joystickKnob.style.top =
-        "50%";
-
-
-    movement.x =
-        0;
-
-
-    movement.y =
-        0;
+    joystickKnob.style.transform =
+        "translate(-50%, -50%)";
 
 }
 
 
-/* =========================================================
-   Resize
-========================================================= */
+/* ==================================================
+   JOYSTICK SETUP
+================================================== */
 
-function onResize() {
+function setupJoystick() {
 
-    if (
-        !camera ||
-        !renderer
-    )
-        return;
+    joystickBase.addEventListener(
 
+        "pointerdown",
 
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
+        event => {
 
+            event.preventDefault();
 
-    camera.updateProjectionMatrix();
+            event.stopPropagation();
 
 
-    renderer.setSize(
+            if (
+                joystickPointerId !==
+                null
+            )
+                return;
 
-        window.innerWidth,
 
-        window.innerHeight
+            if (
+
+                event.pointerType !==
+                    "touch" &&
+
+                event.pointerType !==
+                    "pen"
+
+            )
+                return;
+
+
+            joystickPointerId =
+                event.pointerId;
+
+
+            joystickActive =
+                true;
+
+
+            joystickBase.classList.add(
+                "active"
+            );
+
+
+            try {
+
+                joystickBase.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+
+            catch (_) {}
+
+
+            updateJoystick(
+
+                event.clientX,
+
+                event.clientY
+
+            );
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "pointermove",
+
+        event => {
+
+            if (
+
+                !joystickActive ||
+
+                event.pointerId !==
+                    joystickPointerId
+
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            updateJoystick(
+
+                event.clientX,
+
+                event.clientY
+
+            );
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "pointerup",
+
+        event => {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "pointercancel",
+
+        event => {
+
+            if (
+                event.pointerId !==
+                joystickPointerId
+            )
+                return;
+
+
+            stopJoystick();
+
+        },
+
+        {
+            passive: false
+        }
+
+    );
+
+
+    joystickBase.addEventListener(
+
+        "lostpointercapture",
+
+        () => {
+
+        }
 
     );
 
 }
 
 
-/* =========================================================
-   失焦
-========================================================= */
+/* ==================================================
+   START
+================================================== */
 
-window.addEventListener(
-    "blur",
-    () => {
+document
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+        "click",
+        startGame
+    );
 
-        resetJoystick();
 
-    }
-);
+function startGame() {
+
+    if (started)
+        return;
 
 
-/* =========================================================
-   主迴圈
-========================================================= */
+    started = true;
+
+
+    titleRunning =
+        false;
+
+
+    stopJoystick();
+
+
+    document
+        .getElementById(
+            "title"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "hint"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "joystickArea"
+        )
+        .style.display =
+        "block";
+
+
+    createWorld();
+
+}
+
+
+/* ==================================================
+   GAME LOOP
+================================================== */
 
 function animate() {
 
@@ -2445,44 +2849,104 @@ function animate() {
     );
 
 
-    const delta =
-        Math.min(
-
-            clock.getDelta(),
-
-            .05
-
-        );
-
-
-    if (
-        chapter1Started
-    ) {
+    if (started) {
 
         updatePlayer();
 
-        updateEyes(
-            delta
-        );
+    }
 
-        updateFall(
-            delta
-        );
 
+    if (
+
+        renderer &&
+
+        scene &&
+
+        camera
+
+    ) {
 
         renderer.render(
-
             scene,
-
             camera
-
         );
 
     }
 
 }
 
+
+/* ==================================================
+   RESIZE
+================================================== */
+
+window.addEventListener(
+
+    "resize",
+
+    () => {
+
+        if (
+            !camera ||
+            !renderer
+        )
+            return;
+
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+
+            window.innerWidth,
+
+            window.innerHeight
+
+        );
+
+    }
+
+);
+
+
+/* ==================================================
+   RESET INPUT
+================================================== */
+
+window.addEventListener(
+
+    "blur",
+
+    () => {
+
+        stopJoystick();
+
+
+        activeTouches.clear();
+
+
+        touchMode =
+            "none";
+
+
+        lookPointerId =
+            null;
+
+
+        mouseLooking =
+            false;
+
+    }
+
+);
+
 </script>
 
 </body>
+
 </html>
