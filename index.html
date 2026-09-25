@@ -47,15 +47,10 @@ body {
 
     width: 100vw;
 
-    height: 100dvh; /* ← 這次唯一修改：100vh → 100dvh */
+    height: 100dvh;
 
     overflow: hidden;
 }
-
-
-/* ==================================================
-   TITLE
-================================================== */
 
 #title {
 
@@ -164,11 +159,6 @@ body {
 
 }
 
-
-/* ==================================================
-   THREE
-================================================== */
-
 #threeContainer {
 
     position: absolute;
@@ -176,11 +166,6 @@ body {
     inset: 0;
 
 }
-
-
-/* ==================================================
-   HINT
-================================================== */
 
 #hint {
 
@@ -208,11 +193,6 @@ body {
     pointer-events: none;
 
 }
-
-
-/* ==================================================
-   JOYSTICK
-================================================== */
 
 #joystickArea {
 
@@ -358,16 +338,9 @@ body {
 
 </head>
 
-
 <body>
 
-
 <div id="game">
-
-
-<!-- ==================================================
-     TITLE
-================================================== -->
 
 <div id="title">
 
@@ -376,7 +349,6 @@ body {
         <h1 id="titleText"></h1>
 
     </div>
-
 
     <div class="warning">
 
@@ -404,7 +376,6 @@ body {
 
     </div>
 
-
     <button
         id="startButton"
         class="startButton">
@@ -415,9 +386,7 @@ body {
 
 </div>
 
-
 <div id="threeContainer"></div>
-
 
 <div
     id="hint"
@@ -426,7 +395,6 @@ body {
     滑動畫面轉動視角
 
 </div>
-
 
 <div
     id="joystickArea"
@@ -442,18 +410,11 @@ body {
 
 </div>
 
-
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-
 <script>
-
-/* ==================================================
-   TITLE
-================================================== */
 
 const titleText =
     document.getElementById(
@@ -465,7 +426,6 @@ const titleWord =
 
 let titleRunning = true;
 
-
 function wait(ms) {
 
     return new Promise(
@@ -475,7 +435,6 @@ function wait(ms) {
 
 }
 
-
 function random(min, max) {
 
     return min +
@@ -484,13 +443,11 @@ function random(min, max) {
 
 }
 
-
 function smoothstep(t) {
 
     return t * t * (3 - 2 * t);
 
 }
-
 
 function createTitleLetters() {
 
@@ -527,7 +484,6 @@ function createTitleLetters() {
 
 }
 
-
 function fadeInLetter(letter) {
 
     return new Promise(resolve => {
@@ -537,7 +493,6 @@ function fadeInLetter(letter) {
 
         const start =
             performance.now();
-
 
         function animate(now) {
 
@@ -549,7 +504,6 @@ function fadeInLetter(letter) {
 
             }
 
-
             const progress =
                 Math.min(
                     (now - start) /
@@ -557,10 +511,8 @@ function fadeInLetter(letter) {
                     1
                 );
 
-
             letter.style.opacity =
                 smoothstep(progress);
-
 
             if (
                 progress < 1
@@ -583,7 +535,6 @@ function fadeInLetter(letter) {
 
         }
 
-
         requestAnimationFrame(
             animate
         );
@@ -591,7 +542,6 @@ function fadeInLetter(letter) {
     });
 
 }
-
 
 function startIrregularBreathing(letter) {
 
@@ -601,27 +551,21 @@ function startIrregularBreathing(letter) {
     )
         return;
 
-
     letter.dataset.breathing =
         "true";
-
 
     let state =
         "holdBright";
 
-
     let stateStart =
         performance.now();
-
 
     let stateDuration =
         random(1200, 2600);
 
-
     let startOpacity = 1;
 
     let targetOpacity = 1;
-
 
     function chooseNextState() {
 
@@ -665,22 +609,18 @@ function startIrregularBreathing(letter) {
 
         }
 
-
         stateStart =
             performance.now();
 
     }
-
 
     function animate(now) {
 
         if (!titleRunning)
             return;
 
-
         const elapsed =
             now - stateStart;
-
 
         const progress =
             Math.min(
@@ -688,7 +628,6 @@ function startIrregularBreathing(letter) {
                 stateDuration,
                 1
             );
-
 
         if (
             state ===
@@ -739,7 +678,6 @@ function startIrregularBreathing(letter) {
                 smoothstep(progress);
 
         }
-
 
         if (
             progress >= 1
@@ -817,13 +755,11 @@ function startIrregularBreathing(letter) {
 
         }
 
-
         requestAnimationFrame(
             animate
         );
 
     }
-
 
     requestAnimationFrame(
         animate
@@ -831,14 +767,12 @@ function startIrregularBreathing(letter) {
 
 }
 
-
 async function playTitleAnimation() {
 
     while (titleRunning) {
 
         const letters =
             createTitleLetters();
-
 
         for (
             let i = 0;
@@ -849,16 +783,13 @@ async function playTitleAnimation() {
             if (!titleRunning)
                 return;
 
-
             await fadeInLetter(
                 letters[i]
             );
 
-
             startIrregularBreathing(
                 letters[i]
             );
-
 
             await wait(
                 random(
@@ -869,7 +800,6 @@ async function playTitleAnimation() {
 
         }
 
-
         await wait(
             random(
                 2900,
@@ -877,13 +807,10 @@ async function playTitleAnimation() {
             )
         );
 
-
         if (!titleRunning)
             return;
 
-
         titleText.innerHTML = "";
-
 
         await wait(
             random(
@@ -896,13 +823,7 @@ async function playTitleAnimation() {
 
 }
 
-
 playTitleAnimation();
-
-
-/* ==================================================
-   THREE
-================================================== */
 
 let scene = null;
 
@@ -912,28 +833,19 @@ let renderer = null;
 
 let started = false;
 
-
-/* ==================================================
-   ROOM
-================================================== */
-
 const ROOM_WIDTH = 14;
 
 const ROOM_DEPTH = 14;
 
 const ROOM_HEIGHT = 10;
 
-
-/* ==================================================
-   PLAYER
-================================================== */
+const CHAPTER1_AUTO_RESET = true;
 
 const PLAYER_RADIUS = .28;
 
 const WALL_BUFFER = .01;
 
 const PLAYER_EYE_HEIGHT = 1.65;
-
 
 const player = {
 
@@ -945,41 +857,23 @@ const player = {
 
 };
 
-
-/* ==================================================
-   CAMERA
-================================================== */
-
 let yaw = 0;
 
 let pitch = 0;
 
-
 const PITCH_LIMIT = 1.0;
-
 
 const LOOK_SENSITIVITY_X =
     .0022;
 
-
 const LOOK_SENSITIVITY_Y =
     .0022;
-
-
-/* ==================================================
-   FOV
-================================================== */
 
 const MIN_FOV = 55;
 
 const MAX_FOV = 95;
 
 const DEFAULT_FOV = 75;
-
-
-/* ==================================================
-   MOVEMENT
-================================================== */
 
 const movement = {
 
@@ -989,11 +883,6 @@ const movement = {
 
 };
 
-
-/* ==================================================
-   COLLISION
-================================================== */
-
 function getPlayableBounds() {
 
     const halfW =
@@ -1001,7 +890,6 @@ function getPlayableBounds() {
 
     const halfD =
         ROOM_DEPTH / 2;
-
 
     return {
 
@@ -1029,7 +917,6 @@ function getPlayableBounds() {
 
 }
 
-
 function canPlayerOccupy(
     x,
     z
@@ -1037,7 +924,6 @@ function canPlayerOccupy(
 
     const bounds =
         getPlayableBounds();
-
 
     return (
 
@@ -1053,11 +939,6 @@ function canPlayerOccupy(
 
 }
 
-
-/* ==================================================
-   MOVEMENT RESOLUTION
-================================================== */
-
 function resolveMovement(
     moveX,
     moveZ
@@ -1066,11 +947,9 @@ function resolveMovement(
     const bounds =
         getPlayableBounds();
 
-
     const targetX =
         player.x +
         moveX;
-
 
     if (
         targetX >= bounds.minX &&
@@ -1095,11 +974,9 @@ function resolveMovement(
 
     }
 
-
     const targetZ =
         player.z +
         moveZ;
-
 
     if (
         targetZ >= bounds.minZ &&
@@ -1126,32 +1003,12 @@ function resolveMovement(
 
 }
 
-
-/* ==================================================
-   PLAYER MOVEMENT
-================================================== */
-
 function updatePlayer() {
 
     if (!camera)
         return;
 
-
     const speed = .08;
-
-
-    /*
-       ==================================================
-       唯一修改的地方
-
-       不再自己用 yaw 推算前方。
-
-       直接讀取相機目前真正面向的方向，
-       並把上下俯仰去掉，只保留水平方向。
-
-       這樣搖桿「向前」會跟相機真正看的方向一致。
-       ==================================================
-    */
 
     const cameraDirection =
         new THREE.Vector3();
@@ -1160,9 +1017,7 @@ function updatePlayer() {
         cameraDirection
     );
 
-
     cameraDirection.y = 0;
-
 
     if (
         cameraDirection.lengthSq() >
@@ -1173,21 +1028,11 @@ function updatePlayer() {
 
     }
 
-
     const forwardX =
         cameraDirection.x;
 
     const forwardZ =
         cameraDirection.z;
-
-
-    /*
-       水平右方向：
-
-       forward = (x, z)
-
-       right = (-z, x)
-    */
 
     const rightX =
         -forwardZ;
@@ -1195,45 +1040,37 @@ function updatePlayer() {
     const rightZ =
         forwardX;
 
-
     const inputForward =
         -movement.y;
 
     const inputRight =
         movement.x;
 
-
     let inputX = 0;
 
     let inputZ = 0;
-
 
     inputX +=
         forwardX *
         inputForward;
 
-
     inputZ +=
         forwardZ *
         inputForward;
-
 
     inputX +=
         rightX *
         inputRight;
 
-
     inputZ +=
         rightZ *
         inputRight;
-
 
     const length =
         Math.hypot(
             inputX,
             inputZ
         );
-
 
     if (
         length > 1
@@ -1247,7 +1084,6 @@ function updatePlayer() {
 
     }
 
-
     if (
         length > 0
     ) {
@@ -1256,11 +1092,9 @@ function updatePlayer() {
             inputX *
             speed;
 
-
         const moveZ =
             inputZ *
             speed;
-
 
         resolveMovement(
             moveX,
@@ -1269,15 +1103,9 @@ function updatePlayer() {
 
     }
 
-
     updateCamera();
 
 }
-
-
-/* ==================================================
-   CAMERA
-================================================== */
 
 function updateCamera() {
 
@@ -1291,36 +1119,932 @@ function updateCamera() {
 
     );
 
-
     camera.rotation.order =
         "YXZ";
 
-
     camera.rotation.y =
         yaw;
-
 
     camera.rotation.x =
         pitch;
 
 }
+    let chapter1Eyes = [];
 
+let chapter1FloorEye = null;
 
-/* ==================================================
-   CREATE WORLD
-================================================== */
+let chapter1Falling = false;
+
+let chapter1FallStart = 0;
+
+const chapter1TextureLoader =
+    new THREE.TextureLoader();
+
+const chapter1SocketTexture =
+    chapter1TextureLoader.load(
+        "eye_socket.png"
+    );
+
+const chapter1EyeballTexture =
+    chapter1TextureLoader.load(
+        "eyeball.png"
+    );
+
+chapter1SocketTexture.colorSpace =
+    THREE.SRGBColorSpace;
+
+chapter1EyeballTexture.colorSpace =
+    THREE.SRGBColorSpace;
+
+function createChapter1Eye(
+    position,
+    rotation,
+    scale,
+    isFloorEye = false
+) {
+
+    const group =
+        new THREE.Group();
+
+    group.position.copy(
+        position
+    );
+
+    group.rotation.copy(
+        rotation
+    );
+
+    const socketMaterial =
+        new THREE.MeshBasicMaterial({
+
+            map:
+                chapter1SocketTexture,
+
+            transparent:
+                true,
+
+            depthWrite:
+                false,
+
+            side:
+                THREE.DoubleSide
+
+        });
+
+    const socket =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                1.55,
+                1.12
+            ),
+
+            socketMaterial
+
+        );
+
+    const eyeballMaterial =
+        new THREE.MeshBasicMaterial({
+
+            map:
+                chapter1EyeballTexture,
+
+            transparent:
+                true,
+
+            depthWrite:
+                false,
+
+            side:
+                THREE.DoubleSide
+
+        });
+
+    const eyeball =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                0.72,
+                0.70
+            ),
+
+            eyeballMaterial
+
+        );
+
+    eyeball.position.z =
+        0.035;
+
+    group.add(
+        socket
+    );
+
+    group.add(
+        eyeball
+    );
+
+    group.scale.set(
+        scale,
+        scale,
+        scale
+    );
+
+    scene.add(
+        group
+    );
+
+    const eyeData = {
+
+        group:
+            group,
+
+        socket:
+            socket,
+
+        eyeball:
+            eyeball,
+
+        baseScale:
+            scale,
+
+        currentScale:
+            scale,
+
+        targetScale:
+            scale,
+
+        growth:
+            random(
+                0.0025,
+                0.006
+            ),
+
+        eyeOffset:
+            random(
+                0,
+                Math.PI * 2
+            ),
+
+        phase:
+            random(
+                0,
+                Math.PI * 2
+            ),
+
+        isFloorEye:
+            isFloorEye,
+
+        active:
+            true
+
+    };
+
+    chapter1Eyes.push(
+        eyeData
+    );
+
+    if (isFloorEye) {
+
+        chapter1FloorEye =
+            eyeData;
+
+    }
+
+    return eyeData;
+
+}
+
+function updateChapter1EyeTracking() {
+
+    if (!camera)
+        return;
+
+    const playerPosition =
+        camera.position;
+
+    for (
+        const eye of chapter1Eyes
+    ) {
+
+        if (
+            !eye.active
+        )
+            continue;
+
+        const worldEyePosition =
+            new THREE.Vector3();
+
+        eye.group.getWorldPosition(
+            worldEyePosition
+        );
+
+        const direction =
+            playerPosition.clone()
+                .sub(worldEyePosition);
+
+        eye.group.worldToLocal(
+            direction
+                .add(worldEyePosition)
+        );
+
+        const maxOffset =
+            0.105;
+
+        const offsetX =
+            THREE.MathUtils.clamp(
+                direction.x * 0.035,
+                -maxOffset,
+                maxOffset
+            );
+
+        const offsetY =
+            THREE.MathUtils.clamp(
+                direction.y * 0.035,
+                -maxOffset,
+                maxOffset
+            );
+
+        const time =
+            performance.now() *
+            0.0007;
+
+        const idleX =
+            Math.sin(
+                time +
+                eye.phase
+            ) *
+            0.006;
+
+        const idleY =
+            Math.cos(
+                time * 0.83 +
+                eye.phase
+            ) *
+            0.004;
+
+        eye.eyeball.position.x =
+            offsetX +
+            idleX;
+
+        eye.eyeball.position.y =
+            offsetY +
+            idleY;
+
+    }
+
+}
+
+function updateChapter1EyeGrowth() {
+
+    if (!camera)
+        return;
+
+    for (
+        const eye of chapter1Eyes
+    ) {
+
+        if (
+            !eye.active
+        )
+            continue;
+
+        const distance =
+            eye.group.position.distanceTo(
+                camera.position
+            );
+
+        const proximity =
+            THREE.MathUtils.clamp(
+                1 -
+                distance / 11,
+                0,
+                1
+            );
+
+        eye.targetScale +=
+            eye.growth *
+            (
+                0.35 +
+                proximity * 1.65
+            );
+
+        eye.targetScale =
+            Math.min(
+                eye.targetScale,
+                eye.baseScale * 6
+            );
+
+        eye.currentScale =
+            THREE.MathUtils.lerp(
+                eye.currentScale,
+                eye.targetScale,
+                0.035
+            );
+
+        eye.group.scale.set(
+            eye.currentScale,
+            eye.currentScale,
+            eye.currentScale
+        );
+
+    }
+
+}
+
+function checkChapter1FloorHole() {
+
+    if (
+        chapter1Falling ||
+        !chapter1FloorEye
+    )
+        return;
+
+    const eye =
+        chapter1FloorEye;
+
+    const dx =
+        player.x -
+        eye.group.position.x;
+
+    const dz =
+        player.z -
+        eye.group.position.z;
+
+    const distance =
+        Math.hypot(
+            dx,
+            dz
+        );
+
+    if (
+        distance < 0.72
+    ) {
+
+        triggerChapter1Fall();
+
+    }
+
+}
+
+function triggerChapter1Fall() {
+
+    if (chapter1Falling)
+        return;
+
+    chapter1Falling =
+        true;
+
+    chapter1FallStart =
+        performance.now();
+
+    if (
+        chapter1FloorEye
+    ) {
+
+        chapter1FloorEye.active =
+            false;
+
+        scene.remove(
+            chapter1FloorEye.group
+        );
+
+    }
+
+}
+
+let chapter1HoleMesh = null;
+
+function createChapter1Hole(
+    position
+) {
+
+    const material =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0x000000,
+
+            transparent:
+                true,
+
+            opacity:
+                0,
+
+            side:
+                THREE.DoubleSide,
+
+            depthWrite:
+                false
+
+        });
+
+    const hole =
+        new THREE.Mesh(
+
+            new THREE.CircleGeometry(
+                1.15,
+                48
+            ),
+
+            material
+
+        );
+
+    hole.rotation.x =
+        -Math.PI / 2;
+
+    hole.position.copy(
+        position
+    );
+
+    hole.position.y =
+        -0.006;
+
+    scene.add(
+        hole
+    );
+
+    chapter1HoleMesh =
+        hole;
+
+    return hole;
+
+}
+
+function updateChapter1Fall() {
+
+    if (
+        !chapter1Falling
+    )
+        return;
+
+    const elapsed =
+        performance.now() -
+        chapter1FallStart;
+
+    const progress =
+        Math.min(
+            elapsed / 1000,
+            1
+        );
+
+    if (
+        chapter1HoleMesh
+    ) {
+
+        chapter1HoleMesh.material.opacity =
+            Math.min(
+                progress * 1.8,
+                1
+            );
+
+    }
+
+    const fallAmount =
+        progress *
+        progress *
+        3.5;
+
+    camera.position.y =
+        PLAYER_EYE_HEIGHT -
+        fallAmount;
+
+    camera.fov =
+        THREE.MathUtils.lerp(
+            DEFAULT_FOV,
+            100,
+            progress
+        );
+
+    camera.updateProjectionMatrix();
+
+    if (
+        elapsed > 900
+    ) {
+
+        renderer.setClearColor(
+            0x000000
+        );
+
+    }
+
+    if (
+        elapsed > 1200
+    ) {
+
+        resetChapter1();
+
+    }
+
+}
+
+function createChapter1Eyes() {
+
+    chapter1Eyes = [];
+
+    chapter1FloorEye = null;
+
+    chapter1Falling = false;
+
+    chapter1FallStart = 0;
+
+    const wallCount =
+        18;
+
+    const floorCount =
+        16;
+
+    const ceilingCount =
+        16;
+
+    for (
+        let i = 0;
+        i < wallCount;
+        i++
+    ) {
+
+        const x =
+            random(
+                -6.1,
+                6.1
+            );
+
+        const y =
+            random(
+                0.8,
+                9.1
+            );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                x,
+                y,
+                -6.94
+            ),
+
+            new THREE.Euler(
+                0,
+                0,
+                0
+            ),
+
+            random(
+                0.32,
+                0.58
+            )
+
+        );
+
+    }
+
+    for (
+        let i = 0;
+        i < wallCount;
+        i++
+    ) {
+
+        const x =
+            random(
+                -6.1,
+                6.1
+            );
+
+        const y =
+            random(
+                0.8,
+                9.1
+            );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                x,
+                y,
+                6.94
+            ),
+
+            new THREE.Euler(
+                0,
+                Math.PI,
+                0
+            ),
+
+            random(
+                0.32,
+                0.58
+            )
+
+        );
+
+    }
+
+    for (
+        let i = 0;
+        i < wallCount;
+        i++
+    ) {
+
+        const z =
+            random(
+                -6.1,
+                6.1
+            );
+
+        const y =
+            random(
+                0.8,
+                9.1
+            );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                -6.94,
+                y,
+                z
+            ),
+
+            new THREE.Euler(
+                0,
+                -Math.PI / 2,
+                0
+            ),
+
+            random(
+                0.32,
+                0.58
+            )
+
+        );
+
+    }
+
+    for (
+        let i = 0;
+        i < wallCount;
+        i++
+    ) {
+
+        const z =
+            random(
+                -6.1,
+                6.1
+            );
+
+        const y =
+            random(
+                0.8,
+                9.1
+            );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                6.94,
+                y,
+                z
+            ),
+
+            new THREE.Euler(
+                0,
+                Math.PI / 2,
+                0
+            ),
+
+            random(
+                0.32,
+                0.58
+            )
+
+        );
+
+        }
+        for (
+        let i = 0;
+        i < floorCount;
+        i++
+    ) {
+
+        let x;
+        let z;
+
+        do {
+
+            x =
+                random(
+                    -6.1,
+                    6.1
+                );
+
+            z =
+                random(
+                    -6.1,
+                    6.1
+                );
+
+        }
+
+        while (
+
+            Math.hypot(
+                x - player.x,
+                z - player.z
+            ) < 1.8
+
+        );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                x,
+                0.02,
+                z
+            ),
+
+            new THREE.Euler(
+                -Math.PI / 2,
+                0,
+                0
+            ),
+
+            random(
+                0.25,
+                0.48
+            ),
+
+            false
+
+        );
+
+    }
+
+    const holeX =
+        random(
+            -4.5,
+            4.5
+        );
+
+    const holeZ =
+        random(
+            -5.2,
+            -2.5
+        );
+
+    createChapter1Eye(
+
+        new THREE.Vector3(
+            holeX,
+            0.025,
+            holeZ
+        ),
+
+        new THREE.Euler(
+            -Math.PI / 2,
+            0,
+            0
+        ),
+
+        0.62,
+
+        true
+
+    );
+
+    createChapter1Hole(
+
+        new THREE.Vector3(
+            holeX,
+            0,
+            holeZ
+        )
+
+    );
+
+    for (
+        let i = 0;
+        i < ceilingCount;
+        i++
+    ) {
+
+        const x =
+            random(
+                -6.1,
+                6.1
+            );
+
+        const z =
+            random(
+                -6.1,
+                6.1
+            );
+
+        createChapter1Eye(
+
+            new THREE.Vector3(
+                x,
+                9.98,
+                z
+            ),
+
+            new THREE.Euler(
+                Math.PI / 2,
+                0,
+                0
+            ),
+
+            random(
+                0.28,
+                0.52
+            )
+
+        );
+
+    }
+
+}
+
+function updateChapter1() {
+
+    if (
+        !started ||
+        !scene ||
+        !camera
+    )
+        return;
+
+    updateChapter1EyeTracking();
+
+    updateChapter1EyeGrowth();
+
+    checkChapter1FloorHole();
+
+    updateChapter1Fall();
+
+}
+
+function resetChapter1() {
+
+    chapter1Falling =
+        false;
+
+    chapter1FallStart =
+        0;
+
+    player.x =
+        0;
+
+    player.y =
+        PLAYER_EYE_HEIGHT;
+
+    player.z =
+        4;
+
+    yaw =
+        0;
+
+    pitch =
+        0;
+
+    camera.fov =
+        DEFAULT_FOV;
+
+    camera.updateProjectionMatrix();
+
+    if (
+        chapter1HoleMesh
+    ) {
+
+        chapter1HoleMesh.material.opacity =
+            0;
+
+    }
+
+    for (
+        const eye of chapter1Eyes
+    ) {
+
+        scene.remove(
+            eye.group
+        );
+
+    }
+
+    createChapter1Eyes();
+
+    updateCamera();
+
+}
 
 function createWorld() {
 
     scene =
         new THREE.Scene();
 
-
     scene.background =
         new THREE.Color(
             0xb0b0b0
         );
-
 
     camera =
         new THREE.PerspectiveCamera(
@@ -1336,7 +2060,6 @@ function createWorld() {
 
         );
 
-
     camera.position.set(
 
         player.x,
@@ -1347,14 +2070,12 @@ function createWorld() {
 
     );
 
-
     renderer =
         new THREE.WebGLRenderer({
 
             antialias: true
 
         });
-
 
     renderer.setPixelRatio(
 
@@ -1368,7 +2089,6 @@ function createWorld() {
 
     );
 
-
     renderer.setSize(
 
         window.innerWidth,
@@ -1377,7 +2097,6 @@ function createWorld() {
 
     );
 
-
     document
         .getElementById(
             "threeContainer"
@@ -1385,7 +2104,6 @@ function createWorld() {
         .appendChild(
             renderer.domElement
         );
-
 
     scene.add(
 
@@ -1399,24 +2117,17 @@ function createWorld() {
 
     );
 
-
     createRoom();
 
+    createChapter1Eyes();
 
     setupTouch();
 
-
     setupJoystick();
-
 
     animate();
 
 }
-
-
-/* ==================================================
-   ROOM
-================================================== */
 
 function createRoom() {
 
@@ -1428,7 +2139,6 @@ function createRoom() {
 
     const D =
         ROOM_DEPTH;
-
 
     const floor =
         new THREE.Mesh(
@@ -1449,15 +2159,12 @@ function createRoom() {
 
         );
 
-
     floor.rotation.x =
         -Math.PI / 2;
-
 
     scene.add(
         floor
     );
-
 
     const ceiling =
         new THREE.Mesh(
@@ -1478,19 +2185,15 @@ function createRoom() {
 
         );
 
-
     ceiling.rotation.x =
         Math.PI / 2;
-
 
     ceiling.position.y =
         H;
 
-
     scene.add(
         ceiling
     );
-
 
     const front =
         createWall(
@@ -1498,7 +2201,6 @@ function createRoom() {
             H,
             0xc2c2c2
         );
-
 
     front.position.set(
 
@@ -1510,11 +2212,9 @@ function createRoom() {
 
     );
 
-
     scene.add(
         front
     );
-
 
     const back =
         createWall(
@@ -1522,7 +2222,6 @@ function createRoom() {
             H,
             0xb7b7b7
         );
-
 
     back.position.set(
 
@@ -1534,11 +2233,9 @@ function createRoom() {
 
     );
 
-
     scene.add(
         back
     );
-
 
     const left =
         createWall(
@@ -1547,10 +2244,8 @@ function createRoom() {
             0xaeaeae
         );
 
-
     left.rotation.y =
         Math.PI / 2;
-
 
     left.position.set(
 
@@ -1562,11 +2257,9 @@ function createRoom() {
 
     );
 
-
     scene.add(
         left
     );
-
 
     const right =
         createWall(
@@ -1575,10 +2268,8 @@ function createRoom() {
             0xa6a6a6
         );
 
-
     right.rotation.y =
         Math.PI / 2;
-
 
     right.position.set(
 
@@ -1590,18 +2281,15 @@ function createRoom() {
 
     );
 
-
     scene.add(
         right
     );
-
 
     createRoomEdges(
         W,
         H,
         D
     );
-
 
     createInvisibleCollisionWalls(
         W,
@@ -1610,7 +2298,6 @@ function createRoom() {
     );
 
 }
-
 
 function createWall(
     width,
@@ -1638,11 +2325,6 @@ function createWall(
 
 }
 
-
-/* ==================================================
-   INVISIBLE 3D WALLS
-================================================== */
-
 function createInvisibleCollisionWalls(
     W,
     H,
@@ -1660,10 +2342,8 @@ function createInvisibleCollisionWalls(
 
         });
 
-
     const thickness =
         .45;
-
 
     const front =
         new THREE.Mesh(
@@ -1682,7 +2362,6 @@ function createInvisibleCollisionWalls(
 
         );
 
-
     front.position.set(
 
         0,
@@ -1694,14 +2373,11 @@ function createInvisibleCollisionWalls(
 
     );
 
-
     front.visible = false;
-
 
     scene.add(
         front
     );
-
 
     const back =
         new THREE.Mesh(
@@ -1720,7 +2396,6 @@ function createInvisibleCollisionWalls(
 
         );
 
-
     back.position.set(
 
         0,
@@ -1732,14 +2407,11 @@ function createInvisibleCollisionWalls(
 
     );
 
-
     back.visible = false;
-
 
     scene.add(
         back
     );
-
 
     const left =
         new THREE.Mesh(
@@ -1758,7 +2430,6 @@ function createInvisibleCollisionWalls(
 
         );
 
-
     left.position.set(
 
         -W / 2 +
@@ -1770,14 +2441,11 @@ function createInvisibleCollisionWalls(
 
     );
 
-
     left.visible = false;
-
 
     scene.add(
         left
     );
-
 
     const right =
         new THREE.Mesh(
@@ -1796,7 +2464,6 @@ function createInvisibleCollisionWalls(
 
         );
 
-
     right.position.set(
 
         W / 2 -
@@ -1808,20 +2475,13 @@ function createInvisibleCollisionWalls(
 
     );
 
-
     right.visible = false;
-
 
     scene.add(
         right
     );
 
 }
-
-
-/* ==================================================
-   ROOM EDGES
-================================================== */
 
 function createRoomEdges(
     W,
@@ -1836,12 +2496,10 @@ function createRoomEdges(
             D
         );
 
-
     const edges =
         new THREE.EdgesGeometry(
             geometry
         );
-
 
     const material =
         new THREE.LineBasicMaterial({
@@ -1854,7 +2512,6 @@ function createRoomEdges(
 
         });
 
-
     const lines =
         new THREE.LineSegments(
 
@@ -1864,10 +2521,8 @@ function createRoomEdges(
 
         );
 
-
     lines.position.y =
         H / 2;
-
 
     scene.add(
         lines
@@ -1875,35 +2530,24 @@ function createRoomEdges(
 
 }
 
-
-/* ==================================================
-   TOUCH
-================================================== */
-
 const activeTouches =
     new Map();
-
 
 let touchMode =
     "none";
 
-
 let lookPointerId =
     null;
-
 
 let lastLookX = 0;
 
 let lastLookY = 0;
 
-
 let previousPinchDistance =
     null;
 
-
 let mouseLooking =
     false;
-
 
 function getPinchDistance() {
 
@@ -1912,19 +2556,16 @@ function getPinchDistance() {
             activeTouches.values()
         );
 
-
     if (
         points.length < 2
     )
         return null;
-
 
     const a =
         points[0];
 
     const b =
         points[1];
-
 
     return Math.hypot(
 
@@ -1936,22 +2577,18 @@ function getPinchDistance() {
 
 }
 
-
 function enterPinchMode() {
 
     touchMode =
         "pinch";
 
-
     lookPointerId =
         null;
-
 
     previousPinchDistance =
         getPinchDistance();
 
 }
-
 
 function enterLookMode() {
 
@@ -1959,7 +2596,6 @@ function enterLookMode() {
         Array.from(
             activeTouches.entries()
         );
-
 
     if (
         entries.length !== 1
@@ -1975,48 +2611,35 @@ function enterLookMode() {
 
     }
 
-
     const [
         id,
         point
     ] = entries[0];
 
-
     touchMode =
         "look";
-
 
     lookPointerId =
         id;
 
-
     lastLookX =
         point.x;
 
-
     lastLookY =
         point.y;
-
 
     previousPinchDistance =
         null;
 
 }
 
-
-/* ==================================================
-   TOUCH SETUP
-================================================== */
-
 function setupTouch() {
 
     const canvas =
         renderer.domElement;
 
-
     canvas.style.touchAction =
         "none";
-
 
     canvas.addEventListener(
 
@@ -2034,26 +2657,20 @@ function setupTouch() {
                 )
                     return;
 
-
                 mouseLooking =
                     true;
-
 
                 lastLookX =
                     event.clientX;
 
-
                 lastLookY =
                     event.clientY;
-
 
                 return;
 
             }
 
-
             event.preventDefault();
-
 
             activeTouches.set(
 
@@ -2071,7 +2688,6 @@ function setupTouch() {
 
             );
 
-
             if (
                 activeTouches.size ===
                 1
@@ -2080,14 +2696,11 @@ function setupTouch() {
                 touchMode =
                     "look";
 
-
                 lookPointerId =
                     event.pointerId;
 
-
                 lastLookX =
                     event.clientX;
-
 
                 lastLookY =
                     event.clientY;
@@ -2107,9 +2720,7 @@ function setupTouch() {
         }
 
     );
-
-
-    canvas.addEventListener(
+        canvas.addEventListener(
 
         "pointermove",
 
@@ -2123,26 +2734,21 @@ function setupTouch() {
                 if (!mouseLooking)
                     return;
 
-
                 const dx =
                     event.clientX -
                     lastLookX;
-
 
                 const dy =
                     event.clientY -
                     lastLookY;
 
-
                 yaw -=
                     dx *
                     LOOK_SENSITIVITY_X;
 
-
                 pitch -=
                     dy *
                     LOOK_SENSITIVITY_Y;
-
 
                 pitch =
                     Math.max(
@@ -2159,19 +2765,15 @@ function setupTouch() {
 
                     );
 
-
                 lastLookX =
                     event.clientX;
-
 
                 lastLookY =
                     event.clientY;
 
-
                 return;
 
             }
-
 
             if (
                 !activeTouches.has(
@@ -2180,9 +2782,7 @@ function setupTouch() {
             )
                 return;
 
-
             event.preventDefault();
-
 
             activeTouches.set(
 
@@ -2200,7 +2800,6 @@ function setupTouch() {
 
             );
 
-
             if (
                 touchMode ===
                 "pinch"
@@ -2208,7 +2807,6 @@ function setupTouch() {
 
                 const distance =
                     getPinchDistance();
-
 
                 if (
 
@@ -2222,11 +2820,9 @@ function setupTouch() {
                         distance -
                         previousPinchDistance;
 
-
                     camera.fov +=
                         delta *
                         .08;
-
 
                     camera.fov =
                         Math.max(
@@ -2243,11 +2839,9 @@ function setupTouch() {
 
                         );
 
-
                     camera.updateProjectionMatrix();
 
                 }
-
 
                 previousPinchDistance =
                     distance;
@@ -2255,7 +2849,6 @@ function setupTouch() {
                 return;
 
             }
-
 
             if (
 
@@ -2271,21 +2864,17 @@ function setupTouch() {
                     event.clientX -
                     lastLookX;
 
-
                 const dy =
                     event.clientY -
                     lastLookY;
-
 
                 yaw -=
                     dx *
                     LOOK_SENSITIVITY_X;
 
-
                 pitch -=
                     dy *
                     LOOK_SENSITIVITY_Y;
-
 
                 pitch =
                     Math.max(
@@ -2302,10 +2891,8 @@ function setupTouch() {
 
                     );
 
-
                 lastLookX =
                     event.clientX;
-
 
                 lastLookY =
                     event.clientY;
@@ -2319,7 +2906,6 @@ function setupTouch() {
         }
 
     );
-
 
     function endTouch(event) {
 
@@ -2335,7 +2921,6 @@ function setupTouch() {
 
         }
 
-
         if (
             !activeTouches.has(
                 event.pointerId
@@ -2343,11 +2928,9 @@ function setupTouch() {
         )
             return;
 
-
         activeTouches.delete(
             event.pointerId
         );
-
 
         if (
             activeTouches.size === 0
@@ -2356,10 +2939,8 @@ function setupTouch() {
             touchMode =
                 "none";
 
-
             lookPointerId =
                 null;
-
 
             previousPinchDistance =
                 null;
@@ -2376,12 +2957,10 @@ function setupTouch() {
 
     }
 
-
     canvas.addEventListener(
         "pointerup",
         endTouch
     );
-
 
     canvas.addEventListener(
         "pointercancel",
@@ -2390,49 +2969,33 @@ function setupTouch() {
 
 }
 
-
-/* ==================================================
-   JOYSTICK
-================================================== */
-
 const joystickBase =
     document.getElementById(
         "joystickBase"
     );
-
 
 const joystickKnob =
     document.getElementById(
         "joystickKnob"
     );
 
-
 let joystickPointerId =
     null;
-
 
 let joystickActive =
     false;
 
-
 const JOYSTICK_RADIUS =
     37;
 
-
 const JOYSTICK_DEAD_ZONE =
     .12;
-
-
-/* ==================================================
-   JOYSTICK CENTER
-================================================== */
 
 function getJoystickCenter() {
 
     const rect =
         joystickBase
             .getBoundingClientRect();
-
 
     return {
 
@@ -2448,11 +3011,6 @@ function getJoystickCenter() {
 
 }
 
-
-/* ==================================================
-   JOYSTICK UPDATE
-================================================== */
-
 function updateJoystick(
     clientX,
     clientY
@@ -2461,23 +3019,19 @@ function updateJoystick(
     const center =
         getJoystickCenter();
 
-
     let dx =
         clientX -
         center.x;
 
-
     let dy =
         clientY -
         center.y;
-
 
     const distance =
         Math.hypot(
             dx,
             dy
         );
-
 
     if (
         distance >
@@ -2488,30 +3042,25 @@ function updateJoystick(
             JOYSTICK_RADIUS /
             distance;
 
-
         dx *= scale;
 
         dy *= scale;
 
     }
 
-
     const x =
         dx /
         JOYSTICK_RADIUS;
 
-
     const y =
         dy /
         JOYSTICK_RADIUS;
-
 
     const magnitude =
         Math.hypot(
             x,
             y
         );
-
 
     if (
         magnitude <
@@ -2538,21 +3087,17 @@ function updateJoystick(
                 JOYSTICK_DEAD_ZONE
             );
 
-
         const scale =
             remappedMagnitude /
             magnitude;
 
-
         movement.x =
             x * scale;
-
 
         movement.y =
             y * scale;
 
     }
-
 
     joystickKnob.style.transform =
 
@@ -2563,43 +3108,28 @@ function updateJoystick(
 
 }
 
-
-/* ==================================================
-   STOP JOYSTICK
-================================================== */
-
 function stopJoystick() {
 
     joystickPointerId =
         null;
 
-
     joystickActive =
         false;
-
 
     movement.x =
         0;
 
-
     movement.y =
         0;
-
 
     joystickBase.classList.remove(
         "active"
     );
 
-
     joystickKnob.style.transform =
         "translate(-50%, -50%)";
 
 }
-
-
-/* ==================================================
-   JOYSTICK SETUP
-================================================== */
 
 function setupJoystick() {
 
@@ -2613,13 +3143,11 @@ function setupJoystick() {
 
             event.stopPropagation();
 
-
             if (
                 joystickPointerId !==
                 null
             )
                 return;
-
 
             if (
 
@@ -2632,19 +3160,15 @@ function setupJoystick() {
             )
                 return;
 
-
             joystickPointerId =
                 event.pointerId;
-
 
             joystickActive =
                 true;
 
-
             joystickBase.classList.add(
                 "active"
             );
-
 
             try {
 
@@ -2655,7 +3179,6 @@ function setupJoystick() {
             }
 
             catch (_) {}
-
 
             updateJoystick(
 
@@ -2672,7 +3195,6 @@ function setupJoystick() {
         }
 
     );
-
 
     joystickBase.addEventListener(
 
@@ -2690,11 +3212,9 @@ function setupJoystick() {
             )
                 return;
 
-
             event.preventDefault();
 
             event.stopPropagation();
-
 
             updateJoystick(
 
@@ -2712,7 +3232,6 @@ function setupJoystick() {
 
     );
 
-
     joystickBase.addEventListener(
 
         "pointerup",
@@ -2725,11 +3244,9 @@ function setupJoystick() {
             )
                 return;
 
-
             event.preventDefault();
 
             event.stopPropagation();
-
 
             stopJoystick();
 
@@ -2740,7 +3257,6 @@ function setupJoystick() {
         }
 
     );
-
 
     joystickBase.addEventListener(
 
@@ -2754,7 +3270,6 @@ function setupJoystick() {
             )
                 return;
 
-
             stopJoystick();
 
         },
@@ -2764,7 +3279,6 @@ function setupJoystick() {
         }
 
     );
-
 
     joystickBase.addEventListener(
 
@@ -2778,11 +3292,6 @@ function setupJoystick() {
 
 }
 
-
-/* ==================================================
-   START
-================================================== */
-
 document
     .getElementById(
         "startButton"
@@ -2792,22 +3301,17 @@ document
         startGame
     );
 
-
 function startGame() {
 
     if (started)
         return;
 
-
     started = true;
-
 
     titleRunning =
         false;
 
-
     stopJoystick();
-
 
     document
         .getElementById(
@@ -2816,14 +3320,12 @@ function startGame() {
         .style.display =
         "none";
 
-
     document
         .getElementById(
             "hint"
         )
         .style.display =
         "block";
-
 
     document
         .getElementById(
@@ -2832,15 +3334,9 @@ function startGame() {
         .style.display =
         "block";
 
-
     createWorld();
 
 }
-
-
-/* ==================================================
-   GAME LOOP
-================================================== */
 
 function animate() {
 
@@ -2848,13 +3344,13 @@ function animate() {
         animate
     );
 
-
     if (started) {
 
         updatePlayer();
 
-    }
+        updateChapter1();
 
+    }
 
     if (
 
@@ -2875,11 +3371,6 @@ function animate() {
 
 }
 
-
-/* ==================================================
-   RESIZE
-================================================== */
-
 window.addEventListener(
 
     "resize",
@@ -2892,14 +3383,11 @@ window.addEventListener(
         )
             return;
 
-
         camera.aspect =
             window.innerWidth /
             window.innerHeight;
 
-
         camera.updateProjectionMatrix();
-
 
         renderer.setSize(
 
@@ -2913,11 +3401,6 @@ window.addEventListener(
 
 );
 
-
-/* ==================================================
-   RESET INPUT
-================================================== */
-
 window.addEventListener(
 
     "blur",
@@ -2926,17 +3409,13 @@ window.addEventListener(
 
         stopJoystick();
 
-
         activeTouches.clear();
-
 
         touchMode =
             "none";
 
-
         lookPointerId =
             null;
-
 
         mouseLooking =
             false;
