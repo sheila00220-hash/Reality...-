@@ -1,4320 +1,480 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,
-    initial-scale=1.0,
-    maximum-scale=1.0,
-    user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Reality...?</title>
-
 <style>
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-
-    width: 100%;
-    height: 100%;
-
-    margin: 0;
-
-    overflow: hidden;
-
-    background: #000;
-
-    touch-action: none;
-
-    font-family:
-        Arial,
-        "Noto Sans TC",
-        sans-serif;
-}
-
-#game {
-
-    position: relative;
-
-    width: 100vw;
-
-    height: 100dvh;
-
-    overflow: hidden;
-}
-
-
-/* ==================================================
-   TITLE
-================================================== */
-
-#title {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 100;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #000;
-
-    color: #fff;
-
-    text-align: center;
-}
-
-.titleWrapper {
-
-    width: 100vw;
-
-    height: 1.2em;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-#titleText {
-
-    margin: 0;
-
-    padding: 0;
-
-    font-size:
-        clamp(48px, 11vw, 104px);
-
-    font-weight: 300;
-
-    line-height: 1;
-
-    letter-spacing: 0;
-
-    white-space: nowrap;
-
-    color: #f5f5f5;
-}
-
-.titleLetter {
-
-    display: inline;
-
-    opacity: 0;
-
-    margin: 0;
-
-    padding: 0;
-}
-
-.warning {
-
-    width: 88%;
-
-    max-width: 600px;
-
-    margin-top: 55px;
-
-    color: #cfcfcf;
-
-    font-size: 14px;
-
-    line-height: 1.8;
-}
-
-.startButton {
-
-    margin-top: 25px;
-
-    padding: 14px 30px;
-
-    border: 1px solid #aaa;
-
-    background: transparent;
-
-    color: white;
-
-    font-size: 17px;
-
-    letter-spacing: 2px;
-
-    touch-action: manipulation;
-}
-
-
-/* ==================================================
-   THREE
-================================================== */
-
-#threeContainer {
-
-    position: absolute;
-
-    inset: 0;
-}
-
-
-/* ==================================================
-   HINT
-================================================== */
-
-#hint {
-
-    position: absolute;
-
-    top: 15px;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    z-index: 20;
-
-    padding: 7px 12px;
-
-    border-radius: 5px;
-
-    background:
-        rgba(0,0,0,.35);
-
-    color: white;
-
-    font-size: 13px;
-
-    pointer-events: none;
-}
-
-
-/* ==================================================
-   JOYSTICK
-================================================== */
-
-#joystickArea {
-
-    position: absolute;
-
-    left: 18px;
-
-    bottom: 22px;
-
-    width: 150px;
-
-    height: 150px;
-
-    z-index: 50;
-
-    pointer-events: none;
-}
-
-#joystickBase {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 130px;
-
-    height: 130px;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background:
-        rgba(0,0,0,.28);
-
-    border:
-        1px solid
-        rgba(255,255,255,.35);
-
-    pointer-events: auto;
-
-    touch-action: none;
-}
-
-#joystickRing {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 86px;
-
-    height: 86px;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    border:
-        1px solid
-        rgba(255,255,255,.16);
-
-    pointer-events: none;
-}
-
-#joystickKnob {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 56px;
-
-    height: 56px;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.22);
-
-    border:
-        1px solid
-        rgba(255,255,255,.65);
-
-    pointer-events: none;
-}
-
-#joystickBase.active {
-
-    background:
-        rgba(0,0,0,.36);
-}
-
-#joystickBase.active
-#joystickKnob {
-
-    background:
-        rgba(255,255,255,.32);
-}
-
-@media (max-width:420px) {
-
-    #joystickArea {
-
-        left: 12px;
-
-        bottom: 15px;
-
-        width: 140px;
-
-        height: 140px;
-    }
-
-    #joystickBase {
-
-        width: 120px;
-
-        height: 120px;
-    }
-
-}
-
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000;touch-action:none;font-family:Arial,"Noto Sans TC",sans-serif}
+#game{position:relative;width:100vw;height:100dvh;overflow:hidden}
+#title{position:absolute;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;color:#fff;text-align:center}
+.titleWrapper{width:100vw;height:1.2em;display:flex;align-items:center;justify-content:center}
+#titleText{margin:0;padding:0;font-size:clamp(48px,11vw,104px);font-weight:300;line-height:1;white-space:nowrap;color:#f5f5f5}
+.titleLetter{display:inline;opacity:0}
+.warning{width:88%;max-width:600px;margin-top:55px;color:#cfcfcf;font-size:14px;line-height:1.8}
+.startButton{margin-top:25px;padding:14px 30px;border:1px solid #aaa;background:transparent;color:white;font-size:17px;letter-spacing:2px;touch-action:manipulation}
+#threeContainer{position:absolute;inset:0}
+#hint{position:absolute;top:15px;left:50%;transform:translateX(-50%);z-index:20;padding:7px 12px;border-radius:5px;background:rgba(0,0,0,.35);color:white;font-size:13px;pointer-events:none;white-space:nowrap}
+#joystickArea{position:absolute;left:18px;bottom:22px;width:150px;height:150px;z-index:50;pointer-events:none}
+#joystickBase{position:absolute;left:50%;top:50%;width:130px;height:130px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.35);pointer-events:auto;touch-action:none}
+#joystickRing{position:absolute;left:50%;top:50%;width:86px;height:86px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,.16);pointer-events:none}
+#joystickKnob{position:absolute;left:50%;top:50%;width:56px;height:56px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.65);pointer-events:none}
+#joystickBase.active{background:rgba(0,0,0,.36)}
+#joystickBase.active #joystickKnob{background:rgba(255,255,255,.32)}
+#fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:90}
+@media(max-width:420px){#joystickArea{left:12px;bottom:15px;width:140px;height:140px}#joystickBase{width:120px;height:120px}}
 </style>
-
 </head>
-
 <body>
-
 <div id="game">
-
-
-<!-- ==================================================
-     TITLE
-================================================== -->
-
 <div id="title">
-
-    <div class="titleWrapper">
-
-        <h1 id="titleText"></h1>
-
-    </div>
-
-
-    <div class="warning">
-
-        <p>內容提示</p>
-
-        <p>
-            本作品包含心理恐怖、
-            令人不安的聲音與視覺表現，
-            以及可能引起部分玩家不適的成人向主題。
-        </p>
-
-        <p>
-            部分內容可能涉及敏感議題。
-        </p>
-
-        <p>
-            若你容易受到心理壓迫、
-            強烈聲音或失真畫面的影響，
-            請自行斟酌是否遊玩。
-        </p>
-
-        <p>
-            你可以隨時離開遊戲。
-        </p>
-
-    </div>
-
-
-    <button
-        id="startButton"
-        class="startButton">
-
-        開始你的旅程
-
-    </button>
-
+<div class="titleWrapper"><h1 id="titleText"></h1></div>
+<div class="warning">
+<p>內容提示</p>
+<p>本作品包含心理恐怖、令人不安的聲音與視覺表現，以及可能引起部分玩家不適的成人向主題。</p>
+<p>部分內容可能涉及敏感議題。</p>
+<p>若你容易受到心理壓迫、強烈聲音或失真畫面的影響，請自行斟酌是否遊玩。</p>
+<p>你可以隨時離開遊戲。</p>
 </div>
-
-
+<button id="startButton" class="startButton">開始你的旅程</button>
+</div>
 <div id="threeContainer"></div>
-
-
-<div
-    id="hint"
-    style="display:none;">
-
-    滑動畫面轉動視角
-
+<div id="hint" style="display:none">滑動畫面轉動視角</div>
+<div id="joystickArea" style="display:none">
+<div id="joystickBase"><div id="joystickRing"></div><div id="joystickKnob"></div></div>
 </div>
-
-
-<div
-    id="joystickArea"
-    style="display:none;">
-
-    <div id="joystickBase">
-
-        <div id="joystickRing"></div>
-
-        <div id="joystickKnob"></div>
-
-    </div>
-
+<div id="fade"></div>
 </div>
-
-</div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-
 <script>
-
-
-/* ==================================================
-   TITLE
-================================================== */
-
-const titleText =
-    document.getElementById(
-        "titleText"
-    );
-
-const titleWord =
-    "Reality...?";
-
-let titleRunning = true;
-
-
-function wait(ms) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(resolve, ms)
-    );
-
+/* TITLE */
+const titleText=document.getElementById("titleText");
+const titleWord="Reality...?";let titleRunning=true;
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function random(min,max){return min+Math.random()*(max-min)}
+function smoothstep(t){return t*t*(3-2*t)}
+function createTitleLetters(){
+ titleText.innerHTML="";const letters=[];
+ for(let i=0;i<titleWord.length;i++){
+  const s=document.createElement("span");s.className="titleLetter";s.textContent=titleWord[i];titleText.appendChild(s);letters.push(s);
+ }
+ return letters;
 }
-
-
-function random(min, max) {
-
-    return min +
-        Math.random() *
-        (max - min);
-
+function fadeInLetter(letter){
+ return new Promise(resolve=>{
+  const duration=random(2400,3000),start=performance.now();
+  function anim(now){
+   if(!titleRunning){resolve();return}
+   const p=Math.min((now-start)/duration,1);
+   letter.style.opacity=smoothstep(p);
+   if(p<1)requestAnimationFrame(anim);else{letter.style.opacity="1";resolve()}
+  }
+  requestAnimationFrame(anim);
+ });
 }
-
-
-function smoothstep(t) {
-
-    return t * t * (3 - 2 * t);
-
+function startIrregularBreathing(letter){
+ if(letter.dataset.breathing==="true")return;
+ letter.dataset.breathing="true";
+ let state="holdBright",stateStart=performance.now(),stateDuration=random(1200,2600),startOpacity=1,targetOpacity=1;
+ function chooseNext(){
+  if(Math.random()<.55){state="fadeDown";startOpacity=1;targetOpacity=random(.22,.38);stateDuration=random(2600,4200)}
+  else{state="fadeUp";startOpacity=parseFloat(letter.style.opacity)||.3;targetOpacity=1;stateDuration=random(2800,4500)}
+  stateStart=performance.now();
+ }
+ function anim(now){
+  if(!titleRunning)return;
+  const p=Math.min((now-stateStart)/stateDuration,1);
+  if(state==="holdBright")letter.style.opacity="1";
+  else if(state==="fadeDown"||state==="fadeUp")letter.style.opacity=startOpacity+(targetOpacity-startOpacity)*smoothstep(p);
+  else if(state==="holdDark")letter.style.opacity=targetOpacity;
+  if(p>=1){
+   if(state==="holdBright")chooseNext();
+   else if(state==="fadeDown"){state="holdDark";stateStart=performance.now();stateDuration=random(700,2200)}
+   else if(state==="holdDark"){state="fadeUp";stateStart=performance.now();startOpacity=parseFloat(letter.style.opacity);targetOpacity=1;stateDuration=random(2800,4500)}
+   else{state="holdBright";stateStart=performance.now();stateDuration=random(900,3000)}
+  }
+  requestAnimationFrame(anim);
+ }
+ requestAnimationFrame(anim);
 }
-
-
-function createTitleLetters() {
-
-    titleText.innerHTML = "";
-
-    const letters = [];
-
-    for (
-        let i = 0;
-        i < titleWord.length;
-        i++
-    ) {
-
-        const letter =
-            document.createElement(
-                "span"
-            );
-
-        letter.className =
-            "titleLetter";
-
-        letter.textContent =
-            titleWord[i];
-
-        titleText.appendChild(
-            letter
-        );
-
-        letters.push(letter);
-
-    }
-
-    return letters;
-
+async function playTitleAnimation(){
+ while(titleRunning){
+  const letters=createTitleLetters();
+  for(const letter of letters){
+   if(!titleRunning)return;
+   await fadeInLetter(letter);startIrregularBreathing(letter);await wait(random(500,800));
+  }
+  await wait(random(2900,3700));if(!titleRunning)return;
+  titleText.innerHTML="";await wait(random(2800,4800));
+ }
 }
-
-
-function fadeInLetter(letter) {
-
-    return new Promise(resolve => {
-
-        const duration =
-            random(2400, 3000);
-
-        const start =
-            performance.now();
-
-
-        function animate(now) {
-
-            if (!titleRunning) {
-
-                resolve();
-
-                return;
-
-            }
-
-
-            const progress =
-                Math.min(
-                    (now - start) /
-                    duration,
-                    1
-                );
-
-
-            letter.style.opacity =
-                smoothstep(progress);
-
-
-            if (
-                progress < 1
-            ) {
-
-                requestAnimationFrame(
-                    animate
-                );
-
-            }
-
-            else {
-
-                letter.style.opacity =
-                    "1";
-
-                resolve();
-
-            }
-
-        }
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    });
-
-}
-
-
-function startIrregularBreathing(letter) {
-
-    if (
-        letter.dataset.breathing ===
-        "true"
-    )
-        return;
-
-
-    letter.dataset.breathing =
-        "true";
-
-
-    let state =
-        "holdBright";
-
-
-    let stateStart =
-        performance.now();
-
-
-    let stateDuration =
-        random(1200, 2600);
-
-
-    let startOpacity = 1;
-
-    let targetOpacity = 1;
-
-
-    function chooseNextState() {
-
-        if (
-            Math.random() < .55
-        ) {
-
-            state =
-                "fadeDown";
-
-            startOpacity = 1;
-
-            targetOpacity =
-                random(.22, .38);
-
-            stateDuration =
-                random(
-                    2600,
-                    4200
-                );
-
-        }
-
-        else {
-
-            state =
-                "fadeUp";
-
-            startOpacity =
-                parseFloat(
-                    letter.style.opacity
-                ) || .3;
-
-            targetOpacity = 1;
-
-            stateDuration =
-                random(
-                    2800,
-                    4500
-                );
-
-        }
-
-
-        stateStart =
-            performance.now();
-
-    }
-
-
-    function animate(now) {
-
-        if (!titleRunning)
-            return;
-
-
-        const elapsed =
-            now - stateStart;
-
-
-        const progress =
-            Math.min(
-                elapsed /
-                stateDuration,
-                1
-            );
-
-
-        if (
-            state ===
-            "holdBright"
-        ) {
-
-            letter.style.opacity =
-                "1";
-
-        }
-
-        else if (
-            state ===
-            "fadeDown"
-        ) {
-
-            letter.style.opacity =
-                startOpacity +
-                (
-                    targetOpacity -
-                    startOpacity
-                ) *
-                smoothstep(progress);
-
-        }
-
-        else if (
-            state ===
-            "holdDark"
-        ) {
-
-            letter.style.opacity =
-                targetOpacity;
-
-        }
-
-        else if (
-            state ===
-            "fadeUp"
-        ) {
-
-            letter.style.opacity =
-                startOpacity +
-                (
-                    targetOpacity -
-                    startOpacity
-                ) *
-                smoothstep(progress);
-
-        }
-
-
-        if (
-            progress >= 1
-        ) {
-
-            if (
-                state ===
-                "holdBright"
-            ) {
-
-                chooseNextState();
-
-            }
-
-            else if (
-                state ===
-                "fadeDown"
-            ) {
-
-                state =
-                    "holdDark";
-
-                stateStart =
-                    performance.now();
-
-                stateDuration =
-                    random(
-                        700,
-                        2200
-                    );
-
-            }
-
-            else if (
-                state ===
-                "holdDark"
-            ) {
-
-                state =
-                    "fadeUp";
-
-                stateStart =
-                    performance.now();
-
-                startOpacity =
-                    parseFloat(
-                        letter.style.opacity
-                    );
-
-                targetOpacity = 1;
-
-                stateDuration =
-                    random(
-                        2800,
-                        4500
-                    );
-
-            }
-
-            else {
-
-                state =
-                    "holdBright";
-
-                stateStart =
-                    performance.now();
-
-                stateDuration =
-                    random(
-                        900,
-                        3000
-                    );
-
-            }
-
-        }
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    }
-
-
-    requestAnimationFrame(
-        animate
-    );
-
-}
-
-
-async function playTitleAnimation() {
-
-    while (titleRunning) {
-
-        const letters =
-            createTitleLetters();
-
-
-        for (
-            let i = 0;
-            i < letters.length;
-            i++
-        ) {
-
-            if (!titleRunning)
-                return;
-
-
-            await fadeInLetter(
-                letters[i]
-            );
-
-
-            startIrregularBreathing(
-                letters[i]
-            );
-
-
-            await wait(
-                random(
-                    500,
-                    800
-                )
-            );
-
-        }
-
-
-        await wait(
-            random(
-                2900,
-                3700
-            )
-        );
-
-
-        if (!titleRunning)
-            return;
-
-
-        titleText.innerHTML = "";
-
-
-        await wait(
-            random(
-                2800,
-                4800
-            )
-        );
-
-    }
-
-}
-
-
 playTitleAnimation();
 
+/* THREE / ROOM */
+let scene=null,camera=null,renderer=null,started=false;
+const ROOM_WIDTH=14,ROOM_DEPTH=14,ROOM_HEIGHT=10;
+const PLAYER_RADIUS=.28,WALL_BUFFER=.01,PLAYER_EYE_HEIGHT=1.65;
+const player={x:0,y:PLAYER_EYE_HEIGHT,z:4};
+let yaw=0,pitch=0;
+const PITCH_LIMIT=1,LOOK_SENSITIVITY_X=.0022,LOOK_SENSITIVITY_Y=.0022;
+const MIN_FOV=55,MAX_FOV=95,DEFAULT_FOV=75;
+const movement={x:0,y:0};
 
-/* ==================================================
-   THREE
-================================================== */
-
-let scene = null;
-
-let camera = null;
-
-let renderer = null;
-
-let started = false;
-
-
-/* ==================================================
-   ROOM
-================================================== */
-
-const ROOM_WIDTH = 14;
-
-const ROOM_DEPTH = 14;
-
-const ROOM_HEIGHT = 10;
-
-
-/* ==================================================
-   PLAYER
-================================================== */
-
-const PLAYER_RADIUS = .28;
-
-const WALL_BUFFER = .01;
-
-const PLAYER_EYE_HEIGHT = 1.65;
-
-
-const player = {
-
-    x: 0,
-
-    y: PLAYER_EYE_HEIGHT,
-
-    z: 4
-
-};
-
-
-/* ==================================================
-   CAMERA
-================================================== */
-
-let yaw = 0;
-
-let pitch = 0;
-
-
-const PITCH_LIMIT = 1.0;
-
-
-const LOOK_SENSITIVITY_X =
-    .0022;
-
-
-const LOOK_SENSITIVITY_Y =
-    .0022;
-
-
-/* ==================================================
-   FOV
-================================================== */
-
-const MIN_FOV = 55;
-
-const MAX_FOV = 95;
-
-const DEFAULT_FOV = 75;
-
-
-/* ==================================================
-   MOVEMENT
-================================================== */
-
-const movement = {
-
-    x: 0,
-
-    y: 0
-
-};
-
-
-/* ==================================================
-   COLLISION
-================================================== */
-
-function getPlayableBounds() {
-
-    const halfW =
-        ROOM_WIDTH / 2;
-
-    const halfD =
-        ROOM_DEPTH / 2;
-
-
-    return {
-
-        minX:
-            -halfW +
-            PLAYER_RADIUS +
-            WALL_BUFFER,
-
-        maxX:
-            halfW -
-            PLAYER_RADIUS -
-            WALL_BUFFER,
-
-        minZ:
-            -halfD +
-            PLAYER_RADIUS +
-            WALL_BUFFER,
-
-        maxZ:
-            halfD -
-            PLAYER_RADIUS -
-            WALL_BUFFER
-
-    };
-
+function getPlayableBounds(){
+ return {minX:-ROOM_WIDTH/2+PLAYER_RADIUS+WALL_BUFFER,maxX:ROOM_WIDTH/2-PLAYER_RADIUS-WALL_BUFFER,minZ:-ROOM_DEPTH/2+PLAYER_RADIUS+WALL_BUFFER,maxZ:ROOM_DEPTH/2-PLAYER_RADIUS-WALL_BUFFER};
+}
+function resolveMovement(mx,mz){
+ const b=getPlayableBounds();
+ player.x=Math.max(b.minX,Math.min(b.maxX,player.x+mx));
+ player.z=Math.max(b.minZ,Math.min(b.maxZ,player.z+mz));
+}
+function updateCamera(){
+ camera.position.set(player.x,player.y,player.z);
+ camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch;
+}
+function updatePlayer(){
+ if(!camera||chapter1Falling)return;
+ const direction=new THREE.Vector3();camera.getWorldDirection(direction);direction.y=0;
+ if(direction.lengthSq()>0)direction.normalize();
+ const fx=direction.x,fz=direction.z,rx=-fz,rz=fx;
+ const forward=-movement.y,right=movement.x;
+ let ix=fx*forward+rx*right,iz=fz*forward+rz*right;
+ const len=Math.hypot(ix,iz);
+ if(len>1){ix/=len;iz/=len}
+ if(len>0)resolveMovement(ix*.08,iz*.08);
+ updateCamera();
 }
 
+/* CHAPTER 1 EYES */
+let chapter1Eyes=[],chapter1FloorEye=null,chapter1Hole=null;
+let chapter1Falling=false,chapter1FallStart=0,chapter1FallStartY=0;
+let chapter1SocketTexture=null,chapter1EyeballTexture=null;
+let chapter1StartTime=0;
 
-function canPlayerOccupy(
-    x,
-    z
-) {
-
-    const bounds =
-        getPlayableBounds();
-
-
-    return (
-
-        x >= bounds.minX &&
-
-        x <= bounds.maxX &&
-
-        z >= bounds.minZ &&
-
-        z <= bounds.maxZ
-
-    );
-
+function loadChapter1Textures(){
+ const loader=new THREE.TextureLoader();
+ loader.load("./Screenshot_20260819_221148_Google-removebg-preview.png",texture=>{
+  chapter1SocketTexture=texture;
+  texture.colorSpace=THREE.SRGBColorSpace;
+  updateChapter1EyeTextures();
+ },undefined,e=>console.warn("眼白+眼眶圖片載入失敗",e));
+ loader.load("./Screenshot_20260819_221235_Google-removebg-preview.png",texture=>{
+  chapter1EyeballTexture=texture;
+  texture.colorSpace=THREE.SRGBColorSpace;
+  updateChapter1EyeTextures();
+ },undefined,e=>console.warn("眼球圖片載入失敗",e));
+}
+function updateChapter1EyeTextures(){
+ for(const eye of chapter1Eyes){
+  if(chapter1SocketTexture){eye.socketMaterial.map=chapter1SocketTexture;eye.socketMaterial.needsUpdate=true}
+  if(chapter1EyeballTexture){eye.eyeballMaterial.map=chapter1EyeballTexture;eye.eyeballMaterial.needsUpdate=true}
+ }
+}
+function createChapter1Eye(position,rotation,scale=1,isFloorEye=false){
+ const group=new THREE.Group();group.position.copy(position);group.rotation.copy(rotation);group.scale.setScalar(scale);
+ const socketMaterial=new THREE.MeshBasicMaterial({map:chapter1SocketTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
+ const socket=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1.12),socketMaterial);group.add(socket);
+ const eyeballMaterial=new THREE.MeshBasicMaterial({map:chapter1EyeballTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
+ const eyeball=new THREE.Mesh(new THREE.PlaneGeometry(.72,.72),eyeballMaterial);eyeball.position.z=.035;group.add(eyeball);
+ const eye={group,socket,eyeball,socketMaterial,eyeballMaterial,baseScale:scale,growth:0,isFloorEye,dead:false,userTriggered:false};
+ chapter1Eyes.push(eye);scene.add(group);
+ if(isFloorEye)chapter1FloorEye=eye;
+ return eye;
+}
+function updateChapter1EyeTracking(eye){
+ if(eye.dead)return;
+ const target=new THREE.Vector3(player.x,player.y,player.z);
+ eye.group.worldToLocal(target);
+ const length=Math.hypot(target.x,target.y);
+ const tx=THREE.MathUtils.clamp(target.x/Math.max(length,1),-1,1);
+ const ty=THREE.MathUtils.clamp(target.y/Math.max(length,1),-1,1);
+ eye.eyeball.position.x+=(tx*.28-eye.eyeball.position.x)*.06;
+ eye.eyeball.position.y+=(ty*.20-eye.eyeball.position.y)*.06;
+}
+function updateChapter1EyeGrowth(eye){
+ if(eye.dead)return;
+ const distance=camera.position.distanceTo(eye.group.position);
+ const proximity=THREE.MathUtils.clamp(1-distance/10,0,1);
+ const elapsed=(performance.now()-chapter1StartTime)/60000;
+ const targetGrowth=Math.min(elapsed,.8)+proximity*.15;
+ eye.growth+=(targetGrowth-eye.growth)*.008;
+ eye.group.scale.setScalar(eye.baseScale*(1+eye.growth));
 }
 
-
-/* ==================================================
-   MOVEMENT RESOLUTION
-================================================== */
-
-function resolveMovement(
-    moveX,
-    moveZ
-) {
-
-    const bounds =
-        getPlayableBounds();
-
-
-    const targetX =
-        player.x +
-        moveX;
-
-
-    if (
-        targetX >= bounds.minX &&
-        targetX <= bounds.maxX
-    ) {
-
-        player.x =
-            targetX;
-
-    }
-
-    else {
-
-        player.x =
-            Math.max(
-                bounds.minX,
-                Math.min(
-                    bounds.maxX,
-                    player.x
-                )
-            );
-
-    }
-
-
-    const targetZ =
-        player.z +
-        moveZ;
-
-
-    if (
-        targetZ >= bounds.minZ &&
-        targetZ <= bounds.maxZ
-    ) {
-
-        player.z =
-            targetZ;
-
-    }
-
-    else {
-
-        player.z =
-            Math.max(
-                bounds.minZ,
-                Math.min(
-                    bounds.maxZ,
-                    player.z
-                )
-            );
-
-    }
-
+/* RANDOM EYE PLACEMENT */
+function createRandomWallEyes(){
+ const W=ROOM_WIDTH,D=ROOM_DEPTH,H=ROOM_HEIGHT;
+ const surfaces=[
+  {type:"front",count:25},
+  {type:"back",count:25},
+  {type:"left",count:25},
+  {type:"right",count:25},
+  {type:"ceiling",count:18},
+  {type:"floor",count:14}
+ ];
+ for(const surface of surfaces){
+  const placed=[];
+  let attempts=0;
+  while(placed.length<surface.count&&attempts<1500){
+   attempts++;
+   let x,y,z,rotation;
+   const scale=random(.42,1.15);
+   if(surface.type==="front"){x=random(-6,6);y=random(.8,9);z=-D/2+.035;rotation=new THREE.Euler(0,0,random(-.25,.25))}
+   if(surface.type==="back"){x=random(-6,6);y=random(.8,9);z=D/2-.035;rotation=new THREE.Euler(0,Math.PI,random(-.25,.25))}
+   if(surface.type==="left"){x=-W/2+.035;y=random(.8,9);z=random(-6,6);rotation=new THREE.Euler(0,Math.PI/2,random(-.25,.25))}
+   if(surface.type==="right"){x=W/2-.035;y=random(.8,9);z=random(-6,6);rotation=new THREE.Euler(0,-Math.PI/2,random(-.25,.25))}
+   if(surface.type==="ceiling"){x=random(-6,6);y=H-.035;z=random(-6,6);rotation=new THREE.Euler(Math.PI/2,0,random(-Math.PI,Math.PI))}
+   if(surface.type==="floor"){x=random(-6,6);y=.035;z=random(-6,6);rotation=new THREE.Euler(-Math.PI/2,0,random(-Math.PI,Math.PI))}
+   if(surface.type==="floor"&&Math.hypot(x,z)<1.7)continue;
+   const minDistance=surface.type==="floor"||surface.type==="ceiling"?2.3:1.7;
+   if(placed.some(p=>Math.hypot(p.x-x,p.y-y,p.z-z)<minDistance))continue;
+   placed.push({x,y,z});
+   createChapter1Eye(new THREE.Vector3(x,y,z),rotation,scale,false);
+  }
+ }
+}
+function createChapter1Eyes(){
+ chapter1Eyes=[];chapter1FloorEye=null;chapter1Hole=null;chapter1Falling=false;
+ createRandomWallEyes();
+ createChapter1Eye(new THREE.Vector3(0,.035,0),new THREE.Euler(-Math.PI/2,0,0),.95,true);
 }
 
-
-/* ==================================================
-   PLAYER MOVEMENT
-================================================== */
-
-function updatePlayer() {
-
-    if (!camera)
-        return;
-
-
-    const speed = .08;
-
-
-    const cameraDirection =
-        new THREE.Vector3();
-
-
-    camera.getWorldDirection(
-        cameraDirection
-    );
-
-
-    cameraDirection.y = 0;
-
-
-    if (
-        cameraDirection.lengthSq() >
-        0
-    ) {
-
-        cameraDirection.normalize();
-
-    }
-
-
-    const forwardX =
-        cameraDirection.x;
-
-
-    const forwardZ =
-        cameraDirection.z;
-
-
-    const rightX =
-        -forwardZ;
-
-
-    const rightZ =
-        forwardX;
-
-
-    const inputForward =
-        -movement.y;
-
-
-    const inputRight =
-        movement.x;
-
-
-    let inputX = 0;
-
-    let inputZ = 0;
-
-
-    inputX +=
-        forwardX *
-        inputForward;
-
-
-    inputZ +=
-        forwardZ *
-        inputForward;
-
-
-    inputX +=
-        rightX *
-        inputRight;
-
-
-    inputZ +=
-        rightZ *
-        inputRight;
-
-
-    const length =
-        Math.hypot(
-            inputX,
-            inputZ
-        );
-
-
-    if (
-        length > 1
-    ) {
-
-        inputX /= length;
-
-        inputZ /= length;
-
-    }
-
-
-    if (
-        length > 0
-    ) {
-
-        const moveX =
-            inputX *
-            speed;
-
-
-        const moveZ =
-            inputZ *
-            speed;
-
-
-        resolveMovement(
-            moveX,
-            moveZ
-        );
-
-    }
-
-
-    updateCamera();
-
+/* BLACK HOLE AND FALL */
+function createChapter1Hole(x,z){
+ const material=new THREE.MeshBasicMaterial({color:0x000000,side:THREE.DoubleSide});
+ chapter1Hole=new THREE.Mesh(new THREE.CircleGeometry(.95,64),material);
+ chapter1Hole.rotation.x=-Math.PI/2;
+ chapter1Hole.position.set(x,.012,z);
+ chapter1Hole.scale.set(.02,.02,.02);
+ chapter1Hole.visible=false;
+ scene.add(chapter1Hole);
+}
+function removeChapter1FloorEye(){
+ if(!chapter1FloorEye||chapter1FloorEye.dead)return;
+ const eye=chapter1FloorEye;eye.dead=true;eye.group.visible=false;
+ if(!chapter1Hole)createChapter1Hole(eye.group.position.x,eye.group.position.z);
+ chapter1Hole.visible=true;
+ chapter1Hole.scale.set(.02,.02,.02);
+ chapter1Hole.userData.opening=true;
+ chapter1Hole.userData.openStart=performance.now();
+}
+function updateChapter1Hole(){
+ if(!chapter1Hole||!chapter1Hole.visible)return;
+ if(chapter1Hole.userData.opening){
+  const p=Math.min((performance.now()-chapter1Hole.userData.openStart)/1400,1);
+  const size=.02+.98*smoothstep(p);
+  chapter1Hole.scale.set(size,size,size);
+  if(p>=1)chapter1Hole.userData.opening=false;
+ }
+ if(!chapter1Falling&&!chapter1Hole.userData.opening){
+  const distance=Math.hypot(player.x-chapter1Hole.position.x,player.z-chapter1Hole.position.z);
+  if(distance<.72)startChapter1Fall();
+ }
+}
+function startChapter1Fall(){
+ if(chapter1Falling)return;
+ chapter1Falling=true;chapter1FallStart=performance.now();chapter1FallStartY=player.y;
+ movement.x=0;movement.y=0;stopJoystick();
+ document.getElementById("hint").textContent="";
+}
+function updateChapter1Fall(){
+ if(!chapter1Falling)return;
+ const elapsed=performance.now()-chapter1FallStart;
+ const p=Math.min(elapsed/2600,1);
+ player.y=chapter1FallStartY-12*smoothstep(p);
+ pitch=Math.min(1.45,pitch+.012);
+ document.getElementById("fade").style.opacity=String(Math.max(0,(p-.35)/.65));
+ updateCamera();
 }
 
-
-/* ==================================================
-   CAMERA
-================================================== */
-
-function updateCamera() {
-
-    camera.position.set(
-
-        player.x,
-
-        player.y,
-
-        player.z
-
-    );
-
-
-    camera.rotation.order =
-        "YXZ";
-
-
-    camera.rotation.y =
-        yaw;
-
-
-    camera.rotation.x =
-        pitch;
-
+/* CHAPTER UPDATE */
+function updateChapter1(){
+ if(!started||!camera||!scene)return;
+ for(const eye of chapter1Eyes){updateChapter1EyeTracking(eye);updateChapter1EyeGrowth(eye)}
+ if(chapter1FloorEye&&!chapter1FloorEye.dead){
+  const distance=Math.hypot(player.x-chapter1FloorEye.group.position.x,player.z-chapter1FloorEye.group.position.z);
+  if(distance<2.2&&!chapter1FloorEye.userTriggered){
+   chapter1FloorEye.userTriggered=true;chapter1FloorEye.triggerTime=performance.now();
+  }
+  if(chapter1FloorEye.userTriggered&&performance.now()-chapter1FloorEye.triggerTime>1800)removeChapter1FloorEye();
+ }
+ updateChapter1Hole();
+ updateChapter1Fall();
 }
 
-
-/* ==================================================
-   CHAPTER 1 VARIABLES
-================================================== */
-
-let chapter1Eyes = [];
-
-let chapter1FloorEye = null;
-
-let chapter1Hole = null;
-
-let chapter1Falling = false;
-
-let chapter1FallStart = 0;
-
-let chapter1FallStartY = 0;
-
-let chapter1SocketTexture = null;
-
-let chapter1EyeballTexture = null;
-
-let chapter1TextureLoader = null;
-
-
-/* ==================================================
-   LOAD CHAPTER 1 IMAGES
-================================================== */
-
-function loadChapter1Textures() {
-
-    chapter1TextureLoader =
-        new THREE.TextureLoader();
-
-
-    chapter1TextureLoader.load(
-
-        "./Screenshot_20260819_221148_Google-removebg-preview.png",
-
-        texture => {
-
-            chapter1SocketTexture =
-                texture;
-
-
-            if (
-                THREE.SRGBColorSpace
-            ) {
-
-                texture.colorSpace =
-                    THREE.SRGBColorSpace;
-
-            }
-
-
-            updateChapter1EyeTextures();
-
-        },
-
-        undefined,
-
-        error => {
-
-            console.warn(
-                "眼白+眼眶圖片載入失敗",
-                error
-            );
-
-        }
-
-    );
-
-
-    chapter1TextureLoader.load(
-
-        "./Screenshot_20260819_221235_Google-removebg-preview.png",
-
-        texture => {
-
-            chapter1EyeballTexture =
-                texture;
-
-
-            if (
-                THREE.SRGBColorSpace
-            ) {
-
-                texture.colorSpace =
-                    THREE.SRGBColorSpace;
-
-            }
-
-
-            updateChapter1EyeTextures();
-
-        },
-
-        undefined,
-
-        error => {
-
-            console.warn(
-                "眼球圖片載入失敗",
-                error
-            );
-
-        }
-
-    );
-
+/* WORLD */
+function createWorld(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0xb0b0b0);
+ camera=new THREE.PerspectiveCamera(DEFAULT_FOV,innerWidth/innerHeight,.1,100);
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+ const container=document.getElementById("threeContainer");container.innerHTML="";container.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,2));
+ createRoom();chapter1StartTime=performance.now();loadChapter1Textures();createChapter1Eyes();
+ setupTouch();setupJoystick();animate();
+}
+function createRoom(){
+ const W=ROOM_WIDTH,H=ROOM_HEIGHT,D=ROOM_DEPTH;
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshBasicMaterial({color:0x707070,side:THREE.DoubleSide}));
+ floor.rotation.x=-Math.PI/2;scene.add(floor);
+ const ceiling=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshBasicMaterial({color:0xd8d8d8,side:THREE.DoubleSide}));
+ ceiling.rotation.x=Math.PI/2;ceiling.position.y=H;scene.add(ceiling);
+ const front=createWall(W,H,0xc2c2c2);front.position.set(0,H/2,-D/2);scene.add(front);
+ const back=createWall(W,H,0xb7b7b7);back.position.set(0,H/2,D/2);scene.add(back);
+ const left=createWall(D,H,0xaeaeae);left.rotation.y=Math.PI/2;left.position.set(-W/2,H/2,0);scene.add(left);
+ const right=createWall(D,H,0xa6a6a6);right.rotation.y=Math.PI/2;right.position.set(W/2,H/2,0);scene.add(right);
+ createRoomEdges(W,H,D);createInvisibleCollisionWalls(W,H,D);
+}
+function createWall(width,height,color){
+ return new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
+}
+function createInvisibleCollisionWalls(W,H,D){
+ const material=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false});
+ const thickness=.45;
+ const walls=[
+  [new THREE.BoxGeometry(W+thickness*2,H,thickness),[0,H/2,-D/2+thickness/2]],
+  [new THREE.BoxGeometry(W+thickness*2,H,thickness),[0,H/2,D/2-thickness/2]],
+  [new THREE.BoxGeometry(thickness,H,D),[-W/2+thickness/2,H/2,0]],
+  [new THREE.BoxGeometry(thickness,H,D),[W/2-thickness/2,H/2,0]]
+ ];
+ for(const [geometry,pos] of walls){const mesh=new THREE.Mesh(geometry,material);mesh.position.set(...pos);mesh.visible=false;scene.add(mesh)}
+}
+function createRoomEdges(W,H,D){
+ const edges=new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D));
+ const lines=new THREE.LineSegments(edges,new THREE.LineBasicMaterial({color:0x666666,transparent:true,opacity:.45}));
+ lines.position.y=H/2;scene.add(lines);
 }
 
-
-/* ==================================================
-   UPDATE EYE TEXTURES
-================================================== */
-
-function updateChapter1EyeTextures() {
-
-    for (
-        const eye of chapter1Eyes
-    ) {
-
-        if (
-            chapter1SocketTexture &&
-            eye.socketMaterial
-        ) {
-
-            eye.socketMaterial.map =
-                chapter1SocketTexture;
-
-            eye.socketMaterial.needsUpdate =
-                true;
-
-        }
-
-
-        if (
-            chapter1EyeballTexture &&
-            eye.eyeballMaterial
-        ) {
-
-            eye.eyeballMaterial.map =
-                chapter1EyeballTexture;
-
-            eye.eyeballMaterial.needsUpdate =
-                true;
-
-        }
-
-    }
-
+/* TOUCH LOOK AND PINCH */
+const activeTouches=new Map();
+let touchMode="none",lookPointerId=null,lastLookX=0,lastLookY=0,previousPinchDistance=null,mouseLooking=false;
+function getPinchDistance(){
+ const points=Array.from(activeTouches.values());
+ if(points.length<2)return null;
+ return Math.hypot(points[1].x-points[0].x,points[1].y-points[0].y);
+}
+function enterLookMode(){
+ const entries=Array.from(activeTouches.entries());
+ if(entries.length!==1){touchMode="none";lookPointerId=null;return}
+ const [id,point]=entries[0];touchMode="look";lookPointerId=id;lastLookX=point.x;lastLookY=point.y;previousPinchDistance=null;
+}
+function setupTouch(){
+ const canvas=renderer.domElement;canvas.style.touchAction="none";
+ canvas.addEventListener("pointerdown",event=>{
+  if(event.pointerType==="mouse"){
+   if(event.button!==0)return;mouseLooking=true;lastLookX=event.clientX;lastLookY=event.clientY;return;
+  }
+  event.preventDefault();activeTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  if(activeTouches.size===1)enterLookMode();
+  else{touchMode="pinch";lookPointerId=null;previousPinchDistance=getPinchDistance()}
+ },{passive:false});
+ canvas.addEventListener("pointermove",event=>{
+  if(event.pointerType==="mouse"){
+   if(!mouseLooking)return;
+   yaw-=(event.clientX-lastLookX)*LOOK_SENSITIVITY_X;
+   pitch=THREE.MathUtils.clamp(pitch-(event.clientY-lastLookY)*LOOK_SENSITIVITY_Y,-PITCH_LIMIT,PITCH_LIMIT);
+   lastLookX=event.clientX;lastLookY=event.clientY;return;
+  }
+  if(!activeTouches.has(event.pointerId))return;event.preventDefault();
+  activeTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  if(touchMode==="pinch"){
+   const distance=getPinchDistance();
+   if(distance!==null&&previousPinchDistance!==null){
+    camera.fov=THREE.MathUtils.clamp(camera.fov+(distance-previousPinchDistance)*.08,MIN_FOV,MAX_FOV);
+    camera.updateProjectionMatrix();
+   }
+   previousPinchDistance=distance;return;
+  }
+  if(touchMode==="look"&&event.pointerId===lookPointerId){
+   yaw-=(event.clientX-lastLookX)*LOOK_SENSITIVITY_X;
+   pitch=THREE.MathUtils.clamp(pitch-(event.clientY-lastLookY)*LOOK_SENSITIVITY_Y,-PITCH_LIMIT,PITCH_LIMIT);
+   lastLookX=event.clientX;lastLookY=event.clientY;
+  }
+ },{passive:false});
+ function endTouch(event){
+  if(event.pointerType==="mouse"){mouseLooking=false;return}
+  if(!activeTouches.has(event.pointerId))return;
+  activeTouches.delete(event.pointerId);
+  if(activeTouches.size===0){touchMode="none";lookPointerId=null;previousPinchDistance=null}
+  else if(activeTouches.size===1)enterLookMode();
+ }
+ canvas.addEventListener("pointerup",endTouch);
+ canvas.addEventListener("pointercancel",endTouch);
 }
 
-
-/* ==================================================
-   CREATE ONE EYE
-================================================== */
-
-function createChapter1Eye(
-
-    position,
-
-    rotation,
-
-    scale = 1,
-
-    isFloorEye = false
-
-) {
-
-    const group =
-        new THREE.Group();
-
-
-    group.position.copy(
-        position
-    );
-
-
-    group.rotation.set(
-
-        rotation.x,
-
-        rotation.y,
-
-        rotation.z
-
-    );
-
-
-    group.scale.setScalar(
-        scale
-    );
-
-
-    const socketMaterial =
-        new THREE.MeshBasicMaterial({
-
-            map:
-                chapter1SocketTexture,
-
-            transparent: true,
-
-            depthWrite: false,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const socket =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                1.55,
-
-                1.12
-
-            ),
-
-            socketMaterial
-
-        );
-
-
-    group.add(
-        socket
-    );
-
-
-    const eyeballMaterial =
-        new THREE.MeshBasicMaterial({
-
-            map:
-                chapter1EyeballTexture,
-
-            transparent: true,
-
-            depthWrite: false,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    const eyeball =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                .72,
-
-                .72
-
-            ),
-
-            eyeballMaterial
-
-        );
-
-
-    eyeball.position.z =
-        .035;
-
-
-    group.add(
-        eyeball
-    );
-
-
-    const eyeData = {
-
-        group: group,
-
-        socket: socket,
-
-        eyeball: eyeball,
-
-        socketMaterial:
-            socketMaterial,
-
-        eyeballMaterial:
-            eyeballMaterial,
-
-        baseScale: scale,
-
-        growth: 0,
-
-        isFloorEye:
-            isFloorEye,
-
-        dead: false,
-
-        userTriggered: false
-
-    };
-
-
-    chapter1Eyes.push(
-        eyeData
-    );
-
-
-    scene.add(
-        group
-    );
-
-
-    if (isFloorEye) {
-
-        chapter1FloorEye =
-            eyeData;
-
-    }
-
-
-    return eyeData;
-
+/* JOYSTICK */
+const joystickBase=document.getElementById("joystickBase");
+const joystickKnob=document.getElementById("joystickKnob");
+let joystickPointerId=null,joystickActive=false;
+const JOYSTICK_RADIUS=37,JOYSTICK_DEAD_ZONE=.12;
+function getJoystickCenter(){
+ const r=joystickBase.getBoundingClientRect();
+ return{x:r.left+r.width/2,y:r.top+r.height/2};
+}
+function updateJoystick(clientX,clientY){
+ const c=getJoystickCenter();let dx=clientX-c.x,dy=clientY-c.y;
+ const distance=Math.hypot(dx,dy);
+ if(distance>JOYSTICK_RADIUS){const s=JOYSTICK_RADIUS/distance;dx*=s;dy*=s}
+ const x=dx/JOYSTICK_RADIUS,y=dy/JOYSTICK_RADIUS,m=Math.hypot(x,y);
+ if(m<JOYSTICK_DEAD_ZONE){movement.x=0;movement.y=0}
+ else{
+  const scale=((m-JOYSTICK_DEAD_ZONE)/(1-JOYSTICK_DEAD_ZONE))/m;
+  movement.x=x*scale;movement.y=y*scale;
+ }
+ joystickKnob.style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
+}
+function stopJoystick(){
+ joystickPointerId=null;joystickActive=false;movement.x=0;movement.y=0;
+ joystickBase.classList.remove("active");joystickKnob.style.transform="translate(-50%,-50%)";
+}
+function setupJoystick(){
+ joystickBase.addEventListener("pointerdown",event=>{
+  event.preventDefault();event.stopPropagation();
+  if(joystickPointerId!==null||!["touch","pen"].includes(event.pointerType))return;
+  joystickPointerId=event.pointerId;joystickActive=true;joystickBase.classList.add("active");
+  try{joystickBase.setPointerCapture(event.pointerId)}catch(_){}
+  updateJoystick(event.clientX,event.clientY);
+ },{passive:false});
+ joystickBase.addEventListener("pointermove",event=>{
+  if(!joystickActive||event.pointerId!==joystickPointerId)return;
+  event.preventDefault();event.stopPropagation();updateJoystick(event.clientX,event.clientY);
+ },{passive:false});
+ joystickBase.addEventListener("pointerup",event=>{
+  if(event.pointerId!==joystickPointerId)return;
+  event.preventDefault();event.stopPropagation();stopJoystick();
+ },{passive:false});
+ joystickBase.addEventListener("pointercancel",event=>{
+  if(event.pointerId===joystickPointerId)stopJoystick();
+ },{passive:false});
 }
 
-
-/* ==================================================
-   EYE TRACKING
-================================================== */
-
-function updateChapter1EyeTracking(
-    eye
-) {
-
-    if (
-        eye.dead ||
-        !eye.eyeball
-    )
-        return;
-
-
-    const worldEyePosition =
-        new THREE.Vector3();
-
-
-    eye.group.getWorldPosition(
-        worldEyePosition
-    );
-
-
-    const target =
-        new THREE.Vector3(
-
-            camera.position.x,
-
-            camera.position.y,
-
-            camera.position.z
-
-        );
-
-
-    eye.group.worldToLocal(
-        target
-    );
-
-
-    const maxX = .28;
-
-    const maxY = .20;
-
-
-    const length =
-        Math.hypot(
-            target.x,
-            target.y
-        );
-
-
-    let tx =
-        target.x;
-
-    let ty =
-        target.y;
-
-
-    if (
-        length > 1
-    ) {
-
-        tx /= length;
-
-        ty /= length;
-
-    }
-
-
-    tx =
-        Math.max(
-            -1,
-            Math.min(
-                1,
-                tx
-            )
-        );
-
-
-    ty =
-        Math.max(
-            -1,
-            Math.min(
-                1,
-                ty
-            )
-        );
-
-
-    eye.eyeball.position.x =
-        tx * maxX;
-
-
-    eye.eyeball.position.y =
-        ty * maxY;
-
+/* START AND GAME LOOP */
+document.getElementById("startButton").addEventListener("click",startGame);
+function startGame(){
+ if(started)return;
+ started=true;titleRunning=false;stopJoystick();
+ document.getElementById("title").style.display="none";
+ document.getElementById("hint").style.display="block";
+ document.getElementById("joystickArea").style.display="block";
+ createWorld();
 }
-
-
-/* ==================================================
-   EYE GROWTH
-================================================== */
-
-function updateChapter1EyeGrowth(
-    eye
-) {
-
-    if (eye.dead)
-        return;
-
-
-    const distance =
-        camera.position.distanceTo(
-            eye.group.position
-        );
-
-
-    const proximity =
-        THREE.MathUtils.clamp(
-
-            1 -
-            distance / 10,
-
-            0,
-
-            1
-
-        );
-
-
-    const targetGrowth =
-        proximity * .95;
-
-
-    eye.growth +=
-
-        (
-            targetGrowth -
-            eye.growth
-        ) * .008;
-
-
-    const finalScale =
-
-        eye.baseScale *
-
-        (
-            1 +
-            eye.growth
-        );
-
-
-    eye.group.scale.setScalar(
-        finalScale
-    );
-
+function animate(){
+ requestAnimationFrame(animate);
+ if(started){
+  if(!chapter1Falling)updatePlayer();
+  updateChapter1();
+ }
+ if(renderer&&scene&&camera)renderer.render(scene,camera);
 }
-
-
-/* ==================================================
-   BLACK HOLE
-================================================== */
-
-function createChapter1Hole(
-    x,
-    z
-) {
-
-    const geometry =
-        new THREE.CircleGeometry(
-            .82,
-            64
-        );
-
-
-    const material =
-        new THREE.MeshBasicMaterial({
-
-            color: 0x000000,
-
-            side:
-                THREE.DoubleSide
-
-        });
-
-
-    chapter1Hole =
-        new THREE.Mesh(
-
-            geometry,
-
-            material
-
-        );
-
-
-    chapter1Hole.rotation.x =
-        -Math.PI / 2;
-
-
-    chapter1Hole.position.set(
-
-        x,
-
-        .012,
-
-        z
-
-    );
-
-
-    chapter1Hole.scale.set(
-
-        .05,
-
-        .05,
-
-        .05
-
-    );
-
-
-    chapter1Hole.visible =
-        false;
-
-
-    scene.add(
-        chapter1Hole
-    );
-
-}
-
-
-/* ==================================================
-   REMOVE FLOOR EYE
-================================================== */
-
-function removeChapter1FloorEye() {
-
-    if (
-        !chapter1FloorEye ||
-        chapter1FloorEye.dead
-    )
-        return;
-
-
-    const eye =
-        chapter1FloorEye;
-
-
-    eye.dead = true;
-
-
-    eye.group.visible =
-        false;
-
-
-    if (!chapter1Hole) {
-
-        createChapter1Hole(
-
-            eye.group.position.x,
-
-            eye.group.position.z
-
-        );
-
-    }
-
-
-    chapter1Hole.visible =
-        true;
-
-
-    chapter1Hole.scale.set(
-
-        .05,
-
-        .05,
-
-        .05
-
-    );
-
-
-    chapter1Hole.userData.opening =
-        true;
-
-
-    chapter1Hole.userData.openStart =
-        performance.now();
-
-}
-
-
-/* ==================================================
-   UPDATE BLACK HOLE
-================================================== */
-
-function updateChapter1Hole() {
-
-    if (
-        !chapter1Hole ||
-        !chapter1Hole.visible
-    )
-        return;
-
-
-    if (
-        chapter1Hole.userData.opening
-    ) {
-
-        const elapsed =
-            performance.now() -
-            chapter1Hole.userData.openStart;
-
-
-        const progress =
-            Math.min(
-
-                elapsed /
-                1400,
-
-                1
-
-            );
-
-
-        const size =
-            smoothstep(
-                progress
-            );
-
-
-        chapter1Hole.scale.set(
-
-            size,
-
-            size,
-
-            size
-
-        );
-
-
-        if (
-            progress >= 1
-        ) {
-
-            chapter1Hole.userData.opening =
-                false;
-
-        }
-
-    }
-
-
-    if (
-        !chapter1Falling &&
-        !chapter1Hole.userData.opening
-    ) {
-
-        const dx =
-            player.x -
-            chapter1Hole.position.x;
-
-
-        const dz =
-            player.z -
-            chapter1Hole.position.z;
-
-
-        const distance =
-            Math.hypot(
-                dx,
-                dz
-            );
-
-
-        if (
-            distance < .72
-        ) {
-
-            startChapter1Fall();
-
-        }
-
-    }
-
-}
-
-
-/* ==================================================
-   START FALL
-================================================== */
-
-function startChapter1Fall() {
-
-    if (
-        chapter1Falling
-    )
-        return;
-
-
-    chapter1Falling =
-        true;
-
-
-    chapter1FallStart =
-        performance.now();
-
-
-    chapter1FallStartY =
-        player.y;
-
-
-    movement.x = 0;
-
-    movement.y = 0;
-
-
-    stopJoystick();
-
-
-    document.getElementById(
-        "hint"
-    ).textContent =
-        "";
-
-}
-
-
-/* ==================================================
-   UPDATE FALL
-================================================== */
-
-function updateChapter1Fall() {
-
-    if (
-        !chapter1Falling
-    )
-        return;
-
-
-    const elapsed =
-        performance.now() -
-        chapter1FallStart;
-
-
-    const progress =
-        Math.min(
-
-            elapsed /
-            1800,
-
-            1
-
-        );
-
-
-    player.y =
-
-        chapter1FallStartY -
-
-        progress * 8;
-
-
-    pitch =
-
-        Math.min(
-
-            1.45,
-
-            pitch + .018
-
-        );
-
-
-    if (
-        progress >= 1
-    ) {
-
-        chapter1Falling =
-            false;
-
-
-        player.y =
-            PLAYER_EYE_HEIGHT;
-
-
-        pitch = 0;
-
-
-        if (chapter1Hole) {
-
-            chapter1Hole.visible =
-                false;
-
-        }
-
-
-        document.getElementById(
-            "hint"
-        ).textContent =
-            "";
-
-    }
-
-}
-
-
-/* ==================================================
-   CREATE CHAPTER 1 EYES
-================================================== */
-
-function createChapter1Eyes() {
-
-    chapter1Eyes = [];
-
-    chapter1FloorEye = null;
-
-    chapter1Hole = null;
-
-    chapter1Falling = false;
-
-
-    const W =
-        ROOM_WIDTH;
-
-    const D =
-        ROOM_DEPTH;
-
-    const H =
-        ROOM_HEIGHT;
-
-
-    /* FRONT */
-
-    const frontZ =
-        -D / 2 + .035;
-
-
-    for (
-        let x = -6;
-        x <= 6;
-        x += 2
-    ) {
-
-        for (
-            let y = 1.2;
-            y <= 8.2;
-            y += 2.1
-        ) {
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    x,
-
-                    y,
-
-                    frontZ
-
-                ),
-
-                new THREE.Euler(
-
-                    0,
-
-                    0,
-
-                    0
-
-                ),
-
-                .82
-
-            );
-
-        }
-
-    }
-
-
-    /* BACK */
-
-    const backZ =
-        D / 2 - .035;
-
-
-    for (
-        let x = -6;
-        x <= 6;
-        x += 2
-    ) {
-
-        for (
-            let y = 1.2;
-            y <= 8.2;
-            y += 2.1
-        ) {
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    x,
-
-                    y,
-
-                    backZ
-
-                ),
-
-                new THREE.Euler(
-
-                    0,
-
-                    Math.PI,
-
-                    0
-
-                ),
-
-                .82
-
-            );
-
-        }
-
-    }
-
-
-    /* LEFT */
-
-    const leftX =
-        -W / 2 + .035;
-
-
-    for (
-        let z = -6;
-        z <= 6;
-        z += 2
-    ) {
-
-        for (
-            let y = 1.2;
-            y <= 8.2;
-            y += 2.1
-        ) {
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    leftX,
-
-                    y,
-
-                    z
-
-                ),
-
-                new THREE.Euler(
-
-                    0,
-
-                    Math.PI / 2,
-
-                    0
-
-                ),
-
-                .82
-
-            );
-
-        }
-
-    }
-
-
-    /* RIGHT */
-
-    const rightX =
-        W / 2 - .035;
-
-
-    for (
-        let z = -6;
-        z <= 6;
-        z += 2
-    ) {
-
-        for (
-            let y = 1.2;
-            y <= 8.2;
-            y += 2.1
-        ) {
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    rightX,
-
-                    y,
-
-                    z
-
-                ),
-
-                new THREE.Euler(
-
-                    0,
-
-                    -Math.PI / 2,
-
-                    0
-
-                ),
-
-                .82
-
-            );
-
-        }
-
-    }
-
-
-    /* CEILING */
-
-    for (
-        let x = -6;
-        x <= 6;
-        x += 2.5
-    ) {
-
-        for (
-            let z = -5;
-            z <= 5;
-            z += 2.5
-        ) {
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    x,
-
-                    H - .035,
-
-                    z
-
-                ),
-
-                new THREE.Euler(
-
-                    Math.PI / 2,
-
-                    0,
-
-                    0
-
-                ),
-
-                .78
-
-            );
-
-        }
-
-    }
-
-
-    /* FLOOR */
-
-    for (
-        let x = -6;
-        x <= 6;
-        x += 2.5
-    ) {
-
-        for (
-            let z = -5;
-            z <= 5;
-            z += 2.5
-        ) {
-
-            const isSpecial =
-
-                (
-                    x === 0 &&
-                    z === 0
-                );
-
-
-            createChapter1Eye(
-
-                new THREE.Vector3(
-
-                    x,
-
-                    .035,
-
-                    z
-
-                ),
-
-                new THREE.Euler(
-
-                    -Math.PI / 2,
-
-                    0,
-
-                    0
-
-                ),
-
-                .78,
-
-                isSpecial
-
-            );
-
-        }
-
-    }
-
-
-    if (
-        !chapter1FloorEye
-    ) {
-
-        createChapter1Eye(
-
-            new THREE.Vector3(
-
-                0,
-
-                .035,
-
-                0
-
-            ),
-
-            new THREE.Euler(
-
-                -Math.PI / 2,
-
-                0,
-
-                0
-
-            ),
-
-            .9,
-
-            true
-
-        );
-
-    }
-
-}
-
-
-/* ==================================================
-   UPDATE CHAPTER 1
-================================================== */
-
-function updateChapter1() {
-
-    if (
-        !started ||
-        !camera ||
-        !scene
-    )
-        return;
-
-
-    for (
-        const eye of chapter1Eyes
-    ) {
-
-        updateChapter1EyeTracking(
-            eye
-        );
-
-        updateChapter1EyeGrowth(
-            eye
-        );
-
-    }
-
-
-    if (
-        chapter1FloorEye &&
-        !chapter1FloorEye.dead
-    ) {
-
-        const dx =
-            player.x -
-            chapter1FloorEye.group.position.x;
-
-
-        const dz =
-            player.z -
-            chapter1FloorEye.group.position.z;
-
-
-        const distance =
-            Math.hypot(
-                dx,
-                dz
-            );
-
-
-        if (
-            distance < 2.2 &&
-            !chapter1FloorEye.userTriggered
-        ) {
-
-            chapter1FloorEye.userTriggered =
-                true;
-
-
-            chapter1FloorEye.triggerTime =
-                performance.now();
-
-        }
-
-
-        if (
-            chapter1FloorEye.userTriggered
-        ) {
-
-            const elapsed =
-                performance.now() -
-                chapter1FloorEye.triggerTime;
-
-
-            if (
-                elapsed > 1800
-            ) {
-
-                removeChapter1FloorEye();
-
-            }
-
-        }
-
-    }
-
-
-    updateChapter1Hole();
-
-    updateChapter1Fall();
-
-}
-
-
-/* ==================================================
-   CREATE WORLD
-================================================== */
-
-function createWorld() {
-
-    scene =
-        new THREE.Scene();
-
-
-    scene.background =
-        new THREE.Color(
-            0xb0b0b0
-        );
-
-
-    camera =
-        new THREE.PerspectiveCamera(
-
-            DEFAULT_FOV,
-
-            window.innerWidth /
-            window.innerHeight,
-
-            .1,
-
-            100
-
-        );
-
-
-    camera.position.set(
-
-        player.x,
-
-        player.y,
-
-        player.z
-
-    );
-
-
-    renderer =
-        new THREE.WebGLRenderer({
-
-            antialias: true
-
-        });
-
-
-    renderer.setPixelRatio(
-
-        Math.min(
-
-            window.devicePixelRatio,
-
-            2
-
-        )
-
-    );
-
-
-    renderer.setSize(
-
-        window.innerWidth,
-
-        window.innerHeight
-
-    );
-
-
-    const container =
-        document.getElementById(
-            "threeContainer"
-        );
-
-
-    container.innerHTML = "";
-
-
-    container.appendChild(
-        renderer.domElement
-    );
-
-
-    scene.add(
-
-        new THREE.AmbientLight(
-
-            0xffffff,
-
-            2
-
-        )
-
-    );
-
-
-    createRoom();
-
-
-    /* ==============================
-       CHAPTER 1
-    ============================== */
-
-    loadChapter1Textures();
-
-    createChapter1Eyes();
-
-
-    setupTouch();
-
-    setupJoystick();
-
-    animate();
-
-}
-
-
-/* ==================================================
-   ROOM
-================================================== */
-
-function createRoom() {
-
-    const W =
-        ROOM_WIDTH;
-
-    const H =
-        ROOM_HEIGHT;
-
-    const D =
-        ROOM_DEPTH;
-
-
-    const floor =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-
-                D
-
-            ),
-
-            new THREE.MeshBasicMaterial({
-
-                color: 0x707070,
-
-                side:
-                    THREE.DoubleSide
-
-            })
-
-        );
-
-
-    floor.rotation.x =
-        -Math.PI / 2;
-
-
-    scene.add(
-        floor
-    );
-
-
-    const ceiling =
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                W,
-
-                D
-
-            ),
-
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd8d8d8,
-
-                side:
-                    THREE.DoubleSide
-
-            })
-
-        );
-
-
-    ceiling.rotation.x =
-        Math.PI / 2;
-
-
-    ceiling.position.y =
-        H;
-
-
-    scene.add(
-        ceiling
-    );
-
-
-    const front =
-        createWall(
-
-            W,
-
-            H,
-
-            0xc2c2c2
-
-        );
-
-
-    front.position.set(
-
-        0,
-
-        H / 2,
-
-        -D / 2
-
-    );
-
-
-    scene.add(
-        front
-    );
-
-
-    const back =
-        createWall(
-
-            W,
-
-            H,
-
-            0xb7b7b7
-
-        );
-
-
-    back.position.set(
-
-        0,
-
-        H / 2,
-
-        D / 2
-
-    );
-
-
-    scene.add(
-        back
-    );
-
-
-    const left =
-        createWall(
-
-            D,
-
-            H,
-
-            0xaeaeae
-
-        );
-
-
-    left.rotation.y =
-        Math.PI / 2;
-
-
-    left.position.set(
-
-        -W / 2,
-
-        H / 2,
-
-        0
-
-    );
-
-
-    scene.add(
-        left
-    );
-
-
-    const right =
-        createWall(
-
-            D,
-
-            H,
-
-            0xa6a6a6
-
-        );
-
-
-    right.rotation.y =
-        Math.PI / 2;
-
-
-    right.position.set(
-
-        W / 2,
-
-        H / 2,
-
-        0
-
-    );
-
-
-    scene.add(
-        right
-    );
-
-
-    createRoomEdges(
-
-        W,
-
-        H,
-
-        D
-
-    );
-
-
-    createInvisibleCollisionWalls(
-
-        W,
-
-        H,
-
-        D
-
-    );
-
-}
-
-
-function createWall(
-
-    width,
-
-    height,
-
-    color
-
-) {
-
-    return new THREE.Mesh(
-
-        new THREE.PlaneGeometry(
-
-            width,
-
-            height
-
-        ),
-
-        new THREE.MeshBasicMaterial({
-
-            color: color,
-
-            side:
-                THREE.DoubleSide
-
-        })
-
-    );
-
-}
-
-
-/* ==================================================
-   INVISIBLE 3D WALLS
-================================================== */
-
-function createInvisibleCollisionWalls(
-
-    W,
-
-    H,
-
-    D
-
-) {
-
-    const material =
-        new THREE.MeshBasicMaterial({
-
-            transparent: true,
-
-            opacity: 0,
-
-            depthWrite: false
-
-        });
-
-
-    const thickness =
-        .45;
-
-
-    const front =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-
-                W + thickness * 2,
-
-                H,
-
-                thickness
-
-            ),
-
-            material
-
-        );
-
-
-    front.position.set(
-
-        0,
-
-        H / 2,
-
-        -D / 2 +
-        thickness / 2
-
-    );
-
-
-    front.visible =
-        false;
-
-
-    scene.add(
-        front
-    );
-
-
-    const back =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-
-                W + thickness * 2,
-
-                H,
-
-                thickness
-
-            ),
-
-            material
-
-        );
-
-
-    back.position.set(
-
-        0,
-
-        H / 2,
-
-        D / 2 -
-        thickness / 2
-
-    );
-
-
-    back.visible =
-        false;
-
-
-    scene.add(
-        back
-    );
-
-
-    const left =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-
-                thickness,
-
-                H,
-
-                D
-
-            ),
-
-            material
-
-        );
-
-
-    left.position.set(
-
-        -W / 2 +
-        thickness / 2,
-
-        H / 2,
-
-        0
-
-    );
-
-
-    left.visible =
-        false;
-
-
-    scene.add(
-        left
-    );
-
-
-    const right =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-
-                thickness,
-
-                H,
-
-                D
-
-            ),
-
-            material
-
-        )
-
-
-    right.position.set(
-
-        W / 2 -
-        thickness / 2,
-
-        H / 2,
-
-        0
-
-    );
-
-
-    right.visible =
-        false;
-
-
-    scene.add(
-        right
-    );
-
-}
-
-
-/* ==================================================
-   ROOM EDGES
-================================================== */
-
-function createRoomEdges(
-
-    W,
-
-    H,
-
-    D
-
-) {
-
-    const geometry =
-        new THREE.BoxGeometry(
-
-            W,
-
-            H,
-
-            D
-
-        );
-
-
-    const edges =
-        new THREE.EdgesGeometry(
-
-            geometry
-
-        );
-
-
-    const material =
-        new THREE.LineBasicMaterial({
-
-            color: 0x666666,
-
-            transparent: true,
-
-            opacity: .45
-
-        });
-
-
-    const lines =
-        new THREE.LineSegments(
-
-            edges,
-
-            material
-
-        );
-
-
-    lines.position.y =
-        H / 2;
-
-
-    scene.add(
-        lines
-    );
-
-}
-
-
-/* ==================================================
-   TOUCH
-================================================== */
-
-const activeTouches =
-    new Map();
-
-
-let touchMode =
-    "none";
-
-
-let lookPointerId =
-    null;
-
-
-let lastLookX = 0;
-
-let lastLookY = 0;
-
-
-let previousPinchDistance =
-    null;
-
-
-let mouseLooking =
-    false;
-
-
-function getPinchDistance() {
-
-    const points =
-        Array.from(
-
-            activeTouches.values()
-
-        );
-
-
-    if (
-        points.length < 2
-    )
-        return null;
-
-
-    const a =
-        points[0];
-
-
-    const b =
-        points[1];
-
-
-    return Math.hypot(
-
-        b.x - a.x,
-
-        b.y - a.y
-
-    );
-
-}
-
-
-function enterPinchMode() {
-
-    touchMode =
-        "pinch";
-
-
-    lookPointerId =
-        null;
-
-
-    previousPinchDistance =
-        getPinchDistance();
-
-}
-
-
-function enterLookMode() {
-
-    const entries =
-        Array.from(
-
-            activeTouches.entries()
-
-        );
-
-
-    if (
-        entries.length !== 1
-    ) {
-
-        touchMode =
-            "none";
-
-
-        lookPointerId =
-            null;
-
-
-        return;
-
-    }
-
-
-    const [
-        id,
-        point
-    ] =
-        entries[0];
-
-
-    touchMode =
-        "look";
-
-
-    lookPointerId =
-        id;
-
-
-    lastLookX =
-        point.x;
-
-
-    lastLookY =
-        point.y;
-
-
-    previousPinchDistance =
-        null;
-
-}
-
-
-/* ==================================================
-   TOUCH SETUP
-================================================== */
-
-function setupTouch() {
-
-    const canvas =
-        renderer.domElement;
-
-
-    canvas.style.touchAction =
-        "none";
-
-
-    canvas.addEventListener(
-
-        "pointerdown",
-
-        event => {
-
-            if (
-                event.pointerType ===
-                "mouse"
-            ) {
-
-                if (
-                    event.button !== 0
-                )
-                    return;
-
-
-                mouseLooking =
-                    true;
-
-
-                lastLookX =
-                    event.clientX;
-
-
-                lastLookY =
-                    event.clientY;
-
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            activeTouches.set(
-
-                event.pointerId,
-
-                {
-
-                    x:
-                        event.clientX,
-
-                    y:
-                        event.clientY
-
-                }
-
-            );
-
-
-            if (
-                activeTouches.size ===
-                1
-            ) {
-
-                touchMode =
-                    "look";
-
-
-                lookPointerId =
-                    event.pointerId;
-
-
-                lastLookX =
-                    event.clientX;
-
-
-                lastLookY =
-                    event.clientY;
-
-            }
-
-            else {
-
-                enterPinchMode();
-
-            }
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    canvas.addEventListener(
-
-        "pointermove",
-
-        event => {
-
-            if (
-                event.pointerType ===
-                "mouse"
-            ) {
-
-                if (!mouseLooking)
-                    return;
-
-
-                const dx =
-                    event.clientX -
-                    lastLookX;
-
-
-                const dy =
-                    event.clientY -
-                    lastLookY;
-
-
-                yaw -=
-                    dx *
-                    LOOK_SENSITIVITY_X;
-
-
-                pitch -=
-                    dy *
-                    LOOK_SENSITIVITY_Y;
-
-
-                pitch =
-                    Math.max(
-
-                        -PITCH_LIMIT,
-
-                        Math.min(
-
-                            PITCH_LIMIT,
-
-                            pitch
-
-                        )
-
-                    );
-
-
-                lastLookX =
-                    event.clientX;
-
-
-                lastLookY =
-                    event.clientY;
-
-
-                return;
-
-            }
-
-
-            if (
-                !activeTouches.has(
-                    event.pointerId
-                )
-            )
-                return;
-
-
-            event.preventDefault();
-
-
-            activeTouches.set(
-
-                event.pointerId,
-
-                {
-
-                    x:
-                        event.clientX,
-
-                    y:
-                        event.clientY
-
-                }
-
-            );
-
-
-            if (
-                touchMode ===
-                "pinch"
-            ) {
-
-                const distance =
-                    getPinchDistance();
-
-
-                if (
-
-                    distance !== null &&
-
-                    previousPinchDistance !== null
-
-                ) {
-
-                    const delta =
-                        distance -
-                        previousPinchDistance;
-
-
-                    camera.fov +=
-                        delta *
-                        .08;
-
-
-                    camera.fov =
-                        Math.max(
-
-                            MIN_FOV,
-
-                            Math.min(
-
-                                MAX_FOV,
-
-                                camera.fov
-
-                            )
-
-                        );
-
-
-                    camera.updateProjectionMatrix();
-
-                }
-
-
-                previousPinchDistance =
-                    distance;
-
-
-                return;
-
-            }
-
-
-            if (
-
-                touchMode ===
-                    "look" &&
-
-                event.pointerId ===
-                    lookPointerId
-
-            ) {
-
-                const dx =
-                    event.clientX -
-                    lastLookX;
-
-
-                const dy =
-                    event.clientY -
-                    lastLookY;
-
-
-                yaw -=
-                    dx *
-                    LOOK_SENSITIVITY_X;
-
-
-                pitch -=
-                    dy *
-                    LOOK_SENSITIVITY_Y;
-
-
-                pitch =
-                    Math.max(
-
-                        -PITCH_LIMIT,
-
-                        Math.min(
-
-                            PITCH_LIMIT,
-
-                            pitch
-
-                        )
-
-                    );
-
-
-                lastLookX =
-                    event.clientX;
-
-
-                lastLookY =
-                    event.clientY;
-
-            }
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    function endTouch(event) {
-
-        if (
-            event.pointerType ===
-            "mouse"
-        ) {
-
-            mouseLooking =
-                false;
-
-
-            return;
-
-        }
-
-
-        if (
-            !activeTouches.has(
-                event.pointerId
-            )
-        )
-            return;
-
-
-        activeTouches.delete(
-            event.pointerId
-        );
-
-
-        if (
-            activeTouches.size ===
-            0
-        ) {
-
-            touchMode =
-                "none";
-
-
-            lookPointerId =
-                null;
-
-
-            previousPinchDistance =
-                null;
-
-        }
-
-        else if (
-            activeTouches.size ===
-            1
-        ) {
-
-            enterLookMode();
-
-        }
-
-    }
-
-
-    canvas.addEventListener(
-
-        "pointerup",
-
-        endTouch
-
-    );
-
-
-    canvas.addEventListener(
-
-        "pointercancel",
-
-        endTouch
-
-    );
-
-}
-
-
-/* ==================================================
-   JOYSTICK
-================================================== */
-
-const joystickBase =
-    document.getElementById(
-        "joystickBase"
-    );
-
-
-const joystickKnob =
-    document.getElementById(
-        "joystickKnob"
-    );
-
-
-let joystickPointerId =
-    null;
-
-
-let joystickActive =
-    false;
-
-
-const JOYSTICK_RADIUS =
-    37;
-
-
-const JOYSTICK_DEAD_ZONE =
-    .12;
-
-
-/* ==================================================
-   JOYSTICK CENTER
-================================================== */
-
-function getJoystickCenter() {
-
-    const rect =
-        joystickBase
-            .getBoundingClientRect();
-
-
-    return {
-
-        x:
-            rect.left +
-            rect.width / 2,
-
-        y:
-            rect.top +
-            rect.height / 2
-
-    };
-
-}
-
-
-/* ==================================================
-   JOYSTICK UPDATE
-================================================== */
-
-function updateJoystick(
-
-    clientX,
-
-    clientY
-
-) {
-
-    const center =
-        getJoystickCenter();
-
-
-    let dx =
-        clientX -
-        center.x;
-
-
-    let dy =
-        clientY -
-        center.y;
-
-
-    const distance =
-        Math.hypot(
-
-            dx,
-
-            dy
-
-        );
-
-
-    if (
-        distance >
-        JOYSTICK_RADIUS
-    ) {
-
-        const scale =
-            JOYSTICK_RADIUS /
-            distance;
-
-
-        dx *= scale;
-
-        dy *= scale;
-
-    }
-
-
-    const x =
-        dx /
-        JOYSTICK_RADIUS;
-
-
-    const y =
-        dy /
-        JOYSTICK_RADIUS;
-
-
-    const magnitude =
-        Math.hypot(
-
-            x,
-
-            y
-
-        );
-
-
-    if (
-        magnitude <
-        JOYSTICK_DEAD_ZONE
-    ) {
-
-        movement.x =
-            0;
-
-
-        movement.y =
-            0;
-
-    }
-
-    else {
-
-        const remappedMagnitude =
-
-            (
-
-                magnitude -
-                JOYSTICK_DEAD_ZONE
-
-            ) /
-
-            (
-
-                1 -
-                JOYSTICK_DEAD_ZONE
-
-            );
-
-
-        const scale =
-            remappedMagnitude /
-            magnitude;
-
-
-        movement.x =
-            x *
-            scale;
-
-
-        movement.y =
-            y *
-            scale;
-
-    }
-
-
-    joystickKnob.style.transform =
-
-        `translate(
-            calc(-50% + ${dx}px),
-            calc(-50% + ${dy}px)
-        )`;
-
-}
-
-
-/* ==================================================
-   STOP JOYSTICK
-================================================== */
-
-function stopJoystick() {
-
-    joystickPointerId =
-        null;
-
-
-    joystickActive =
-        false;
-
-
-    movement.x =
-        0;
-
-
-    movement.y =
-        0;
-
-
-    joystickBase.classList.remove(
-        "active"
-    );
-
-
-    joystickKnob.style.transform =
-        "translate(-50%, -50%)";
-
-}
-
-
-/* ==================================================
-   JOYSTICK SETUP
-================================================== */
-
-function setupJoystick() {
-
-    joystickBase.addEventListener(
-
-        "pointerdown",
-
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            if (
-                joystickPointerId !==
-                null
-            )
-                return;
-
-
-            if (
-
-                event.pointerType !==
-                    "touch" &&
-
-                event.pointerType !==
-                    "pen"
-
-            )
-                return;
-
-
-            joystickPointerId =
-                event.pointerId;
-
-
-            joystickActive =
-                true;
-
-
-            joystickBase.classList.add(
-                "active"
-            );
-
-
-            try {
-
-                joystickBase.setPointerCapture(
-                    event.pointerId
-                );
-
-            }
-
-            catch (_) {}
-
-
-            updateJoystick(
-
-                event.clientX,
-
-                event.clientY
-
-            );
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    joystickBase.addEventListener(
-
-        "pointermove",
-
-        event => {
-
-            if (
-
-                !joystickActive ||
-
-                event.pointerId !==
-                    joystickPointerId
-
-            )
-                return;
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            updateJoystick(
-
-                event.clientX,
-
-                event.clientY
-
-            );
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    joystickBase.addEventListener(
-
-        "pointerup",
-
-        event => {
-
-            if (
-                event.pointerId !==
-                joystickPointerId
-            )
-                return;
-
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            stopJoystick();
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    joystickBase.addEventListener(
-
-        "pointercancel",
-
-        event => {
-
-            if (
-                event.pointerId !==
-                joystickPointerId
-            )
-                return;
-
-
-            stopJoystick();
-
-        },
-
-        {
-
-            passive: false
-
-        }
-
-    );
-
-
-    joystickBase.addEventListener(
-
-        "lostpointercapture",
-
-        () => {}
-
-    );
-
-}
-
-
-/* ==================================================
-   START
-================================================== */
-
-document
-    .getElementById(
-        "startButton"
-    )
-    .addEventListener(
-        "click",
-        startGame
-    );
-
-
-function startGame() {
-
-    if (started)
-        return;
-
-
-    started = true;
-
-
-    titleRunning =
-        false;
-
-
-    stopJoystick();
-
-
-    document
-        .getElementById(
-            "title"
-        )
-        .style.display =
-        "none";
-
-
-    document
-        .getElementById(
-            "hint"
-        )
-        .style.display =
-        "block";
-
-
-    document
-        .getElementById(
-            "joystickArea"
-        )
-        .style.display =
-        "block";
-
-
-    createWorld();
-
-}
-
-
-/* ==================================================
-   GAME LOOP
-================================================== */
-
-function animate() {
-
-    requestAnimationFrame(
-        animate
-    );
-
-
-    if (started) {
-
-        updatePlayer();
-
-        updateChapter1();
-
-    }
-
-
-    if (
-
-        renderer &&
-
-        scene &&
-
-        camera
-
-    ) {
-
-        renderer.render(
-
-            scene,
-
-            camera
-
-        );
-
-    }
-
-}
-
-
-/* ==================================================
-   RESIZE
-================================================== */
-
-window.addEventListener(
-
-    "resize",
-
-    () => {
-
-        if (
-            !camera ||
-            !renderer
-        )
-            return;
-
-
-        camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
-
-
-        camera.updateProjectionMatrix();
-
-
-        renderer.setSize(
-
-            window.innerWidth,
-
-            window.innerHeight
-
-        );
-
-    }
-
-);
-
-
-/* ==================================================
-   RESET INPUT
-================================================== */
-
-window.addEventListener(
-
-    "blur",
-
-    () => {
-
-        stopJoystick();
-
-
-        activeTouches.clear();
-
-
-        touchMode =
-            "none";
-
-
-        lookPointerId =
-            null;
-
-
-        mouseLooking =
-            false;
-
-    }
-
-);
-
+window.addEventListener("resize",()=>{
+ if(!camera||!renderer)return;
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);
+});
+window.addEventListener("blur",()=>{
+ stopJoystick();activeTouches.clear();touchMode="none";lookPointerId=null;mouseLooking=false;
+});
 </script>
-
 </body>
 </html>
